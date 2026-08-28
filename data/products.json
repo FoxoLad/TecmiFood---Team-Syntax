@@ -1,0 +1,56 @@
+[
+  {
+    "id": "aurora-headphones",
+    "name": "Audífonos Aurora",
+    "description": "Audio envolvente, cancelación de ruido y hasta 32 horas de batería para acompañarte todo el día.",
+    "price": 2499,
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85",
+    "available": true,
+    "category": "Audio"
+  },
+  {
+    "id": "nordic-watch",
+    "name": "Reloj Nordic",
+    "description": "Diseño minimalista con caja de acero y correa de piel genuina para un estilo atemporal.",
+    "price": 1890,
+    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30e?auto=format&fit=crop&w=1200&q=85",
+    "available": true,
+    "category": "Accesorios"
+  },
+  {
+    "id": "terra-sneakers",
+    "name": "Tenis Terra",
+    "description": "Tenis ligeros de uso diario con suela flexible y materiales transpirables de alto confort.",
+    "price": 1599,
+    "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=85",
+    "available": false,
+    "category": "Calzado"
+  },
+  {
+    "id": "barista-kit",
+    "name": "Kit Barista",
+    "description": "Todo lo necesario para preparar café de especialidad en casa con resultados consistentes.",
+    "price": 980,
+    "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=85",
+    "available": true,
+    "category": "Hogar"
+  },
+  {
+    "id": "nomad-backpack",
+    "name": "Mochila Nómada",
+    "description": "Mochila resistente al agua con compartimento acolchado para laptop y organización inteligente.",
+    "price": 1290,
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1200&q=85",
+    "available": true,
+    "category": "Viaje"
+  },
+  {
+    "id": "monstera-home",
+    "name": "Monstera Natural",
+    "description": "Planta de interior de fácil cuidado, presentada en una maceta de cerámica de acabado mate.",
+    "price": 590,
+    "image": "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=1200&q=85",
+    "available": false,
+    "category": "Plantas"
+  }
+]

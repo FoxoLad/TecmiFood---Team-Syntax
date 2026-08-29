@@ -1,26 +1,38 @@
 import { useState } from "react";
-import { FlatList, Text, View, StyleSheet } from "react-native";
+import { FlatList, Text, View, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import products from "../../../data/products.json";
 import { ProductCard } from "../components/ProductCard";
+import { useProductStore } from "../stores/useProduct";
+
+const style = StyleSheet.create({
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    margin: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+});
 
 export default function ProductsScreen() {
-  const[productsList, setProductsList] = useState(products);
+  const products = useProductStore((state) => state.products);
 
   const deleteProduct = (id: string) => {
-    setProductsList(listadoActual => listadoActual.filter(product => product.id !== id));
   };
 
   return (
   <SafeAreaView>
     <FlatList
       ListHeaderComponent={
-        <Text >Listado de productos</Text>
+        <ScrollView horizontal>
+        <Text style={style.title}>Todos</Text>
+        <Text style={style.title}>Entregados</Text>
+        <Text style={style.title}>Pendientes</Text>
+        </ScrollView>
       }
-      data={productsList}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <ProductCard product={{ ...item, id: String(item.id) }} onDelete={deleteProduct} />
+      data={products}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (<ProductCard product={item}/>
       )}
     />
   </SafeAreaView>

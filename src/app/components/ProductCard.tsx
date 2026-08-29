@@ -1,34 +1,43 @@
-import { Alert, Button, Image, Pressable, StyleSheet,  Text, View } from "react-native";
+import { Alert, Button, Image, Pressable, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
 import { Product } from "../types/product";
 import { useNavigation, type NativeStackNavigationProp } from "expo-router";
 import { SymbolView } from "expo-symbols";
+import { useProductStore } from "../stores/useProduct";
+import { productsImages } from "./images";
+
+
 
 type ProductCardProps = {
     product:Product;
-    onDelete: (productId: string) => void;
 };
 type ProductNavigation = {
     "products/[id]": { id: string };
+    "products/[NoOrder]": { NoOrder: number };
 };
 
-export function ProductCard({ product, onDelete }: ProductCardProps) {
+export function ProductCard({ product }: ProductCardProps) {
     const navigation = useNavigation<NativeStackNavigationProp<ProductNavigation>>();
+    const orderNumber = (product as Product & { NoOrder?: number }).NoOrder ?? 0;
+    const status = (product as Product & { status?: string }).status ?? "Sin estado";
+    const  deleteProduct = useProductStore((state) => state.deleteProduct);
+
     return (
         <View>
             <View style={style.card}>
+                <Text style={style.noOrden}>No Orden {orderNumber}</Text>
             <Pressable
-            onPress={() => navigation.navigate("products/[id]", { id: product.id })}>
-                <Image source={{ uri: product.image }} style={style.image} /></Pressable>
+            onPress={() => navigation.navigate("products/[NoOrder]", { NoOrder: orderNumber })}>
+                <Image source={productsImages[product.image as keyof typeof productsImages]} style={style.image} /></Pressable>
                 <Text style={style.name}>{product.name}</Text>
                 <Text>{product.description}</Text>
                 <Text>{product.category}</Text>
                 <Text style={style.precio}>Precio: ${product.price.toFixed(2)}</Text>
-                <Text>{product.available ? "Disponible" : "No disponible"}</Text>
+                <Text>Estado: {status}</Text>
 
                 <Pressable
                 onPress={() => Alert.alert("¿Estás seguro?", "Esta acción no se puede deshacer.", [
                     { text: "Cancelar", style: "cancel" },
-                    {onPress: () => onDelete(product.id)}
+                    {onPress: () => deleteProduct(product.id)}
                 ])}>
                     <SymbolView
                     name={{
@@ -48,11 +57,16 @@ export function ProductCard({ product, onDelete }: ProductCardProps) {
 
 
 const style = StyleSheet.create({
-card: {
-    padding: 16,
-    borderColor: "#FADAA5",
-    borderWidth: 1,
-    borderRadius: 8,
+    noOrden: {
+        fontSize: 32,
+        fontWeight: "bold",
+        marginBottom: 8,
+    },
+    card: {
+        padding: 20,
+        borderColor: "#ede6ec",
+        borderWidth: 1,
+        borderRadius: 8,
 },
 image: {
     width: "100%",
@@ -65,7 +79,8 @@ name: {
     fontWeight: "bold",
 },
 precio: {
-    fontSize: 16,
-    color: "#888",
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#00000000",
 },
 })

@@ -1,14 +1,14 @@
-import { Alert, Button, Image, Pressable, StyleSheet, Text, View, type ImageSourcePropType } from "react-native";
-import { Product } from "../types/product";
 import { useNavigation, type NativeStackNavigationProp } from "expo-router";
 import { SymbolView } from "expo-symbols";
+import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useProductStore } from "../stores/useProduct";
+import { Product } from "../types/product";
 import { productsImages } from "./images";
 
 
 
 type ProductCardProps = {
-    product:Product;
+    product: Product;
 };
 type ProductNavigation = {
     "products/[id]": { id: string };
@@ -19,15 +19,15 @@ export function ProductCard({ product }: ProductCardProps) {
     const navigation = useNavigation<NativeStackNavigationProp<ProductNavigation>>();
     const orderNumber = (product as Product & { NoOrder?: number }).NoOrder ?? 0;
     const status = (product as Product & { status?: string }).status ?? "Sin estado";
-    const  deleteProduct = useProductStore((state) => state.deleteProduct);
+    const deleteProduct = useProductStore((state) => state.deleteProduct);
 
     return (
         <View>
             <View style={style.card}>
                 <Text style={style.noOrden}>No Orden {orderNumber}</Text>
-            <Pressable
-            onPress={() => navigation.navigate("products/[NoOrder]", { NoOrder: orderNumber })}>
-                <Image source={productsImages[product.image as keyof typeof productsImages]} style={style.image} /></Pressable>
+                <Pressable
+                    onPress={() => navigation.navigate("products/[NoOrder]", { NoOrder: orderNumber })}>
+                    <Image source={productsImages[product.image as keyof typeof productsImages]} style={style.image} /></Pressable>
                 <Text style={style.name}>{product.name}</Text>
                 <Text>{product.description}</Text>
                 <Text>{product.category}</Text>
@@ -35,21 +35,21 @@ export function ProductCard({ product }: ProductCardProps) {
                 <Text>Estado: {status}</Text>
 
                 <Pressable
-                onPress={() => Alert.alert("¿Estás seguro?", "Esta acción no se puede deshacer.", [
-                    { text: "Cancelar", style: "cancel" },
-                    {onPress: () => deleteProduct(product.id)}
-                ])}>
+                    onPress={() => Alert.alert("¿Estás seguro?", "Esta acción no se puede deshacer.", [
+                        { text: "Cancelar", style: "cancel" },
+                        { onPress: () => deleteProduct(product.id) }
+                    ])}>
                     <SymbolView
-                    name={{
-                        android: 'delete',
-                    }}
-                    size={22}
-                    tintColor="red"
+                        name={{
+                            android: 'delete',
+                        }}
+                        size={22}
+                        tintColor="red"
                     />
                 </Pressable>
             </View>
-                
-            
+
+
         </View>
     );
 }
@@ -67,20 +67,20 @@ const style = StyleSheet.create({
         borderColor: "#ede6ec",
         borderWidth: 1,
         borderRadius: 8,
-},
-image: {
-    width: "100%",
-    height: 180,
-    borderRadius: 8,
-    marginBottom: 8,
-},
-name: {
-    fontSize: 18,
-    fontWeight: "bold",
-},
-precio: {
-    fontSize: 30,
-    fontWeight: "bold",
-    color: "#00000000",
-},
+    },
+    image: {
+        width: "100%",
+        height: 180,
+        borderRadius: 8,
+        marginBottom: 8,
+    },
+    name: {
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    precio: {
+        fontSize: 30,
+        fontWeight: "bold",
+        color: "#00000000",
+    },
 })

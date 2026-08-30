@@ -1,15 +1,23 @@
-import { useState } from "react";
-import { FlatList, Text, View, StyleSheet, ScrollView } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ProductCard } from "../components/ProductCard";
-import { useProductStore } from "../stores/useProduct";
+import { ProductCard } from "../../components/ProductCard";
+import { useProductStore } from "../../stores/useProduct";
 
 const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  headerScroll: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "bold",
-    margin: 10,
-    borderBottomWidth: 1,
+    marginRight: 15,
+    paddingBottom: 4,
+    borderBottomWidth: 2,
     borderBottomColor: "#ccc",
   },
 });
@@ -17,26 +25,28 @@ const style = StyleSheet.create({
 export default function ProductsScreen() {
   const products = useProductStore((state) => state.products);
 
-  const deleteProduct = (id: string) => {
+  const deleteProduct = (id: string | number) => {
+    // Aquí puedes conectar la acción deleteProduct del store si está definida
   };
 
   return (
-  <SafeAreaView>
-    <FlatList
-      ListHeaderComponent={
-        <ScrollView horizontal>
-        <Text style={style.title}>Todos</Text>
-        <Text style={style.title}>Entregados</Text>
-        <Text style={style.title}>Pendientes</Text>
-        </ScrollView>
-      }
-      data={products}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (<ProductCard product={item}/>
-      )}
-    />
-  </SafeAreaView>
+    <SafeAreaView style={style.container}>
+      <FlatList
+        ListHeaderComponent={
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={style.headerScroll}
+          >
+            <Text style={style.title}>Todos</Text>
+            <Text style={style.title}>Entregados</Text>
+            <Text style={style.title}>Pendientes</Text>
+          </ScrollView>
+        }
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <ProductCard product={item} />}
+      />
+    </SafeAreaView>
   );
-
-
 }

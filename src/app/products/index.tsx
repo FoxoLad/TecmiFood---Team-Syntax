@@ -6,7 +6,7 @@ import { useProductStore } from "../../stores/useProduct";
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#DFCDB2",
   },
   headerScroll: {
     paddingHorizontal: 10,
@@ -18,7 +18,7 @@ const style = StyleSheet.create({
     marginRight: 15,
     paddingBottom: 4,
     borderBottomWidth: 2,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#fffefc",
   },
 });
 
@@ -41,6 +41,7 @@ export default function ProductsScreen() {
             <Text style={style.title}>Todos</Text>
             <Text style={style.title}>Entregados</Text>
             <Text style={style.title}>Pendientes</Text>
+            <Text style={style.title}>Historial</Text>
           </ScrollView>
         }
         data={products}

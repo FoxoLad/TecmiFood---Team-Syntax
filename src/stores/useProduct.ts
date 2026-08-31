@@ -1,6 +1,6 @@
 
-import {create} from "zustand";
-import initialProducts from "../../../data/products.json";
+import { create } from "zustand";
+import initialProducts from "../../data/products.json";
 import { Product } from "../types/product";
 
 type ProductStore = {
@@ -16,4 +16,3 @@ export const useProductStore = create<ProductStore>()((set) => ({
         }));
     }
 }));
-

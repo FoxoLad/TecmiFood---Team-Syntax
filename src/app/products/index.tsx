@@ -4,13 +4,14 @@ import { FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-n
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductCard } from "../../components/ProductCard";
 import { useProductStore } from "../../stores/useProduct";
+import type { Product } from "../../types/product";
 
 export default function ProductsScreen() {
   const products = useProductStore((state) => state.products);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Filtra los productos por nombre o número de orden
-  const filteredProducts = products.filter((item) => {
+  const filteredProducts = products.filter((item: Product) => {
     const query = searchQuery.toLowerCase().trim();
     const matchesName = item.name.toLowerCase().includes(query);
     const matchesOrder = String(item.NoOrder ?? "").includes(query);
@@ -49,8 +50,8 @@ export default function ProductsScreen() {
           </View>
         }
         data={filteredProducts}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <ProductCard product={item} />}
+        keyExtractor={(item: Product) => item.id.toString()}
+        renderItem={({ item }: { item: Product }) => <ProductCard product={item} />}
         contentContainerStyle={style.listContent}
       />
     </SafeAreaView>

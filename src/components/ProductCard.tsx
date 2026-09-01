@@ -1,4 +1,4 @@
-import { useNavigation, type NativeStackNavigationProp } from "expo-router";
+import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useProductStore } from "../stores/useProduct";
@@ -9,13 +9,7 @@ type ProductCardProps = {
     product: Product;
 };
 
-type ProductNavigation = {
-    "products/[id]": { id: string };
-    "products/[NoOrder]": { NoOrder: number };
-};
-
 export function ProductCard({ product }: ProductCardProps) {
-    const navigation = useNavigation<NativeStackNavigationProp<ProductNavigation>>();
     const orderNumber = (product as Product & { NoOrder?: number }).NoOrder ?? 0;
     const status = (product as Product & { status?: string }).status ?? "Sin estado";
     const deleteProduct = useProductStore((state) => state.deleteProduct);
@@ -37,7 +31,12 @@ export function ProductCard({ product }: ProductCardProps) {
             <Text style={style.noOrden}>No Orden {orderNumber}</Text>
 
             <Pressable
-                onPress={() => navigation.navigate("products/[NoOrder]", { NoOrder: orderNumber })}
+                onPress={() =>
+                    router.push({
+                        pathname: "/client/products/[NoOrder]" as any,
+                        params: { NoOrder: String(orderNumber) },
+                    } as any)
+                }
             >
                 <Image
                     source={productsImages[product.image as keyof typeof productsImages]}

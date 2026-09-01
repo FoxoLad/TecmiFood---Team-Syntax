@@ -1,8 +1,8 @@
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../components/images";
-import { useProductStore } from "../../stores/useProduct";
+import { productsImages } from "../../../components/images";
+import { useProductStore } from "../../../stores/useProduct";
 
 export default function ProductDetailsScreen() {
     const { NoOrder } = useLocalSearchParams();

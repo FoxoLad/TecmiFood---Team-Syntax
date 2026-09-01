@@ -1,5 +1,5 @@
-import { Redirect } from "expo-router";
+import { View } from "react-native";
 
 export default function ClientIndexScreen() {
-  return <Redirect href="/client/products" />;
+  return <View style={{ flex: 1, backgroundColor: "#DFCDB2" }} />;
 }

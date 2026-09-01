@@ -2,9 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ProductCard } from "../../components/ProductCard";
-import { useProductStore } from "../../stores/useProduct";
-import type { Product } from "../../types/product";
+import { ProductCard } from "../../../components/ProductCard";
+import { useProductStore } from "../../../stores/useProduct";
+import type { Product } from "../../../types/product";
 
 export default function ProductsScreen() {
   const products = useProductStore((state) => state.products);
@@ -29,10 +29,9 @@ export default function ProductsScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={style.headerScroll}
             >
-              <Text style={style.title}>Todos</Text>
-              <Text style={style.title}>Entregados</Text>
               <Text style={style.title}>Pendientes</Text>
-              <Text style={style.title}>Historial</Text>
+              <Text style={style.title}>Entregados</Text>
+              <Text style={style.title}>Todos</Text>
             </ScrollView>
 
             {/* Barra de Búsqueda */}

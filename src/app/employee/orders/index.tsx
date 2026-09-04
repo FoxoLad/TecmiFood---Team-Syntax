@@ -97,7 +97,13 @@ export default function EmployeeOrdersScreen() {
                             </View>
 
                             {orderProducts.map((product) => (
-                                <View key={product.id} style={style.productRow}>
+                                <Pressable
+                                    accessibilityLabel={`Ver detalles de la orden ${orderNumber}`}
+                                    accessibilityRole="button"
+                                    key={product.id}
+                                    onPress={() => router.push(`/employee/orders/${orderNumber}`)}
+                                    style={style.productRow}
+                                >
                                     <Text style={style.quantity}>x1</Text>
                                     <View style={style.productInfo}>
                                         <Text style={style.productName}>{product.name}</Text>
@@ -115,7 +121,7 @@ export default function EmployeeOrdersScreen() {
                                             <Ionicons color="#000000" name="trash-outline" size={19} />
                                         </Pressable>
                                     </View>
-                                </View>
+                                </Pressable>
                             ))}
 
                             <View style={style.totalBar}>

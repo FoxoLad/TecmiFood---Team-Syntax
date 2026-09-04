@@ -93,7 +93,9 @@ export default function EmployeeOrdersScreen() {
                         <View key={orderNumber} style={style.orderCard}>
                             <View style={style.orderHeader}>
                                 <Text style={style.orderNumber}>#{String(orderNumber).padStart(3, "0")}</Text>
-                                <Text style={style.status}>Estado: <Text style={style.statusValue}>{orderProducts[0].status}</Text></Text>
+                                <Text style={style.status}>
+                                    Estado: <Text style={[style.statusValue, orderProducts[0].status.toLowerCase() === "entregado" && style.deliveredStatus]}>{orderProducts[0].status}</Text>
+                                </Text>
                             </View>
 
                             {orderProducts.map((product) => (
@@ -251,6 +253,9 @@ const style = StyleSheet.create({
     statusValue: {
         color: "#f27600",
         fontWeight: "400",
+    },
+    deliveredStatus: {
+        color: "#15803d",
     },
     productRow: {
         alignItems: "center",

@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { productsImages } from "../../../components/images";
 import { useProductStore } from "../../../stores/useProduct";
@@ -8,6 +9,8 @@ import { useProductStore } from "../../../stores/useProduct";
 export default function EmployeeOrderDetailsScreen() {
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const products = useProductStore((state) => state.products);
+	const updateProductsStatus = useProductStore((state) => state.updateProductsStatus);
+	const [showDeliveryConfirmation, setShowDeliveryConfirmation] = useState(false);
 	const orderProducts = products.filter((product) => String(product.NoOrder) === id);
 	const total = orderProducts.reduce((sum, product) => sum + product.price, 0);
 
@@ -24,6 +27,11 @@ export default function EmployeeOrderDetailsScreen() {
 	}
 
 	const orderNumber = orderProducts[0].NoOrder;
+
+	const deliverOrder = () => {
+		updateProductsStatus(orderNumber, "Entregado");
+		setShowDeliveryConfirmation(false);
+	};
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -59,10 +67,32 @@ export default function EmployeeOrderDetailsScreen() {
 					</View>
 				))}
 
-				<View style={styles.totalBar}>
-					<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>
-				</View>
+				<Pressable onPress={() => setShowDeliveryConfirmation(true)} style={styles.deliverButton}>
+					<Text style={styles.deliverButtonText}>ENTREGAR</Text>
+				</Pressable>
 			</ScrollView>
+
+			<Modal
+				animationType="fade"
+				onRequestClose={() => setShowDeliveryConfirmation(false)}
+				transparent
+				visible={showDeliveryConfirmation}
+			>
+				<View style={styles.modalBackdrop}>
+					<View style={styles.confirmationModal}>
+						<Text style={styles.modalTitle}>Entregar producto</Text>
+						<Text style={styles.modalMessage}>Este producto pasará a estar en entregado. ¿Seguro que deseas continuar?</Text>
+						<View style={styles.modalActions}>
+							<Pressable onPress={() => setShowDeliveryConfirmation(false)} style={styles.cancelButton}>
+								<Text style={styles.cancelButtonText}>Cancelar</Text>
+							</Pressable>
+							<Pressable onPress={deliverOrder} style={styles.confirmButton}>
+								<Text style={styles.confirmButtonText}>Continuar</Text>
+							</Pressable>
+						</View>
+					</View>
+				</View>
+			</Modal>
 		</SafeAreaView>
 	);
 }
@@ -176,17 +206,69 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		marginTop: 3,
 	},
-	totalBar: {
+	deliverButton: {
 		alignItems: "center",
-		backgroundColor: "#000000",
+		backgroundColor: "#15803d",
 		borderRadius: 22,
 		marginTop: 2,
 		paddingVertical: 7,
 	},
-	totalText: {
+	deliverButtonText: {
 		color: "#ffffff",
 		fontSize: 29,
 		fontWeight: "900",
+	},
+	modalBackdrop: {
+		alignItems: "center",
+		backgroundColor: "rgba(0, 0, 0, 0.45)",
+		flex: 1,
+		justifyContent: "center",
+		padding: 24,
+	},
+	confirmationModal: {
+		backgroundColor: "#ffffff",
+		borderRadius: 14,
+		maxWidth: 360,
+		padding: 22,
+		width: "100%",
+	},
+	modalTitle: {
+		fontSize: 21,
+		fontWeight: "800",
+		marginBottom: 8,
+	},
+	modalMessage: {
+		color: "#333333",
+		fontSize: 16,
+		marginBottom: 20,
+	},
+	modalActions: {
+		flexDirection: "row",
+		gap: 10,
+		justifyContent: "flex-end",
+	},
+	cancelButton: {
+		borderColor: "#777777",
+		borderRadius: 7,
+		borderWidth: 1,
+		paddingHorizontal: 14,
+		paddingVertical: 9,
+	},
+	cancelButtonText: {
+		color: "#333333",
+		fontSize: 15,
+		fontWeight: "700",
+	},
+	confirmButton: {
+		backgroundColor: "#15803d",
+		borderRadius: 7,
+		paddingHorizontal: 16,
+		paddingVertical: 9,
+	},
+	confirmButtonText: {
+		color: "#ffffff",
+		fontSize: 15,
+		fontWeight: "700",
 	},
 	notFound: {
 		fontSize: 18,

@@ -88,12 +88,13 @@ export default function EmployeeOrdersScreen() {
                 {orders.map((orderProducts) => {
                     const orderNumber = orderProducts[0].NoOrder;
                     const total = orderProducts.reduce((sum, product) => sum + product.price, 0);
+                    const isDeliveredView = selectedFilter === "Entregados";
 
                     return (
-                        <View key={orderNumber} style={style.orderCard}>
-                            <View style={style.orderHeader}>
-                                <Text style={style.orderNumber}>#{String(orderNumber).padStart(3, "0")}</Text>
-                                <Text style={style.status}>
+                        <View key={orderNumber} style={[style.orderCard, isDeliveredView && style.deliveredOrderCard]}>
+                            <View style={[style.orderHeader, isDeliveredView && style.deliveredOrderHeader]}>
+                                <Text style={[style.orderNumber, isDeliveredView && style.deliveredOrderNumber]}>#{String(orderNumber).padStart(3, "0")}</Text>
+                                <Text style={[style.status, isDeliveredView && style.deliveredStatusText]}>
                                     Estado: <Text style={[style.statusValue, orderProducts[0].status.toLowerCase() === "entregado" && style.deliveredStatus]}>{orderProducts[0].status}</Text>
                                 </Text>
                             </View>
@@ -104,30 +105,29 @@ export default function EmployeeOrdersScreen() {
                                     accessibilityRole="button"
                                     key={product.id}
                                     onPress={() => router.push(`/employee/orders/${orderNumber}`)}
-                                    style={style.productRow}
+                                    style={[style.productRow, isDeliveredView && style.deliveredProductRow]}
                                 >
-                                    <Text style={style.quantity}>x1</Text>
-                                    <View style={style.productInfo}>
-                                        <Text style={style.productName}>{product.name}</Text>
-                                        <Text style={style.description}>{product.description}</Text>
-                                        <Text style={style.category}>{product.category.toUpperCase()}</Text>
-                                        <Text style={style.price}>${product.price.toFixed(2)}</Text>
+                                    <View style={[style.productTextRow, isDeliveredView && style.deliveredProductTextRow]}>
+                                        <Text style={[style.quantity, isDeliveredView && style.deliveredQuantity]}>x1</Text>
+                                        <View style={style.productInfo}>
+                                            <Text style={[style.productName, isDeliveredView && style.deliveredProductName]}>{product.name}</Text>
+                                            {!isDeliveredView ? (
+                                                <>
+                                                    <Text style={style.description}>{product.description}</Text>
+                                                    <Text style={style.category}>{product.category.toUpperCase()}</Text>
+                                                    <Text style={style.price}>${product.price.toFixed(2)}</Text>
+                                                </>
+                                            ) : null}
+                                        </View>
                                     </View>
-                                    <View style={style.productActions}>
-                                        <Image source={productsImages[product.image as keyof typeof productsImages]} style={style.productImage} />
-                                        <Pressable
-                                            onPress={() => useProductStore.getState().deleteProduct(product.id)}
-                                            style={style.deleteButton}
-                                        >
-                                            <Text style={style.deleteText}>Borrar</Text>
-                                            <Ionicons color="#000000" name="trash-outline" size={19} />
-                                        </Pressable>
+                                    <View style={[style.productActions, isDeliveredView && style.deliveredProductActions]}>
+                                        <Image source={productsImages[product.image as keyof typeof productsImages]} style={[style.productImage, isDeliveredView && style.deliveredProductImage]} />
                                     </View>
                                 </Pressable>
                             ))}
 
-                            <View style={style.totalBar}>
-                                <Text style={style.totalText}>Total: ${total.toFixed(2)}</Text>
+                            <View style={[style.totalBar, isDeliveredView && style.deliveredTotalBar]}>
+                                <Text style={[style.totalText, isDeliveredView && style.deliveredTotalText]}>Total: ${total.toFixed(2)}</Text>
                             </View>
                         </View>
                     );
@@ -234,6 +234,10 @@ const style = StyleSheet.create({
         marginBottom: 7,
         overflow: "hidden",
     },
+    deliveredOrderCard: {
+        borderRadius: 16,
+        marginBottom: 5,
+    },
     orderHeader: {
         alignItems: "center",
         borderBottomColor: "#111110",
@@ -242,13 +246,22 @@ const style = StyleSheet.create({
         justifyContent: "space-between",
         paddingHorizontal: 13,
     },
+    deliveredOrderHeader: {
+        paddingVertical: 2,
+    },
     orderNumber: {
         fontSize: 38,
         fontWeight: "800",
     },
+    deliveredOrderNumber: {
+        fontSize: 27,
+    },
     status: {
         fontSize: 18,
         fontWeight: "700",
+    },
+    deliveredStatusText: {
+        fontSize: 14,
     },
     statusValue: {
         color: "#f27600",
@@ -262,9 +275,14 @@ const style = StyleSheet.create({
         borderBottomColor: "#111110",
         borderBottomWidth: 1,
         flexDirection: "row",
-        minHeight: 96,
+        minHeight: 116,
         paddingHorizontal: 13,
-        paddingVertical: 5,
+        paddingVertical: 8,
+    },
+    deliveredProductRow: {
+        minHeight: 78,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
     },
     quantity: {
         alignSelf: "flex-start",
@@ -273,12 +291,28 @@ const style = StyleSheet.create({
         marginTop: 6,
         width: 38,
     },
+    deliveredQuantity: {
+        alignSelf: "flex-start",
+        fontSize: 17,
+        marginTop: 0,
+        width: 27,
+    },
+    productTextRow: {
+        flex: 1,
+        flexDirection: "row",
+    },
+    deliveredProductTextRow: {
+        alignItems: "flex-start",
+    },
     productInfo: {
         flex: 1,
     },
     productName: {
         fontSize: 22,
         fontWeight: "800",
+    },
+    deliveredProductName: {
+        fontSize: 18,
     },
     description: {
         fontSize: 14,
@@ -295,26 +329,19 @@ const style = StyleSheet.create({
     },
     productActions: {
         alignItems: "center",
-        width: 95,
+        width: 125,
+    },
+    deliveredProductActions: {
+        width: 88,
     },
     productImage: {
-        height: 47,
+        height: 88,
         resizeMode: "contain",
+        width: 118,
+    },
+    deliveredProductImage: {
+        height: 65,
         width: 82,
-    },
-    deleteButton: {
-        alignItems: "center",
-        backgroundColor: "#f10f18",
-        flexDirection: "row",
-        marginTop: 2,
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-    },
-    deleteText: {
-        color: "#ffffff",
-        fontSize: 18,
-        fontWeight: "800",
-        marginRight: 3,
     },
     totalBar: {
         alignItems: "center",
@@ -324,10 +351,19 @@ const style = StyleSheet.create({
         marginVertical: 9,
         paddingVertical: 3,
     },
+    deliveredTotalBar: {
+        borderRadius: 15,
+        marginHorizontal: 12,
+        marginVertical: 5,
+        paddingVertical: 1,
+    },
     totalText: {
         color: "#ffffff",
         fontSize: 29,
         fontWeight: "800",
+    },
+    deliveredTotalText: {
+        fontSize: 20,
     },
     modalBackdrop: {
         alignItems: "center",

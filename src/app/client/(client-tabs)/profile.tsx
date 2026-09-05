@@ -3,12 +3,12 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
     Pressable,
-    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
     View,
 } from "react-native";
+import SafeView from "../../../components/SafeView";
 
 export default function ProfileScreen() {
   const [employeeCode, setEmployeeCode] = useState("");
@@ -26,7 +26,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeView style={styles.safeArea}>
       <View style={styles.container}>
         <Text style={styles.title}>INFORMACIÓN DE USUARIO</Text>
 
@@ -88,7 +88,7 @@ export default function ProfileScreen() {
 
         <Text style={styles.version}>Versión 1.0.0</Text>
       </View>
-    </SafeAreaView>
+    </SafeView>
   );
 }
 

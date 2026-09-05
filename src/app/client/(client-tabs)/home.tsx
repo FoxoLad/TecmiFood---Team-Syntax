@@ -2,12 +2,12 @@ import { Image } from "expo-image";
 import { useState } from "react";
 import {
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import SafeView from "../../../components/SafeView";
 
 type Cafeteria = {
   name: string;
@@ -24,7 +24,7 @@ export default function HomeScreen() {
   const [selectedCafeteria, setSelectedCafeteria] = useState<string | null>(null);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>CAFETERÍAS</Text>
 
@@ -56,7 +56,7 @@ export default function HomeScreen() {
           );
         })}
       </ScrollView>
-    </SafeAreaView>
+    </SafeView>
   );
 }
 

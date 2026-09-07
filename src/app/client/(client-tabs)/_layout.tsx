@@ -22,11 +22,11 @@ export default function ClientTabsLayout() {
         headerShown: false,
       }}
     >
-      <Tabs.Screen name="home" options={{ title: "Inicio", tabBarIcon: ({ color, focused }) => <Ionicons color={color} name={focused ? "home" : "home-outline"} size={29} /> }} />
-      <Tabs.Screen name="explore" options={{ title: "Explorar", tabBarIcon: ({ color, focused }) => <Ionicons color={color} name={focused ? "compass" : "compass-outline"} size={29} /> }} />
-      <Tabs.Screen name="cart" options={{ title: "Carrito", tabBarIcon: ({ color, focused }) => <Ionicons color={color} name={focused ? "cart" : "cart-outline"} size={29} /> }} />
-      <Tabs.Screen name="notifications" options={{ title: "Notificaciones", tabBarIcon: ({ color, focused }) => <Ionicons color={color} name={focused ? "notifications" : "notifications-outline"} size={29} /> }} />
-      <Tabs.Screen name="profile" options={{ title: "Perfil", tabBarIcon: ({ color, focused }) => <Ionicons color={color} name={focused ? "person" : "person-outline"} size={29} /> }} />
+      <Tabs.Screen name="home" options={{ title: "Inicio", tabBarIcon: ({ color }) => <Ionicons color={color} name="home" size={28} /> }} />
+      <Tabs.Screen name="explore" options={{ href: null }} />
+      <Tabs.Screen name="cart" options={{ title: "Carrito", tabBarIcon: ({ color }) => <Ionicons color={color} name="cart-outline" size={29} /> }} />
+      <Tabs.Screen name="notifications" options={{ title: "Notificaciones", tabBarIcon: ({ color }) => <Ionicons color={color} name="notifications-outline" size={28} /> }} />
+      <Tabs.Screen name="profile" options={{ title: "Perfil", tabBarIcon: ({ color }) => <Ionicons color={color} name="person-outline" size={28} /> }} />
     </Tabs>
   );
 }

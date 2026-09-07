@@ -1,6 +1,7 @@
 export type Product = {
  NoOrder: number;
  id: string;
+ businessId: string;
  name: string;
  description: string;
  modifications?: string;

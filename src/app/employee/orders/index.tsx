@@ -26,7 +26,9 @@ export default function EmployeeOrdersScreen() {
         const query = searchQuery.toLowerCase().trim();
         const matchesName = item.name.toLowerCase().includes(query);
         const matchesOrder = String(item.NoOrder ?? "").includes(query);
-        const matchesStatus = selectedFilter === "Todos" || item.status.toLowerCase() === selectedFilter.toLowerCase().slice(0, -1);
+        const normalizedStatus = item.status.toLowerCase().trim();
+        const isDelivered = normalizedStatus === "entregado" || normalizedStatus === "delivered";
+        const matchesStatus = selectedFilter === "Todos" || (selectedFilter === "Entregados" ? isDelivered : !isDelivered);
         return (matchesName || matchesOrder) && matchesStatus;
     });
 
@@ -89,13 +91,15 @@ export default function EmployeeOrdersScreen() {
                     const orderNumber = orderProducts[0].NoOrder;
                     const total = orderProducts.reduce((sum, product) => sum + product.price, 0);
                     const isDeliveredView = selectedFilter === "Entregados";
+                    const orderStatus = orderProducts[0].status.toLowerCase().trim();
+                    const displayStatus = orderStatus === "active" || orderStatus === "pending" ? "Pendiente" : orderProducts[0].status;
 
                     return (
                         <View key={orderNumber} style={[style.orderCard, isDeliveredView && style.deliveredOrderCard]}>
                             <View style={[style.orderHeader, isDeliveredView && style.deliveredOrderHeader]}>
                                 <Text style={[style.orderNumber, isDeliveredView && style.deliveredOrderNumber]}>#{String(orderNumber).padStart(3, "0")}</Text>
                                 <Text style={[style.status, isDeliveredView && style.deliveredStatusText]}>
-                                    Estado: <Text style={[style.statusValue, orderProducts[0].status.toLowerCase() === "entregado" && style.deliveredStatus]}>{orderProducts[0].status}</Text>
+                                    Estado: <Text style={[style.statusValue, isDeliveredView && style.deliveredStatus]}>{displayStatus}</Text>
                                 </Text>
                             </View>
 

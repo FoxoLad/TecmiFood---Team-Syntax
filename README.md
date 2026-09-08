@@ -1,45 +1,112 @@
-# Welcome to your Expo app 👋
+# TecmiFood - Team Syntax
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo/React Native app to view products and orders from two flows: client and employee.
 
-## Get started
+## Requirements
 
-1. Install dependencies
+- Node.js
+- npm
+- Expo CLI
+- Android Studio with an emulator configured (optional if you want to view the app on Android)
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 1. Install dependencies
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 2. Start the project
 
-### Other setup steps
+```bash
+npx expo start
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## 3. View the web app
+
+To view the app in the browser:
+
+```bash
+npx expo start --web
+```
+
+Then open the URL shown by Expo, usually something like:
+
+```text
+http://localhost:8081
+```
+
+And in the browser you can go to these routes:
+
+- Client:
+  ```text
+  http://localhost:8081/client/products
+  ```
+
+- Employee:
+  ```text
+  http://localhost:8081/employee/orders
+  ```
+
+## 4. View it from Android
+
+### Option A: Android emulator
+
+1. Open Android Studio.
+2. Start an Android emulator.
+3. In the project terminal run:
+
+```bash
+npx expo start --android
+```
+
+This will open the app in the emulator if it is configured correctly.
+
+### Option B: Expo Go on a physical device
+
+1. Install Expo Go on your Android phone.
+2. Run:
+
+```bash
+npx expo start
+```
+3. Scan the QR code from your phone.
+
+### Routes inside the app
+
+The default flow goes to the client view:
+
+```text
+/client/products
+```
+
+The employee view is at:
+
+```text
+/employee/orders
+```
+
+## 5. Current screen flow
+
+- Client: products and product detail
+- Employee: orders
+
+## 6. Useful commands
+
+```bash
+npx expo start
+npx expo start --web
+npx expo start --android
+npx tsc --noEmit
+```
+
+## 7. Note
+
+If the project does not start because of script restrictions on Windows, you can use:
+
+```powershell
+powershell -ExecutionPolicy Bypass -NoLogo -Command "Set-Location 'path\to\project'; npx expo start --web"
+```
+
 
 ## Learn more
 

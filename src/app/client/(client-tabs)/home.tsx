@@ -95,7 +95,6 @@ const cafeteriaSections: CafeteriaSection[] = [
 
 export default function HomeScreen() {
   const [] = useState("");
-
   return (
     <SafeView style={styles.safeArea}>
       {/* Barra de notificaciones*/}

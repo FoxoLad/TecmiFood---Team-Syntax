@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   Image,
@@ -29,6 +30,7 @@ type CafeteriaSection = {
   title: string;
   headerColor: string;
   cardBgColor: string;
+  route?: any;
   data: Product[];
 };
 
@@ -42,6 +44,7 @@ const cafeteriaSections: CafeteriaSection[] = [
     title: "BUSTERS",
     headerColor: "#8F651A",
     cardBgColor: "#8F651A",
+    route: "/client/cafeterias/bustershome",
     data: allProducts.filter(
       //Filtrar productos activos de Busters desde el json
       (product) => product.businessId === "BT" && product.status === "active",
@@ -149,15 +152,20 @@ export default function HomeScreen() {
                 { backgroundColor: section.cardBgColor },
               ]}
             >
-              <View
+              <Pressable
                 style={[
                   styles.sectionHeader,
                   { backgroundColor: section.headerColor },
                 ]}
+                onPress={() => {
+                  if (section.route) {
+                    router.push(section.route);
+                  }
+                }}
               >
                 <Text style={styles.sectionTitleText}>{section.title}</Text>
                 <Ionicons name="chevron-forward" size={22} color="#ffffff" />
-              </View>
+              </Pressable>
               <View style={styles.headerDivider} />
               <Text style={styles.subHeaderTitle}>Más vendidos:</Text>
 

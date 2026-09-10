@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { useState } from "react";
+import { router } from "expo-router";
 import {
   Pressable,
   ScrollView,
@@ -21,23 +21,24 @@ const cafeterias: Cafeteria[] = [
 ];
 
 export default function HomeScreen() {
-  const [selectedCafeteria, setSelectedCafeteria] = useState<string | null>(null);
-
   return (
     <SafeView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>CAFETERÍAS</Text>
 
         {cafeterias.map((cafeteria) => {
-          const isSelected = selectedCafeteria === cafeteria.name;
-
           return (
             <Pressable
               accessibilityLabel={`Seleccionar ${cafeteria.name}`}
               accessibilityRole="button"
               key={cafeteria.name}
-              onPress={() => setSelectedCafeteria(cafeteria.name)}
-              style={[styles.card, isSelected && styles.selectedCard]}
+              onPress={() =>
+                router.push({
+                  pathname: "/client/cafeterias/bustershome",
+                  params: { name: cafeteria.name },
+                })
+              }
+              style={styles.card}
             >
               <View style={styles.imageFrame}>
                 {cafeteria.imageUrl ? (

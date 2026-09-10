@@ -5,6 +5,10 @@ export default function ClientLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(client-tabs)" />
       <Stack.Screen name="products" />
+      <Stack.Screen
+        name="cafeterias/bustershome"
+        options={{ title: "Cafetería" }}
+      />
     </Stack>
   );
 }

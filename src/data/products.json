@@ -27,7 +27,7 @@
     "name": "Galletas 2 piezas mermelada",
     "description": "Paquete de dos galletas con mermelada.",
     "price": 15,
-    "image": "",
+    "image": "GalletaChispa",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -104,7 +104,7 @@
     "name": "Chicles de 18 piezas",
     "description": "Paquete de 18 piezas de chicle.",
     "price": 30,
-    "image": "",
+    "image": "Arizona",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -115,7 +115,7 @@
     "name": "Chicles de 9 piezas",
     "description": "Paquete de 9 piezas de chicle.",
     "price": 25,
-    "image": "",
+    "image": "Arizona",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -203,7 +203,7 @@
     "name": "Biónico",
     "description": "Biónico de fruta.",
     "price": 55,
-    "image": "",
+    "image": "Yogurt",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -247,7 +247,7 @@
     "name": "Galletas Anny",
     "description": "Galletas Anny.",
     "price": 35,
-    "image": "",
+    "image": "GalletaKinder",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -258,7 +258,7 @@
     "name": "Galletas Chía, Avena y Blueberry",
     "description": "Galletas de chía, avena y blueberry.",
     "price": 25,
-    "image": "",
+    "image": "Avena",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -269,7 +269,7 @@
     "name": "Agua medio litro",
     "description": "Botella de agua de medio litro.",
     "price": 15,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -281,7 +281,7 @@
     "name": "Agua Bonafont y Libre 1 litro",
     "description": "Botella de agua de un litro.",
     "price": 20,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -493,7 +493,7 @@
     "name": "Croissant Nutella",
     "description": "Croissant relleno de Nutella.",
     "price": 50,
-    "image": "",
+    "image": "CroissantNute",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -515,7 +515,7 @@
     "name": "Pizza pita Pepperoni",
     "description": "Pizza en pan pita con pepperoni.",
     "price": 55,
-    "image": "",
+    "image": "PizzaPita",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -614,7 +614,7 @@
     "name": "Baguette pollo y pomodoro",
     "description": "Baguette de pollo y pomodoro.",
     "price": 70,
-    "image": "",
+    "image": "ChapataPomo",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -894,7 +894,7 @@
         "price": 80
       }
     ],
-    "image": "",
+    "image": "C&CFrap",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -919,7 +919,7 @@
         "price": 88
       }
     ],
-    "image": "",
+    "image": "TisanaFrap",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -936,7 +936,7 @@
         "price": 55
       }
     ],
-    "image": "",
+    "image": "Smoothie",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -961,7 +961,7 @@
         "price": 65
       }
     ],
-    "image": "",
+    "image": "Latte",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -985,7 +985,7 @@
         "price": 45
       }
     ],
-    "image": "",
+    "image": "Espresso",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1009,7 +1009,7 @@
         "price": 50
       }
     ],
-    "image": "",
+    "image": "Espresso",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1081,7 +1081,7 @@
         "price": 82
       }
     ],
-    "image": "",
+    "image": "Mocha",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1121,7 +1121,7 @@
         "price": 41
       }
     ],
-    "image": "",
+    "image": "Arizona",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1145,7 +1145,7 @@
         "price": 65
       }
     ],
-    "image": "",
+    "image": "Mocha",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1169,7 +1169,7 @@
         "price": 47
       }
     ],
-    "image": "",
+    "image": "ChaiFrap",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1193,7 +1193,7 @@
         "price": 70
       }
     ],
-    "image": "",
+    "image": "TisanaFrap",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1217,7 +1217,7 @@
         "price": 87
       }
     ],
-    "image": "",
+    "image": "ChaiFrap",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1241,7 +1241,7 @@
         "price": 87
       }
     ],
-    "image": "",
+    "image": "Latte",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1265,7 +1265,7 @@
         "price": 90
       }
     ],
-    "image": "",
+    "image": "CaraFrap",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1275,7 +1275,7 @@
     "name": "Ingrediente extra comida",
     "description": "Ingrediente adicional para una comida.",
     "price": 12,
-    "image": "",
+    "image": "D2Queso",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1286,7 +1286,7 @@
     "name": "Extra de jamón",
     "description": "Porción adicional de jamón.",
     "price": 12,
-    "image": "",
+    "image": "D2Queso",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1297,7 +1297,7 @@
     "name": "Carga extra de café",
     "description": "Carga adicional de café.",
     "price": 12,
-    "image": "",
+    "image": "Latte",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1308,7 +1308,7 @@
     "name": "Leche especial",
     "description": "Cambio o adición de leche especial.",
     "price": 12,
-    "image": "",
+    "image": "Latte",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1319,7 +1319,7 @@
     "name": "Ingrediente extra en bebida",
     "description": "Ingrediente adicional para una bebida.",
     "price": 12,
-    "image": "",
+    "image": "Mocha",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1330,7 +1330,7 @@
     "name": "Vaso mediano hielos",
     "description": "Vaso mediano con hielos.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1341,7 +1341,7 @@
     "name": "Termo grande hielos",
     "description": "Termo grande con hielos.",
     "price": 10,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1352,7 +1352,7 @@
     "name": "Domo ecológico",
     "description": "Domo ecológico para bebidas.",
     "price": 10,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1363,7 +1363,7 @@
     "name": "Pieza plato grande",
     "description": "Plato grande individual.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1374,7 +1374,7 @@
     "name": "Pieza plato chico",
     "description": "Plato chico individual.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1385,7 +1385,7 @@
     "name": "Hielo o vaso de hielo",
     "description": "Hielo o vaso con hielo.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1396,7 +1396,7 @@
     "name": "Tenedor o cuchara o cuchillo",
     "description": "Cubierto desechable individual.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []

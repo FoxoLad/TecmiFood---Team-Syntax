@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { productsImages } from "../constants/images";
+import { getProductImageSource } from "../constants/images";
 import { useProductStore } from "../stores/useProduct";
 import { Product } from "../types/product";
 
@@ -39,7 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 }
             >
                 <Image
-                    source={productsImages[product.image as keyof typeof productsImages]}
+                    source={getProductImageSource(product.image)}
                     style={style.image}
                 />
             </Pressable>

@@ -12,6 +12,7 @@ import {
 } from "react-native";
 
 import SafeView from "../../../components/SafeView";
+import { getProductImageSource } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
 import productsData from "../../../data/products.json";
 import { Product } from "../../../types/product";
@@ -83,13 +84,11 @@ export default function CategoryScreen() {
                         style={styles.productCard}
                     >
                         <View style={styles.productImageBox}>
-                            {product.image ? (
-                                <Image
-                                    source={{ uri: product.image }}
-                                    style={styles.productImage}
-                                    resizeMode="contain"
-                                />
-                            ) : null}
+                            <Image
+                                source={getProductImageSource(product.image)}
+                                style={styles.productImage}
+                                resizeMode="contain"
+                            />
                         </View>
 
                         <Text numberOfLines={2} style={styles.productName}>

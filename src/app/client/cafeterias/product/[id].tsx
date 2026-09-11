@@ -14,8 +14,11 @@ import {
 } from "react-native";
 
 import SafeView from "../../../../components/SafeView";
+import { getProductImageSource } from "../../../../constants/images";
 import { colors, radii } from "../../../../constants/theme";
 import productsData from "../../../../data/products.json";
+import { useCartStore } from "../../../../stores/useCart";
+import { useFavoritesStore } from "../../../../stores/useFavorites";
 import { Product } from "../../../../types/product";
 
 const bustersProducts = productsData as Product[];
@@ -39,9 +42,11 @@ const getModificationOptions = (category: string) => {
 export default function BustersProductScreen() {
     const { id } = useLocalSearchParams<{ id?: string | string[] }>();
     const [modalType, setModalType] = useState<"confirm" | "success" | null>(null);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [quantity, setQuantity] = useState(1);
     const [selectedModifications, setSelectedModifications] = useState<string[]>([]);
     const [additionalNotes, setAdditionalNotes] = useState("");
+    const addItem = useCartStore((state) => state.addItem);
+    const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
     const productId = Array.isArray(id) ? id[0] : id;
     const product = useMemo(
         () =>
@@ -52,6 +57,9 @@ export default function BustersProductScreen() {
             ),
         [productId],
     );
+    const isFavorite = useFavoritesStore((state) =>
+        product ? state.items.some((item) => item.id === product.id) : false,
+    );
 
     const orderProduct = () => {
         if (!product) {
@@ -59,6 +67,22 @@ export default function BustersProductScreen() {
         }
 
         setModalType("confirm");
+    };
+
+    const totalPrice = product ? product.price * quantity : 0;
+
+    const confirmAddToCart = () => {
+        if (!product) {
+            return;
+        }
+
+        addItem({
+            product,
+            quantity,
+            modifications: selectedModifications,
+            notes: additionalNotes.trim(),
+        });
+        setModalType("success");
     };
 
     const shareProduct = () => {
@@ -120,7 +144,7 @@ export default function BustersProductScreen() {
                     <Pressable
                         accessibilityLabel={isFavorite ? "Quitar de favoritos" : "Guardar como favorito"}
                         accessibilityRole="button"
-                        onPress={() => setIsFavorite((current) => !current)}
+                        onPress={() => product && toggleFavorite(product)}
                         style={styles.iconButton}
                     >
                         <Ionicons
@@ -137,13 +161,11 @@ export default function BustersProductScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.imageBox}>
-                    {product.image.startsWith("http") ? (
-                        <Image
-                            source={{ uri: product.image }}
-                            style={styles.image}
-                            resizeMode="contain"
-                        />
-                    ) : null}
+                    <Image
+                        source={getProductImageSource(product.image)}
+                        style={styles.image}
+                        resizeMode="contain"
+                    />
                 </View>
 
                 <Text style={styles.name}>{product.name}</Text>
@@ -198,14 +220,43 @@ export default function BustersProductScreen() {
                     value={additionalNotes}
                 />
 
-                <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Agregar ${product.name} al carrito`}
-                    onPress={orderProduct}
-                    style={styles.orderButton}
-                >
-                    <Text style={styles.orderButtonText}>AGREGAR AL CARRITO</Text>
-                </Pressable>
+                <View style={styles.orderRow}>
+                    <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel={`Agregar ${product.name} al carrito`}
+                        onPress={orderProduct}
+                        style={styles.orderButton}
+                    >
+                        <Text style={styles.orderButtonText}>AGREGAR AL CARRITO</Text>
+                    </Pressable>
+
+                    <View style={styles.quantityControl}>
+                        <Pressable
+                            accessibilityLabel="Disminuir cantidad"
+                            accessibilityRole="button"
+                            disabled={quantity === 1}
+                            onPress={() => setQuantity((current) => Math.max(1, current - 1))}
+                            style={styles.quantityButton}
+                        >
+                            <Ionicons
+                                color={quantity === 1 ? colors.textSecondary : colors.text}
+                                name="remove"
+                                size={18}
+                            />
+                        </Pressable>
+                        <Text accessibilityLabel={`Cantidad: ${quantity}`} style={styles.quantityText}>
+                            {quantity}
+                        </Text>
+                        <Pressable
+                            accessibilityLabel="Aumentar cantidad"
+                            accessibilityRole="button"
+                            onPress={() => setQuantity((current) => current + 1)}
+                            style={styles.quantityButton}
+                        >
+                            <Ionicons color={colors.text} name="add" size={18} />
+                        </Pressable>
+                    </View>
+                </View>
             </ScrollView>
 
             <Modal
@@ -231,9 +282,14 @@ export default function BustersProductScreen() {
                         </Text>
                         <Text style={styles.modalMessage}>
                             {modalType === "confirm"
-                                ? `¿Deseas agregar ${product.name} al carrito por $${product.price.toFixed(2)}?`
+                                ? `¿Deseas agregar ${quantity} ${quantity === 1 ? "unidad" : "unidades"} de ${product.name}?`
                                 : `${product.name} se agregó al carrito.`}
                         </Text>
+                        {modalType === "confirm" ? (
+                            <Text style={styles.modalTotal}>
+                                Total a pagar: ${totalPrice.toFixed(2)}
+                            </Text>
+                        ) : null}
                         {modalType === "confirm" &&
                         (selectedModifications.length > 0 || additionalNotes.trim()) ? (
                             <Text style={styles.modalDetails}>
@@ -257,7 +313,7 @@ export default function BustersProductScreen() {
                                     </Text>
                                 </Pressable>
                                 <Pressable
-                                    onPress={() => setModalType("success")}
+                                    onPress={confirmAddToCart}
                                     style={styles.confirmButton}
                                 >
                                     <Text style={styles.confirmButtonText}>
@@ -392,17 +448,44 @@ const styles = StyleSheet.create({
         marginTop: 16,
         padding: 12,
     },
+    orderRow: {
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 12,
+        marginTop: 24,
+    },
     orderButton: {
         alignItems: "center",
         backgroundColor: colors.accent,
         borderRadius: radii.pill,
-        marginTop: 24,
+        flex: 1,
         paddingVertical: 15,
     },
     orderButtonText: {
         color: "#FFFFFF",
         fontSize: 17,
         fontWeight: "bold",
+    },
+    quantityControl: {
+        alignItems: "center",
+        borderColor: colors.border,
+        borderRadius: radii.pill,
+        borderWidth: 1,
+        flexDirection: "row",
+        height: 50,
+    },
+    quantityButton: {
+        alignItems: "center",
+        height: 48,
+        justifyContent: "center",
+        width: 38,
+    },
+    quantityText: {
+        color: colors.text,
+        fontSize: 17,
+        fontWeight: "bold",
+        minWidth: 20,
+        textAlign: "center",
     },
     modalOverlay: {
         alignItems: "center",
@@ -432,6 +515,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 22,
         marginTop: 12,
+        textAlign: "center",
+    },
+    modalTotal: {
+        color: colors.text,
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 16,
         textAlign: "center",
     },
     modalDetails: {

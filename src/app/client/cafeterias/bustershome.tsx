@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
     title: {
         borderBottomColor: "rgba(0, 0, 0, 0.65)",
         borderBottomWidth: 1,
+        color: "#000000",
         fontSize: 36,
         fontWeight: "bold",
         marginBottom: 20,

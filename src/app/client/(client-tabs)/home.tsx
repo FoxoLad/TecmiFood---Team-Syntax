@@ -2,16 +2,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  Image,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
+    Image,
+    Pressable,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
-import productsData from "../../../../data/products.json";
 import SafeView from "../../../components/SafeView";
+import productsData from "../../../data/products.json";
 
 type Product = {
   id: string;
@@ -159,7 +159,10 @@ export default function HomeScreen() {
                 ]}
                 onPress={() => {
                   if (section.route) {
-                    router.push(section.route);
+                    router.push({
+                      pathname: section.route,
+                      params: { name: section.title },
+                    });
                   }
                 }}
               >

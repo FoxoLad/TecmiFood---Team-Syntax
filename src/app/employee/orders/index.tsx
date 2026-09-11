@@ -12,7 +12,7 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../components/images";
+import { productsImages } from "../../../constants/images";
 import { useProductStore } from "../../../stores/useProduct";
 import type { Product } from "../../../types/product";
 

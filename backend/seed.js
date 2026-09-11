@@ -4,9 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const Product = require("./models/Product");
 
-const dataPath = path.join(__dirname, "../data/products.json");
+//Correr node seed.js para subir todo a la base de datos desde el products.json de data
+const dataPath = path.join(__dirname, "../src/data/products.json");
 const productsJson = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-//EJECUTAR node seed.js cuando se actualize el products.json de data para subir todo a la vez
+
 async function seedDatabase() {
   try {
     console.log("Conectando a MongoDB...");
@@ -37,11 +38,11 @@ async function seedDatabase() {
     await Product.insertMany(formattedProducts);
 
     console.log(
-      `🎉 ¡Éxito! Se han subido y estructurado ${formattedProducts.length} productos a MongoDB.`,
+      `Se han subido y estructurado ${formattedProducts.length} productos a MongoDB.`,
     );
     process.exit();
   } catch (error) {
-    console.error("❌ Error al subir los datos:", error);
+    console.error("Error al subir los datos:", error);
     process.exit(1);
   }
 }

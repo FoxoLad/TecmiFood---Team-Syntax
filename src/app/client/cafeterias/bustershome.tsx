@@ -41,6 +41,13 @@ const categoryDefinitions = [
 ];
 
 const bustersProducts = productsData as Product[];
+type QuickFilter = "Todos" | "Alimentos" | "Bebidas" | "Otros";
+
+const quickFilterCategories: Record<Exclude<QuickFilter, "Todos">, string[]> = {
+    Alimentos: ["Alimentos"],
+    Bebidas: ["Frío", "Frappe", "Caliente"],
+    Otros: ["Otros"],
+};
 
 const splitIntoGroups = (products: Product[], groupSize: number) => {
     const groups: Product[][] = [];
@@ -55,6 +62,7 @@ const splitIntoGroups = (products: Product[], groupSize: number) => {
 export default function HomeScreen() {
     const { name } = useLocalSearchParams<{ name: string }>();
     const [search, setSearch] = useState("");
+    const [selectedFilter, setSelectedFilter] = useState<QuickFilter>("Todos");
     const { width: screenWidth } = useWindowDimensions();
     const productPageWidth = screenWidth - 64;
 
@@ -71,8 +79,13 @@ export default function HomeScreen() {
                         (!query || product.name.toLowerCase().includes(query)),
                 ),
             }))
+            .filter(
+                (category) =>
+                    selectedFilter === "Todos" ||
+                    quickFilterCategories[selectedFilter].includes(category.name),
+            )
             .filter((category) => category.products.length > 0);
-            }, [search]);
+    }, [search, selectedFilter]);
 
     return (
         <SafeView style={styles.container}>
@@ -88,16 +101,55 @@ export default function HomeScreen() {
             <Text style={styles.title}>{name}</Text>
 
             <View style={styles.buttonRow}>
-                <Pressable style={styles.menuButton}>
-                    <Text style={styles.menuButtonText}>ALIMENTOS</Text>
+                <Pressable
+                    onPress={() => setSelectedFilter("Alimentos")}
+                    style={[
+                        styles.menuButton,
+                        selectedFilter === "Alimentos" && styles.menuButtonActive,
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.menuButtonText,
+                            selectedFilter === "Alimentos" && styles.menuButtonTextActive,
+                        ]}
+                    >
+                        ALIMENTOS
+                    </Text>
                 </Pressable>
 
-                <Pressable style={styles.menuButton}>
-                    <Text style={styles.menuButtonText}>BEBIDAS</Text>
+                <Pressable
+                    onPress={() => setSelectedFilter("Bebidas")}
+                    style={[
+                        styles.menuButton,
+                        selectedFilter === "Bebidas" && styles.menuButtonActive,
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.menuButtonText,
+                            selectedFilter === "Bebidas" && styles.menuButtonTextActive,
+                        ]}
+                    >
+                        BEBIDAS
+                    </Text>
                 </Pressable>
 
-                <Pressable style={styles.menuButton}>
-                    <Text style={styles.menuButtonText}>OTROS</Text>
+                <Pressable
+                    onPress={() => setSelectedFilter("Otros")}
+                    style={[
+                        styles.menuButton,
+                        selectedFilter === "Otros" && styles.menuButtonActive,
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.menuButtonText,
+                            selectedFilter === "Otros" && styles.menuButtonTextActive,
+                        ]}
+                    >
+                        OTROS
+                    </Text>
                 </Pressable>
             </View>
 
@@ -123,29 +175,29 @@ export default function HomeScreen() {
             >
                 {filteredCategories.map((category) => (
                     <View key={category.name} style={styles.categoryCard}>
-                        <View style={styles.categoryHeader}>
+                        <Pressable
+                            accessibilityRole="button"
+                            accessibilityLabel={`Ver todos los productos de ${category.name}`}
+                            onPress={() =>
+                                router.push({
+                                    pathname: "/client/cafeterias/[category]",
+                                    params: { category: category.name },
+                                })
+                            }
+                            style={styles.categoryHeader}
+                        >
                             <Text style={styles.categoryTitle}>
                                 {category.name}
                             </Text>
 
-                            <Pressable
-                                accessibilityRole="button"
-                                accessibilityLabel={`Ver todos los productos de ${category.name}`}
-                                onPress={() =>
-                                    router.push({
-                                        pathname: "/client/cafeterias/[category]",
-                                        params: { category: category.name },
-                                    })
-                                }
-                                style={styles.arrowButton}
-                            >
+                            <View style={styles.arrowButton}>
                                 <Ionicons
                                     name="chevron-forward"
                                     size={22}
                                     color="#000000"
                                 />
-                            </Pressable>
-                        </View>
+                            </View>
+                        </Pressable>
 
                         <ScrollView
                             horizontal
@@ -261,10 +313,17 @@ const styles = StyleSheet.create({
         marginHorizontal: 4,
         paddingVertical: 12,
     },
+    menuButtonActive: {
+        backgroundColor: colors.accent,
+        borderColor: colors.accent,
+    },
     menuButtonText: {
         color: colors.text,
         fontSize: 14,
         fontWeight: "bold",
+    },
+    menuButtonTextActive: {
+        color: colors.surface,
     },
     searchContainer: {
         alignItems: "center",

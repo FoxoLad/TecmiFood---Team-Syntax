@@ -1,13 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-    Image,
+    Animated,
     Pressable,
     ScrollView,
     StatusBar,
     StyleSheet,
     Text,
-    View,
+    View
 } from "react-native";
 import SafeView from "../../../components/SafeView";
 import { colors, radii, spacing } from "../../../constants/theme";
@@ -34,6 +35,11 @@ type CafeteriaSection = {
 };
 
 const allProducts = productsData as Product[];
+const promotionImages = [
+  require("../../../../assets/images/promotionBanner/PromocionBustersTest.jpg"),
+  require("../../../../assets/images/promotionBanner/PromocionTest.jpg"),
+  require("../../../../assets/images/promotionBanner/PromocionalTecmilenio.png"),
+];
 
 const cafeteriaSections: CafeteriaSection[] = [
   {
@@ -85,6 +91,30 @@ const cafeteriaSections: CafeteriaSection[] = [
 ];
 
 export default function HomeScreen() {
+  const [activePromotion, setActivePromotion] = useState(0);
+  const [promotionOpacity] = useState(() => new Animated.Value(1));
+
+  useEffect(() => {
+    const promotionInterval = setInterval(() => {
+      Animated.sequence([
+        Animated.timing(promotionOpacity, {
+          toValue: 0,
+          duration: 350,
+          useNativeDriver: true,
+        }),
+        Animated.timing(promotionOpacity, {
+          toValue: 1,
+          duration: 350,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      setActivePromotion((current) => (current + 1) % promotionImages.length);
+    }, 4000);
+
+    return () => clearInterval(promotionInterval);
+  }, [promotionOpacity]);
+
   return (
     <SafeView style={styles.safeArea}>
       {/* Barra de notificaciones*/}
@@ -104,25 +134,36 @@ export default function HomeScreen() {
 
         {/* Banner Promocional */}
         <View style={styles.bannerContainer}>
-          <Image
-            source={require("../../../../assets/images/promotionBanner/PromocionalPrueba.jpg")}
-            style={styles.bannerImage}
-            resizeMode="cover" //"stretch" llena todo / "cover" recorta los sobrantes pero no deforma
+          <Animated.Image
+            source={promotionImages[activePromotion]}
+            resizeMode="cover"
+            style={[styles.bannerImage, { opacity: promotionOpacity }]}
           />
+          <View style={styles.promotionIndicators}>
+            {promotionImages.map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.promotionDot,
+                  index === activePromotion && styles.activePromotionDot,
+                ]}
+              />
+            ))}
+          </View>
         </View>
 
         {/* Botones de Acceso Rápido */}
         <View style={styles.ActionButtonsContainer}>
           <Pressable style={styles.ActionButton}>
-            <Ionicons name="heart-outline" size={16} color="#000000" />
+            <Ionicons name="heart-outline" size={22} color="#000000" />
             <Text style={styles.ActionButtonText}>Favoritos</Text>
           </Pressable>
           <Pressable style={styles.ActionButton}>
-            <Ionicons name="time-outline" size={16} color="#000000" />
+            <Ionicons name="time-outline" size={22} color="#000000" />
             <Text style={styles.ActionButtonText}>Historial</Text>
           </Pressable>
           <Pressable style={styles.ActionButton}>
-            <Ionicons name="document-text-outline" size={16} color="#000000" />
+            <Ionicons name="document-text-outline" size={22} color="#000000" />
             <Text style={styles.ActionButtonText}>Pedidos</Text>
           </Pressable>
         </View>
@@ -221,9 +262,31 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  ActionButtonsContainer: {
+  promotionIndicators: {
+    bottom: 8,
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 6,
+    justifyContent: "center",
+    left: 0,
+    position: "absolute",
+    right: 0,
+  },
+  promotionDot: {
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    borderColor: "rgba(0, 0, 0, 0.25)",
+    borderRadius: 5,
+    borderWidth: 1,
+    height: 9,
+    width: 9,
+  },
+  activePromotionDot: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#FFFFFF",
+    width: 22,
+  },
+  ActionButtonsContainer: {
+    gap: 8,
+    flexDirection: "row",
     marginHorizontal: spacing.screen,
     marginTop: 12,
   },
@@ -233,14 +296,17 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radii.pill,
     borderWidth: 1,
+    flex: 1,
     flexDirection: "row",
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    gap: 7,
+    justifyContent: "center",
+    minHeight: 56,
+    paddingHorizontal: 8,
+    paddingVertical: 10,
   },
   ActionButtonText: {
     color: colors.text,
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
   },
   cafeteriaSection: {

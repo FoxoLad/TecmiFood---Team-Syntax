@@ -6,8 +6,10 @@ import {
     Modal,
     Pressable,
     ScrollView,
+    Share,
     StyleSheet,
     Text,
+    TextInput,
     View,
 } from "react-native";
 
@@ -18,9 +20,28 @@ import { Product } from "../../../../types/product";
 
 const bustersProducts = productsData as Product[];
 
+const getModificationOptions = (category: string) => {
+    if (category === "Alimentos") {
+        return ["Sin salsa", "Sin ingredientes picantes", "Extra servilletas"];
+    }
+
+    if (
+        category === "Bebidas" ||
+        category === "Frappe" ||
+        category === "Bebidas Calientes o Heladas"
+    ) {
+        return ["Sin hielo", "Poco hielo", "Sin azúcar"];
+    }
+
+    return ["Sin bolsa", "Empaque separado", "Extra servilletas"];
+};
+
 export default function BustersProductScreen() {
     const { id } = useLocalSearchParams<{ id?: string | string[] }>();
     const [modalType, setModalType] = useState<"confirm" | "success" | null>(null);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [selectedModifications, setSelectedModifications] = useState<string[]>([]);
+    const [additionalNotes, setAdditionalNotes] = useState("");
     const productId = Array.isArray(id) ? id[0] : id;
     const product = useMemo(
         () =>
@@ -40,6 +61,25 @@ export default function BustersProductScreen() {
         setModalType("confirm");
     };
 
+    const shareProduct = () => {
+        if (!product) {
+            return;
+        }
+
+        Share.share({
+            message: `${product.name}\n${product.description}\nPrecio: $${product.price.toFixed(2)}`,
+            title: product.name,
+        });
+    };
+
+    const toggleModification = (modification: string) => {
+        setSelectedModifications((current) =>
+            current.includes(modification)
+                ? current.filter((item) => item !== modification)
+                : [...current, modification],
+        );
+    };
+
     if (!product) {
         return (
             <SafeView style={styles.container}>
@@ -47,11 +87,10 @@ export default function BustersProductScreen() {
                     accessibilityLabel="Volver al menú de la cafetería"
                     accessibilityRole="button"
                     onPress={() => router.back()}
-                    style={styles.backButton}
+                    style={styles.iconButton}
                 >
-                    <Ionicons name="arrow-back" size={32} color="#000000" />
+                    <Ionicons name="arrow-back" size={28} color={colors.text} />
                 </Pressable>
-                <Text style={styles.title}>Producto</Text>
                 <Text style={styles.emptyText}>Producto no encontrado.</Text>
             </SafeView>
         );
@@ -59,18 +98,39 @@ export default function BustersProductScreen() {
 
     return (
         <SafeView style={styles.container}>
-            <Pressable
-                accessibilityLabel="Volver al menú de la cafetería"
-                accessibilityRole="button"
-                onPress={() => router.back()}
-                style={styles.backButton}
-            >
-                <Ionicons name="arrow-back" size={32} color="#000000" />
-            </Pressable>
+            <View style={styles.header}>
+                <Pressable
+                    accessibilityLabel="Volver al menú de la cafetería"
+                    accessibilityRole="button"
+                    onPress={() => router.back()}
+                    style={styles.iconButton}
+                >
+                    <Ionicons name="arrow-back" size={28} color={colors.text} />
+                </Pressable>
 
-            <Text numberOfLines={2} style={styles.title}>
-                {product.name}
-            </Text>
+                <View style={styles.headerActions}>
+                    <Pressable
+                        accessibilityLabel="Compartir producto"
+                        accessibilityRole="button"
+                        onPress={shareProduct}
+                        style={styles.iconButton}
+                    >
+                        <Ionicons name="share-outline" size={25} color={colors.text} />
+                    </Pressable>
+                    <Pressable
+                        accessibilityLabel={isFavorite ? "Quitar de favoritos" : "Guardar como favorito"}
+                        accessibilityRole="button"
+                        onPress={() => setIsFavorite((current) => !current)}
+                        style={styles.iconButton}
+                    >
+                        <Ionicons
+                            name={isFavorite ? "heart" : "heart-outline"}
+                            size={26}
+                            color={isFavorite ? colors.danger : colors.text}
+                        />
+                    </Pressable>
+                </View>
+            </View>
 
             <ScrollView
                 contentContainerStyle={styles.content}
@@ -93,6 +153,50 @@ export default function BustersProductScreen() {
                 </Text>
 
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+
+                <Text style={styles.modificationsTitle}>Personaliza tu producto</Text>
+                <Text style={styles.modificationsHint}>
+                    Selecciona las modificaciones que necesites.
+                </Text>
+
+                <View style={styles.modificationsList}>
+                    {getModificationOptions(product.category).map((modification) => {
+                        const isSelected = selectedModifications.includes(modification);
+
+                        return (
+                            <Pressable
+                                accessibilityRole="checkbox"
+                                accessibilityState={{ checked: isSelected }}
+                                key={modification}
+                                onPress={() => toggleModification(modification)}
+                                style={styles.modificationOption}
+                            >
+                                <View
+                                    style={[
+                                        styles.checkbox,
+                                        isSelected && styles.checkboxSelected,
+                                    ]}
+                                >
+                                    {isSelected ? (
+                                        <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                                    ) : null}
+                                </View>
+                                <Text style={styles.modificationText}>{modification}</Text>
+                            </Pressable>
+                        );
+                    })}
+                </View>
+
+                <TextInput
+                    accessibilityLabel="Instrucciones adicionales"
+                    multiline
+                    onChangeText={setAdditionalNotes}
+                    placeholder="¿Quieres agregar alguna indicación?"
+                    placeholderTextColor={colors.textSecondary}
+                    style={styles.notesInput}
+                    textAlignVertical="top"
+                    value={additionalNotes}
+                />
 
                 <Pressable
                     accessibilityRole="button"
@@ -130,6 +234,17 @@ export default function BustersProductScreen() {
                                 ? `¿Deseas agregar ${product.name} al carrito por $${product.price.toFixed(2)}?`
                                 : `${product.name} se agregó al carrito.`}
                         </Text>
+                        {modalType === "confirm" &&
+                        (selectedModifications.length > 0 || additionalNotes.trim()) ? (
+                            <Text style={styles.modalDetails}>
+                                {selectedModifications.length > 0
+                                    ? `Modificaciones: ${selectedModifications.join(", ")}. `
+                                    : ""}
+                                {additionalNotes.trim()
+                                    ? `Nota: ${additionalNotes.trim()}`
+                                    : ""}
+                            </Text>
+                        ) : null}
 
                         {modalType === "confirm" ? (
                             <View style={styles.modalActions}>
@@ -171,21 +286,22 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
     },
-    backButton: {
-        left: 16,
-        position: "absolute",
-        top: 58,
-        zIndex: 1,
+    header: {
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 16,
+        minHeight: 44,
     },
-    title: {
-        borderBottomColor: colors.border,
-        borderBottomWidth: 1,
-        color: colors.text,
-        fontSize: 30,
-        fontWeight: "bold",
-        marginBottom: 20,
-        paddingBottom: 8,
-        textAlign: "center",
+    headerActions: {
+        flexDirection: "row",
+        gap: 8,
+    },
+    iconButton: {
+        alignItems: "center",
+        height: 44,
+        justifyContent: "center",
+        width: 44,
     },
     content: {
         paddingBottom: 24,
@@ -228,6 +344,54 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginTop: 20,
     },
+    modificationsTitle: {
+        color: colors.text,
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 24,
+    },
+    modificationsHint: {
+        color: colors.textSecondary,
+        fontSize: 14,
+        marginTop: 4,
+    },
+    modificationsList: {
+        gap: 10,
+        marginTop: 14,
+    },
+    modificationOption: {
+        alignItems: "center",
+        flexDirection: "row",
+        minHeight: 34,
+    },
+    checkbox: {
+        alignItems: "center",
+        borderColor: colors.border,
+        borderRadius: 5,
+        borderWidth: 1.5,
+        height: 23,
+        justifyContent: "center",
+        marginRight: 10,
+        width: 23,
+    },
+    checkboxSelected: {
+        backgroundColor: colors.accent,
+        borderColor: colors.accent,
+    },
+    modificationText: {
+        color: colors.text,
+        fontSize: 16,
+    },
+    notesInput: {
+        backgroundColor: colors.surface,
+        borderColor: colors.border,
+        borderRadius: radii.small,
+        borderWidth: 1,
+        fontSize: 15,
+        height: 90,
+        marginTop: 16,
+        padding: 12,
+    },
     orderButton: {
         alignItems: "center",
         backgroundColor: colors.accent,
@@ -267,6 +431,13 @@ const styles = StyleSheet.create({
         color: "#444444",
         fontSize: 16,
         lineHeight: 22,
+        marginTop: 12,
+        textAlign: "center",
+    },
+    modalDetails: {
+        color: colors.textSecondary,
+        fontSize: 14,
+        lineHeight: 20,
         marginTop: 12,
         textAlign: "center",
     },

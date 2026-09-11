@@ -1,9 +1,9 @@
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { productsImages } from "../constants/images";
 import { useProductStore } from "../stores/useProduct";
 import { Product } from "../types/product";
-import { productsImages } from "./images";
 
 type ProductCardProps = {
     product: Product;

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "../../../constants/theme";
 
 export default function ProductsScreen() {
   return (
@@ -14,7 +15,7 @@ export default function ProductsScreen() {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#DFCDB2",
+    backgroundColor: colors.background,
   },
   centerContent: {
     flex: 1,

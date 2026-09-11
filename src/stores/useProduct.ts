@@ -1,6 +1,6 @@
 
 import { create } from "zustand";
-import initialProducts from "../../data/products.json";
+import initialProducts from "../data/products.json";
 import { Product } from "../types/product";
 
 type ProductStore = {

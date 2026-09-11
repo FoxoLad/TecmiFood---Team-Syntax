@@ -8,112 +8,84 @@ import {
     StyleSheet,
     Text,
     TextInput,
+    useWindowDimensions,
     View,
 } from "react-native";
 
 import SafeView from "../../../components/SafeView";
+import { colors, radii } from "../../../constants/theme";
+import productsData from "../../../data/products.json";
+import { Product } from "../../../types/product";
 
-type Product = {
-    name: string;
-    image: string;
-};
-
-type Category = {
-    name: string;
-    products: Product[];
-};
-
-const categories: Category[] = [
+const categoryDefinitions = [
     {
         name: "Frío",
-        products: [
-            {
-                name: "Croissant",
-                image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500",
-            },
-            {
-                name: "Chocolatín",
-                image: "https://images.unsplash.com/photo-1623334044303-241021148842?w=500",
-            },
-            {
-                name: "Panqué",
-                image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=500",
-            },
-        ],
+        sourceCategories: ["Bebidas"],
     },
     {
         name: "Frappe",
-        products: [
-            {
-                name: "Croissant",
-                image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500",
-            },
-            {
-                name: "Chocolatín",
-                image: "https://images.unsplash.com/photo-1623334044303-241021148842?w=500",
-            },
-            {
-                name: "Panqué",
-                image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=500",
-            },
-        ],
+        sourceCategories: ["Frappe"],
     },
     {
         name: "Caliente",
-        products: [
-            {
-                name: "Croissant",
-                image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500",
-            },
-            {
-                name: "Chocolatín",
-                image: "https://images.unsplash.com/photo-1623334044303-241021148842?w=500",
-            },
-            {
-                name: "Panqué",
-                image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=500",
-            },
-        ],
+        sourceCategories: ["Bebidas Calientes o Heladas"],
+    },
+    {
+        name: "Alimentos",
+        sourceCategories: ["Alimentos"],
     },
     {
         name: "Otros",
-        products: [
-            {
-                name: "Croissant",
-                image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500",
-            },
-            {
-                name: "Chocolatín",
-                image: "https://images.unsplash.com/photo-1623334044303-241021148842?w=500",
-            },
-            {
-                name: "Panqué",
-                image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=500",
-            },
-        ],
+        sourceCategories: ["Stickers y Pines", "Extras y Desechables"],
     },
 ];
+
+const bustersProducts = productsData as Product[];
+type QuickFilter = "Todos" | "Alimentos" | "Bebidas" | "Otros";
+
+const quickFilterCategories: Record<Exclude<QuickFilter, "Todos">, string[]> = {
+    Alimentos: ["Alimentos"],
+    Bebidas: ["Frío", "Frappe", "Caliente"],
+    Otros: ["Otros"],
+};
+
+const splitIntoGroups = (products: Product[], groupSize: number) => {
+    const groups: Product[][] = [];
+
+    for (let index = 0; index < products.length; index += groupSize) {
+        groups.push(products.slice(index, index + groupSize));
+    }
+
+    return groups;
+};
 
 export default function HomeScreen() {
     const { name } = useLocalSearchParams<{ name: string }>();
     const [search, setSearch] = useState("");
+    const [selectedFilter, setSelectedFilter] = useState<QuickFilter>("Todos");
+    const { width: screenWidth } = useWindowDimensions();
+    const productPageWidth = screenWidth - 64;
 
     const filteredCategories = useMemo(() => {
         const query = search.trim().toLowerCase();
 
-        if (!query) {
-            return categories;
-        }
-
-        return categories
+        return categoryDefinitions
             .map((category) => ({
-                ...category,
-                products: category.products.filter((product) =>
-                    product.name.toLowerCase().includes(query)
+                name: category.name,
+                products: bustersProducts.filter(
+                    (product) =>
+                        product.businessId === "BT" &&
+                        category.sourceCategories.includes(product.category) &&
+                        (!query || product.name.toLowerCase().includes(query)),
                 ),
             }))
+            .filter(
+                (category) =>
+                    selectedFilter === "Todos" ||
+                    quickFilterCategories[selectedFilter].includes(category.name),
+            )
             .filter((category) => category.products.length > 0);
-    }, [search]);
+    }, [search, selectedFilter]);
 
     return (
         <SafeView style={styles.container}>
@@ -129,16 +101,55 @@ export default function HomeScreen() {
             <Text style={styles.title}>{name}</Text>
 
             <View style={styles.buttonRow}>
-                <Pressable style={styles.menuButton}>
-                    <Text style={styles.menuButtonText}>ALIMENTOS</Text>
+                <Pressable
+                    onPress={() => setSelectedFilter("Alimentos")}
+                    style={[
+                        styles.menuButton,
+                        selectedFilter === "Alimentos" && styles.menuButtonActive,
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.menuButtonText,
+                            selectedFilter === "Alimentos" && styles.menuButtonTextActive,
+                        ]}
+                    >
+                        ALIMENTOS
+                    </Text>
                 </Pressable>
 
-                <Pressable style={styles.menuButton}>
-                    <Text style={styles.menuButtonText}>BEBIDAS</Text>
+                <Pressable
+                    onPress={() => setSelectedFilter("Bebidas")}
+                    style={[
+                        styles.menuButton,
+                        selectedFilter === "Bebidas" && styles.menuButtonActive,
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.menuButtonText,
+                            selectedFilter === "Bebidas" && styles.menuButtonTextActive,
+                        ]}
+                    >
+                        BEBIDAS
+                    </Text>
                 </Pressable>
 
-                <Pressable style={styles.menuButton}>
-                    <Text style={styles.menuButtonText}>OTROS</Text>
+                <Pressable
+                    onPress={() => setSelectedFilter("Otros")}
+                    style={[
+                        styles.menuButton,
+                        selectedFilter === "Otros" && styles.menuButtonActive,
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.menuButtonText,
+                            selectedFilter === "Otros" && styles.menuButtonTextActive,
+                        ]}
+                    >
+                        OTROS
+                    </Text>
                 </Pressable>
             </View>
 
@@ -152,6 +163,10 @@ export default function HomeScreen() {
                     placeholderTextColor="#777777"
                     style={styles.searchInput}
                 />
+
+                <Text accessibilityLabel="Perrito" style={styles.searchEmoji}>
+                    🐶🐶🐶
+                </Text>
             </View>
 
             <ScrollView
@@ -160,41 +175,94 @@ export default function HomeScreen() {
             >
                 {filteredCategories.map((category) => (
                     <View key={category.name} style={styles.categoryCard}>
-                        <View style={styles.categoryHeader}>
+                        <Pressable
+                            accessibilityRole="button"
+                            accessibilityLabel={`Ver todos los productos de ${category.name}`}
+                            onPress={() =>
+                                router.push({
+                                    pathname: "/client/cafeterias/[category]",
+                                    params: { category: category.name },
+                                })
+                            }
+                            style={styles.categoryHeader}
+                        >
                             <Text style={styles.categoryTitle}>
                                 {category.name}
                             </Text>
 
-                            <Pressable
-                                accessibilityRole="button"
-                                style={styles.arrowButton}
-                            >
+                            <View style={styles.arrowButton}>
                                 <Ionicons
                                     name="chevron-forward"
                                     size={22}
                                     color="#000000"
                                 />
-                            </Pressable>
-                        </View>
+                            </View>
+                        </Pressable>
 
-                        <View style={styles.productsRow}>
-                            {category.products.map((product) => (
-                                <Pressable
-                                    key={product.name}
-                                    style={styles.productCard}
-                                >
-                                    <Image
-                                        source={{ uri: product.image }}
-                                        style={styles.productImage}
-                                        resizeMode="contain"
-                                    />
+                        <ScrollView
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            nestedScrollEnabled
+                        >
+                            {splitIntoGroups(category.products, 3).map(
+                                (productGroup, groupIndex) => (
+                                    <View
+                                        key={`${category.name}-${groupIndex}`}
+                                        style={[
+                                            styles.productsPage,
+                                            { width: productPageWidth },
+                                        ]}
+                                    >
+                                        <View style={styles.productsRow}>
+                                            {productGroup.map((product) => (
+                                                <Pressable
+                                                    key={product.id}
+                                                    onPress={() =>
+                                                        router.push({
+                                                            pathname: "/client/cafeterias/product/[id]",
+                                                            params: { id: product.id },
+                                                        })
+                                                    }
+                                                    style={styles.productCard}
+                                                >
+                                                    <View
+                                                        style={
+                                                            styles.productImageBox
+                                                        }
+                                                    >
+                                                        {product.image ? (
+                                                            <Image
+                                                                source={{
+                                                                    uri: product.image,
+                                                                }}
+                                                                style={
+                                                                    styles.productImage
+                                                                }
+                                                                resizeMode="contain"
+                                                            />
+                                                        ) : null}
+                                                    </View>
 
-                                    <Text style={styles.productName}>
-                                        {product.name}
-                                    </Text>
-                                </Pressable>
-                            ))}
-                        </View>
+                                                    <Text
+                                                        numberOfLines={2}
+                                                        style={styles.productName}
+                                                    >
+                                                        {product.name}
+                                                    </Text>
+
+                                                    <Text
+                                                        style={styles.productPrice}
+                                                    >
+                                                        ${product.price.toFixed(2)}
+                                                    </Text>
+                                                </Pressable>
+                                            ))}
+                                        </View>
+                                    </View>
+                                ),
+                            )}
+                        </ScrollView>
                     </View>
                 ))}
 
@@ -223,6 +291,7 @@ const styles = StyleSheet.create({
     title: {
         borderBottomColor: "rgba(0, 0, 0, 0.65)",
         borderBottomWidth: 1,
+        color: "#000000",
         fontSize: 36,
         fontWeight: "bold",
         marginBottom: 20,
@@ -236,21 +305,31 @@ const styles = StyleSheet.create({
     },
     menuButton: {
         alignItems: "center",
-        backgroundColor: "#CBC583",
-        borderRadius: 8,
+        backgroundColor: colors.surface,
+        borderColor: colors.border,
+        borderRadius: radii.pill,
+        borderWidth: 1,
         flex: 1,
         marginHorizontal: 4,
         paddingVertical: 12,
     },
+    menuButtonActive: {
+        backgroundColor: colors.accent,
+        borderColor: colors.accent,
+    },
     menuButtonText: {
-        color: "#000000",
+        color: colors.text,
         fontSize: 14,
         fontWeight: "bold",
     },
+    menuButtonTextActive: {
+        color: colors.surface,
+    },
     searchContainer: {
         alignItems: "center",
-        borderColor: "#000000",
-        borderRadius: 8,
+        backgroundColor: colors.surface,
+        borderColor: colors.border,
+        borderRadius: radii.pill,
         borderWidth: 1,
         flexDirection: "row",
         marginBottom: 20,
@@ -262,12 +341,16 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
         paddingVertical: 10,
     },
+    searchEmoji: {
+        fontSize: 24,
+        marginLeft: 8,
+    },
     menuContainer: {
         paddingBottom: 24,
     },
     categoryCard: {
-        backgroundColor: "#E3A00B",
-        borderRadius: 28,
+        backgroundColor: colors.accent,
+        borderRadius: radii.large,
         marginBottom: 20,
         padding: 16,
     },
@@ -277,15 +360,15 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     categoryTitle: {
-        color: "#FFFFFF",
+        color: colors.surface,
         fontSize: 22,
         fontWeight: "bold",
         marginRight: 10,
     },
     arrowButton: {
         alignItems: "center",
-        backgroundColor: "#FFFFFF",
-        borderRadius: 18,
+        backgroundColor: colors.surface,
+        borderRadius: radii.pill,
         height: 30,
         justifyContent: "center",
         width: 30,
@@ -294,18 +377,37 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    productCard: {
-        alignItems: "center",
+    productsPage: {
         flex: 1,
     },
-    productImage: {
-        height: 90,
+    productCard: {
+        alignItems: "center",
+        backgroundColor: colors.accent,
+        borderRadius: radii.small,
+        width: "31%",
+    },
+    productImageBox: {
+        alignItems: "center",
+        backgroundColor: colors.surface,
+        height: 100,
+        justifyContent: "center",
         marginBottom: 8,
         width: 100,
     },
+    productImage: {
+        height: "100%",
+        width: "100%",
+    },
     productName: {
-        color: "#FFFFFF",
-        fontSize: 18,
+        color: colors.surface,
+        fontSize: 16,
+        textAlign: "center",
+    },
+    productPrice: {
+        color: colors.surface,
+        fontSize: 16,
+        fontWeight: "bold",
+        marginTop: 4,
         textAlign: "center",
     },
     emptyText: {

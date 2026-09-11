@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../components/images";
+import { productsImages } from "../../../constants/images";
+import { colors, radii } from "../../../constants/theme";
 import { useProductStore } from "../../../stores/useProduct";
 
 export default function ProductDetailsScreen() {
@@ -62,7 +63,7 @@ export default function ProductDetailsScreen() {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#DFCDB2", // Fondo beige general
+        backgroundColor: colors.background,
         padding: 16,
     },
     backText: {
@@ -78,11 +79,11 @@ const style = StyleSheet.create({
         color: "#111110",
     },
     card: {
-        backgroundColor: "#EDE6CE",
+        backgroundColor: colors.surface,
         padding: 15,
-        borderColor: "#111110",
+        borderColor: colors.border,
         borderWidth: 2,
-        borderRadius: 12,
+        borderRadius: radii.medium,
     },
     image: {
         width: "100%",

@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import Constants from "expo-constants";
 import {
-  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ActivityIndicator,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
 
@@ -19,7 +20,7 @@ type Modification = {
 };
 
 type Product = {
-  _id?: string; //ID de MongoDB
+  _id?: string;
   id: string;
   businessId: string;
   name: string;
@@ -41,27 +42,29 @@ type CafeteriaSection = {
   data: Product[];
 };
 
-//Diseño de la Pantalla Principal
 export default function HomeScreen() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  //Cargar productos desde MongoDB
+  // Truco maestro para obtener la IP automáticamente en local
+  // hostUri nos da algo como "192.168.1.75:8081", lo cortamos para quedarnos solo con la IP
+  const hostUri = Constants.expoConfig?.hostUri;
+  const localIp = hostUri ? hostUri.split(":")[0] : "localhost";
+  const API_URL = `http://${localIp}:5000/api/productos`;
+
   useEffect(() => {
-    // IMPORTANTE: Si pruebas en un celular físico, cambia 'localhost' por tu dirección IPv4 (ej. 192.168.1.75)
-    fetch("http://localhost:5000/api/productos")
+    fetch(API_URL)
       .then((res) => res.json())
       .then((data) => {
         setAllProducts(data);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error cargando productos:", error);
+        console.error("Error cargando productos desde", API_URL, ":", error);
         setIsLoading(false);
       });
-  }, []);
+  }, [API_URL]);
 
-  //Secciones de cafeterías
   const cafeteriaSections: CafeteriaSection[] = [
     {
       businessId: "BT",
@@ -70,7 +73,6 @@ export default function HomeScreen() {
       cardBgColor: "#8F651A",
       route: "/client/cafeterias/bustershome",
       data: allProducts.filter(
-        //Filtrar productos de Busters con stock en la base de datos
         (product) => product.businessId === "BT" && product.inStock === true,
       ),
     },
@@ -79,7 +81,7 @@ export default function HomeScreen() {
       title: "BEE SWEET",
       headerColor: "#d4af37",
       cardBgColor: "#e2bf43",
-      //DATOS SIMULADOS TEMPORALES PARA BEE SWEET (BORRAR CUANDO SE AÑADAN LOS DE BEE SWEET)
+      // DATOS SIMULADOS TEMPORALES PARA BEE SWEET
       data: [
         {
           id: "BS-001",
@@ -107,23 +109,19 @@ export default function HomeScreen() {
 
   return (
     <SafeView style={styles.safeArea}>
-      {/*Barra de Notificaciones*/}
       <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent={true}
       />
 
-      {/*Contenedor Principal de la Pantalla*/}
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/*Título de la Pantalla*/}
         <Text style={styles.mainTitle}>CAFETERÍAS</Text>
         <View style={styles.titleDivider} />
 
-        {/*Banner Promocional*/}
         <View style={styles.bannerContainer}>
           <Image
             source={require("../../../../assets/images/promotionBanner/PromocionalPrueba.jpg")}
@@ -132,7 +130,6 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/*Botones de Acción*/}
         <View style={styles.ActionButtonsContainer}>
           <Pressable style={styles.ActionButton}>
             <Ionicons name="heart-outline" size={16} color="#000000" />
@@ -148,14 +145,10 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
-        {/*Secciones de Cafeterías*/}
         {isLoading ? (
-          //Indicador de Carga mientras se conecta a MongoDB
           <View style={{ marginTop: 50 }}>
             <ActivityIndicator size="large" color="#8F651A" />
-            <Text style={{ textAlign: "center", marginTop: 10 }}>
-              Cargando Menú...
-            </Text>
+            <Text style={{ textAlign: "center", marginTop: 10 }}>Cargando menú...</Text>
           </View>
         ) : (
           cafeteriaSections.map((section) => (
@@ -166,7 +159,6 @@ export default function HomeScreen() {
                 { backgroundColor: section.cardBgColor },
               ]}
             >
-              {/*Header de la Cafetería*/}
               <Pressable
                 style={[
                   styles.sectionHeader,
@@ -184,7 +176,6 @@ export default function HomeScreen() {
               <View style={styles.headerDivider} />
               <Text style={styles.subHeaderTitle}>Más vendidos:</Text>
 
-              {/*Contenedor del ScrollView con los Productos}*/}
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -193,17 +184,16 @@ export default function HomeScreen() {
               >
                 {section.data.map((item) => (
                   <View key={item.id} style={styles.productCard}>
-                    {/*Renderizado de la imagen desde Cloudinary si existe, si no mostrar el cuadro en blanco */}
                     {item.image ? (
-                      <Image
-                        source={{ uri: item.image }}
-                        style={styles.productImage}
+                      <Image 
+                        source={{ uri: item.image }} 
+                        style={styles.productImage} 
                         resizeMode="cover"
                       />
                     ) : (
                       <View style={styles.productImageWhiteBox} />
                     )}
-
+                    
                     <Text style={styles.productName} numberOfLines={1}>
                       {item.name}
                     </Text>

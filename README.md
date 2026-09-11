@@ -2,6 +2,22 @@
 
 Expo/React Native app to view products and orders from two flows: client and employee.
 
+## Project structure
+
+```text
+src/
+  app/          Expo Router screens and layouts
+  components/   Reusable React Native components
+  constants/    Static configuration such as product image maps
+  data/         Local JSON data used by the app
+  stores/       Zustand state stores
+  types/        Shared TypeScript types
+assets/         Images and app assets
+```
+
+Keep route files inside `src/app`. Files that are shared by multiple screens belong
+in `src/components`, `src/constants`, `src/data`, `src/stores`, or `src/types`.
+
 ## Requirements
 
 - Node.js
@@ -76,7 +92,7 @@ npx expo start
 The default flow goes to the client view:
 
 ```text
-/client/products
+/client/home
 ```
 
 The employee view is at:

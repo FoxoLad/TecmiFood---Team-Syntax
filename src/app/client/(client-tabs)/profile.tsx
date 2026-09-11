@@ -9,6 +9,7 @@ import {
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
+import { colors, radii } from "../../../constants/theme";
 
 export default function ProfileScreen() {
   const [employeeCode, setEmployeeCode] = useState("");
@@ -94,7 +95,7 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#cbc583",
+    backgroundColor: colors.background,
     flex: 1,
   },
   container: {
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    borderBottomColor: "#999999",
+    borderBottomColor: colors.border,
     borderBottomWidth: 1,
     fontSize: 29,
     fontWeight: "800",
@@ -126,9 +127,9 @@ const styles = StyleSheet.create({
   },
   smallCard: {
     alignItems: "center",
-    backgroundColor: "#f1f1f1",
-    borderColor: "#000000",
-    borderRadius: 8,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radii.medium,
     borderWidth: 1.3,
     flex: 1,
     height: 130,
@@ -138,9 +139,9 @@ const styles = StyleSheet.create({
   },
   favoritesCard: {
     alignItems: "center",
-    backgroundColor: "#f1f1f1",
-    borderColor: "#000000",
-    borderRadius: 8,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radii.medium,
     borderWidth: 1.3,
     height: 130,
     justifyContent: "space-between",
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   },
   iconCircle: {
     alignItems: "center",
-    borderColor: "#000000",
+    borderColor: colors.border,
     borderRadius: 30,
     borderWidth: 1.3,
     height: 55,
@@ -166,8 +167,9 @@ const styles = StyleSheet.create({
   },
   employeeCodeContainer: {
     alignItems: "center",
-    borderColor: "#000000",
-    borderRadius: 9,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radii.pill,
     borderWidth: 1.3,
     flexDirection: "row",
     marginTop: "auto",

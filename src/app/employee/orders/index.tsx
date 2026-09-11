@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { productsImages } from "../../../constants/images";
+import { colors, radii } from "../../../constants/theme";
 import { useProductStore } from "../../../stores/useProduct";
 import type { Product } from "../../../types/product";
 
@@ -166,7 +167,7 @@ export default function EmployeeOrdersScreen() {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#DFCDB2",
+        backgroundColor: colors.background,
     },
     listContent: {
         paddingBottom: 24,
@@ -216,8 +217,10 @@ const style = StyleSheet.create({
     },
     searchContainer: {
         alignItems: "center",
-        backgroundColor: "#f5f5f5",
-        borderRadius: 11,
+        backgroundColor: colors.surface,
+        borderColor: colors.border,
+        borderRadius: radii.pill,
+        borderWidth: 1,
         flexDirection: "row",
         height: 48,
         marginBottom: 10,
@@ -231,9 +234,9 @@ const style = StyleSheet.create({
         marginLeft: 10,
     },
     orderCard: {
-        backgroundColor: "#EDE6CE",
-        borderColor: "#111110",
-        borderRadius: 25,
+        backgroundColor: colors.surface,
+        borderColor: colors.border,
+        borderRadius: radii.large,
         borderWidth: 1.5,
         marginBottom: 7,
         overflow: "hidden",

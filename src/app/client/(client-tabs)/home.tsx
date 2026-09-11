@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
 import {
     Image,
     Pressable,
@@ -11,6 +10,7 @@ import {
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
+import { colors, radii, spacing } from "../../../constants/theme";
 import productsData from "../../../data/products.json";
 
 type Product = {
@@ -26,7 +26,6 @@ type Product = {
 };
 
 type CafeteriaSection = {
-  businessId: string;
   title: string;
   headerColor: string;
   cardBgColor: string;
@@ -34,46 +33,35 @@ type CafeteriaSection = {
   data: Product[];
 };
 
-//Convertir JSON a tipo Product
 const allProducts = productsData as Product[];
 
-//Secciones de cafeterías dinámicas
 const cafeteriaSections: CafeteriaSection[] = [
   {
-    businessId: "BT",
     title: "BUSTERS",
     headerColor: "#8F651A",
     cardBgColor: "#8F651A",
     route: "/client/cafeterias/bustershome",
     data: allProducts.filter(
-      //Filtrar productos activos de Busters desde el json
       (product) => product.businessId === "BT" && product.status === "active",
     ),
   },
   {
-    businessId: "BS",
     title: "BEE SWEET",
     headerColor: "#d4af37",
     cardBgColor: "#e2bf43",
-    /* DESCOMENTAR CUANDO SE TENGAN LOS PRODUCTOS DE BEE SWEET EN products.json
-    data: allProducts.filter( //Filtrar productos activos de BEE SWEET desde el json
-      (product) => product.businessId === "BS" && product.status === "active",
-    ),
-    */
-    //DATOS SIMULADOS TEMPORALES PARA BEE SWEET
     data: [
       {
         id: "BS-001",
-        businessId: "BS",
         name: "Panqué",
         description: "Panqué clásico",
+        businessId: "BS",
         price: 102.0,
         image: "",
         status: "active",
         category: "Alimentos",
       },
       {
-        id: "BS-002",
+        id: "BS-003",
         businessId: "BS",
         name: "Chocolatín",
         description: "Pan de chocolatín",
@@ -83,7 +71,7 @@ const cafeteriaSections: CafeteriaSection[] = [
         category: "Alimentos",
       },
       {
-        id: "BS-003",
+        id: "BS-004",
         businessId: "BS",
         name: "Muffin Chocolate",
         description: "Muffin relleno de chocolate",
@@ -97,7 +85,6 @@ const cafeteriaSections: CafeteriaSection[] = [
 ];
 
 export default function HomeScreen() {
-  const [] = useState("");
   return (
     <SafeView style={styles.safeArea}>
       {/* Barra de notificaciones*/}
@@ -202,34 +189,33 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.background,
     flex: 1,
   },
   content: {
     paddingBottom: 28,
   },
   mainTitle: {
-    color: "#000000",
-    fontSize: 35,
-    fontWeight: "900",
+    color: colors.text,
+    fontSize: 34,
+    fontWeight: "800",
     textAlign: "center",
-    marginTop: 5,
+    marginTop: spacing.screen,
   },
   titleDivider: {
-    borderBottomColor: "rgba(0, 0, 0, 0.1)",
+    borderBottomColor: colors.border,
     borderBottomWidth: 1,
-    marginHorizontal: 16,
+    marginHorizontal: spacing.screen,
     marginBottom: 10,
   },
   bannerContainer: {
     height: 110,
     marginHorizontal: 16,
     marginTop: 16,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "#000000",
+    borderRadius: radii.medium,
+    borderWidth: 0,
     overflow: "hidden",
-    backgroundColor: "#eaeaea", //NO BORRAR, es por si la imagen tarda en cargar o no carga
+    backgroundColor: colors.surfaceMuted,
   },
   bannerImage: {
     width: "100%",
@@ -238,13 +224,14 @@ const styles = StyleSheet.create({
   ActionButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: 16,
+    marginHorizontal: spacing.screen,
     marginTop: 12,
   },
   ActionButton: {
     alignItems: "center",
-    borderColor: "#000000",
-    borderRadius: 10,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radii.pill,
     borderWidth: 1,
     flexDirection: "row",
     gap: 6,
@@ -252,13 +239,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   ActionButtonText: {
-    color: "#000000",
+    color: colors.text,
     fontSize: 13,
     fontWeight: "600",
   },
   cafeteriaSection: {
-    borderRadius: 20,
-    marginHorizontal: 16,
+    borderRadius: radii.large,
+    marginHorizontal: spacing.screen,
     marginTop: 20,
     overflow: "hidden",
     paddingBottom: 16,
@@ -271,7 +258,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   sectionTitleText: {
-    color: "#ffffff",
+    color: colors.surface,
     fontSize: 18,
     fontWeight: "bold",
   },
@@ -281,7 +268,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   subHeaderTitle: {
-    color: "#ffffff",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "600",
     marginHorizontal: 16,
@@ -304,7 +291,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   productName: {
-    color: "#ffffff",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",

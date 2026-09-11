@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { productsImages } from "../../../constants/images";
+import { colors, radii } from "../../../constants/theme";
 import { useProductStore } from "../../../stores/useProduct";
 
 export default function EmployeeOrderDetailsScreen() {
@@ -12,7 +13,6 @@ export default function EmployeeOrderDetailsScreen() {
 	const updateProductsStatus = useProductStore((state) => state.updateProductsStatus);
 	const [showDeliveryConfirmation, setShowDeliveryConfirmation] = useState(false);
 	const orderProducts = products.filter((product) => String(product.NoOrder) === id);
-	const total = orderProducts.reduce((sum, product) => sum + product.price, 0);
 
 	if (orderProducts.length === 0) {
 		return (
@@ -99,7 +99,7 @@ export default function EmployeeOrderDetailsScreen() {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#DFCDB2",
+		backgroundColor: colors.background,
 		flex: 1,
 	},
 	content: {
@@ -153,9 +153,9 @@ const styles = StyleSheet.create({
 		color: "#15803d",
 	},
 	productCard: {
-		backgroundColor: "#EDE6CE",
-		borderColor: "#111110",
-		borderRadius: 16,
+		backgroundColor: colors.surface,
+		borderColor: colors.border,
+		borderRadius: radii.medium,
 		borderWidth: 1.5,
 		marginBottom: 12,
 		padding: 12,

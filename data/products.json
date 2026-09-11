@@ -1,6 +1,5 @@
 [
   {
-    "NoOrder": 1,
     "id": "BT-001",
     "businessId": "BT",
     "name": "Cuadritos de ate",
@@ -8,10 +7,10 @@
     "price": 15,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 2,
     "id": "BT-002",
     "businessId": "BT",
     "name": "Mazapan pieza",
@@ -19,10 +18,10 @@
     "price": 15,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 3,
     "id": "BT-003",
     "businessId": "BT",
     "name": "Galletas 2 piezas mermelada",
@@ -30,10 +29,10 @@
     "price": 15,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 4,
     "id": "BT-004",
     "businessId": "BT",
     "name": "Gomitas Welch's",
@@ -41,10 +40,10 @@
     "price": 15,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 5,
     "id": "BT-005",
     "businessId": "BT",
     "name": "Fruta",
@@ -52,10 +51,10 @@
     "price": 15,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 6,
     "id": "BT-006",
     "businessId": "BT",
     "name": "Barra vainilla Rice Krispies",
@@ -63,32 +62,32 @@
     "price": 20,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 7,
     "id": "BT-007",
     "businessId": "BT",
     "name": "Barra proteína cacahuate",
     "description": "Barra de proteína con cacahuate.",
     "price": 20,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094828/BarraP.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 8,
     "id": "BT-008",
     "businessId": "BT",
     "name": "Obleas de amaranto",
     "description": "Obleas de amaranto en varios sabores.",
     "price": 28,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094829/ObleaAm.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 9,
     "id": "BT-009",
     "businessId": "BT",
     "name": "Saborines",
@@ -96,10 +95,10 @@
     "price": 28,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 10,
     "id": "BT-010",
     "businessId": "BT",
     "name": "Chicles de 18 piezas",
@@ -107,10 +106,10 @@
     "price": 30,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 11,
     "id": "BT-011",
     "businessId": "BT",
     "name": "Chicles de 9 piezas",
@@ -118,87 +117,87 @@
     "price": 25,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 12,
     "id": "BT-012",
     "businessId": "BT",
     "name": "Brownie Chocolate JB",
     "description": "Brownie de chocolate JB.",
     "price": 30,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094829/brownie.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 13,
     "id": "BT-013",
     "businessId": "BT",
     "name": "Brownie Oreo JB",
     "description": "Brownie con sabor Oreo JB.",
     "price": 35,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094825/c_c_Brown.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 14,
     "id": "BT-014",
     "businessId": "BT",
     "name": "Muffins",
     "description": "Muffins de chocolate, limón y chispas.",
     "price": 37,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094829/muffins.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 15,
     "id": "BT-015",
     "businessId": "BT",
     "name": "Carlota de limón",
     "description": "Postre de limón estilo carlota.",
     "price": 40,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094827/carlotaLim.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 16,
     "id": "BT-016",
     "businessId": "BT",
     "name": "Carlota Oreo",
     "description": "Carlota preparada con Oreo.",
     "price": 50,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094825/carlotaOreo.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 17,
     "id": "BT-017",
     "businessId": "BT",
     "name": "Galletas chispas chocolate",
     "description": "Galletas con chispas de chocolate.",
     "price": 37,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094876/GalletaChispa.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 18,
     "id": "BT-018",
     "businessId": "BT",
     "name": "Galletas Chispas Georgio Kinder M M",
     "description": "Galletas con chispas y chocolate Kinder M&M.",
     "price": 40,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094877/GalletaKinder.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 19,
     "id": "BT-019",
     "businessId": "BT",
     "name": "Biónico",
@@ -206,43 +205,43 @@
     "price": 55,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 20,
     "id": "BT-020",
     "businessId": "BT",
     "name": "Croissant Nutella",
     "description": "Croissant relleno de Nutella.",
     "price": 50,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094142/CroissantNute.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 21,
     "id": "BT-021",
     "businessId": "BT",
     "name": "Macarrón",
     "description": "Macarrón individual.",
     "price": 25,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094829/macaron.jpg",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 22,
     "id": "BT-022",
     "businessId": "BT",
     "name": "Conejito Turin",
     "description": "Chocolate Conejito Turin individual.",
     "price": 25,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094823/conejo_turin.webp",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 23,
     "id": "BT-023",
     "businessId": "BT",
     "name": "Galletas Anny",
@@ -250,10 +249,10 @@
     "price": 35,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 24,
     "id": "BT-024",
     "businessId": "BT",
     "name": "Galletas Chía, Avena y Blueberry",
@@ -261,10 +260,10 @@
     "price": 25,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 25,
     "id": "BT-025",
     "businessId": "BT",
     "name": "Agua medio litro",
@@ -272,10 +271,11 @@
     "price": 15,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 26,
     "id": "BT-026",
     "businessId": "BT",
     "name": "Agua Bonafont y Libre 1 litro",
@@ -283,10 +283,11 @@
     "price": 20,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 27,
     "id": "BT-027",
     "businessId": "BT",
     "name": "Coca Cola Zero",
@@ -294,10 +295,11 @@
     "price": 25,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 28,
     "id": "BT-028",
     "businessId": "BT",
     "name": "Coca Cola Regular",
@@ -305,10 +307,11 @@
     "price": 35,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 29,
     "id": "BT-029",
     "businessId": "BT",
     "name": "Agua Mineral",
@@ -316,10 +319,11 @@
     "price": 28,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 30,
     "id": "BT-030",
     "businessId": "BT",
     "name": "Free Life",
@@ -327,10 +331,11 @@
     "price": 28,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 31,
     "id": "BT-031",
     "businessId": "BT",
     "name": "Schweppes Ginger",
@@ -338,10 +343,11 @@
     "price": 30,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 32,
     "id": "BT-032",
     "businessId": "BT",
     "name": "Arizona tamaño regular",
@@ -349,10 +355,11 @@
     "price": 30,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 33,
     "id": "BT-033",
     "businessId": "BT",
     "name": "Boing",
@@ -360,10 +367,11 @@
     "price": 30,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 34,
     "id": "BT-034",
     "businessId": "BT",
     "name": "Snapple",
@@ -371,10 +379,11 @@
     "price": 30,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 35,
     "id": "BT-035",
     "businessId": "BT",
     "name": "Arizona tamaño jumbo",
@@ -382,10 +391,11 @@
     "price": 35,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 36,
     "id": "BT-036",
     "businessId": "BT",
     "name": "Jugo de naranja JUMEX",
@@ -393,10 +403,11 @@
     "price": 35,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 37,
     "id": "BT-037",
     "businessId": "BT",
     "name": "Jugo de naranja y arándano JUMEX",
@@ -404,10 +415,11 @@
     "price": 35,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 38,
     "id": "BT-038",
     "businessId": "BT",
     "name": "Jugo School JUMEX",
@@ -415,10 +427,11 @@
     "price": 35,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 39,
     "id": "BT-039",
     "businessId": "BT",
     "name": "Electrolit",
@@ -426,10 +439,11 @@
     "price": 40,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 40,
     "id": "BT-040",
     "businessId": "BT",
     "name": "Yogurt",
@@ -437,10 +451,11 @@
     "price": 25,
     "image": "",
     "status": "active",
-    "category": "Bebidas"
+    "category": "Bebidas",
+    "modifications": [],
+    "subcategory": "Otros"
   },
   {
-    "NoOrder": 41,
     "id": "BT-041",
     "businessId": "BT",
     "name": "Banderilla",
@@ -448,10 +463,10 @@
     "price": 31,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 42,
     "id": "BT-042",
     "businessId": "BT",
     "name": "Mollete 2 piezas",
@@ -459,10 +474,10 @@
     "price": 45,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 43,
     "id": "BT-043",
     "businessId": "BT",
     "name": "Sandwich jamón y queso",
@@ -470,10 +485,10 @@
     "price": 45,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 44,
     "id": "BT-044",
     "businessId": "BT",
     "name": "Pizza pita jamón y queso",
@@ -481,10 +496,10 @@
     "price": 50,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 45,
     "id": "BT-045",
     "businessId": "BT",
     "name": "Croissant Nutella",
@@ -492,10 +507,10 @@
     "price": 50,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 46,
     "id": "BT-046",
     "businessId": "BT",
     "name": "Croissant jamón y queso",
@@ -503,10 +518,10 @@
     "price": 55,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 47,
     "id": "BT-047",
     "businessId": "BT",
     "name": "Pizza pita Pepperoni",
@@ -514,10 +529,10 @@
     "price": 55,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 48,
     "id": "BT-048",
     "businessId": "BT",
     "name": "Sandwich panela y espinaca",
@@ -525,10 +540,10 @@
     "price": 55,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 49,
     "id": "BT-049",
     "businessId": "BT",
     "name": "Dedos de queso venezolanos 3 piezas",
@@ -536,10 +551,10 @@
     "price": 55,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 50,
     "id": "BT-050",
     "businessId": "BT",
     "name": "Hot dog",
@@ -547,10 +562,10 @@
     "price": 60,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 51,
     "id": "BT-051",
     "businessId": "BT",
     "name": "Avena",
@@ -558,10 +573,10 @@
     "price": 60,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 52,
     "id": "BT-052",
     "businessId": "BT",
     "name": "Bagel",
@@ -569,10 +584,10 @@
     "price": 65,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 53,
     "id": "BT-053",
     "businessId": "BT",
     "name": "Chap ata doble jamón y queso",
@@ -580,10 +595,10 @@
     "price": 65,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 54,
     "id": "BT-054",
     "businessId": "BT",
     "name": "Chilaquiles naturales",
@@ -591,10 +606,10 @@
     "price": 65,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 55,
     "id": "BT-055",
     "businessId": "BT",
     "name": "Hamburguesa de Res Sencilla",
@@ -602,10 +617,10 @@
     "price": 65,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 56,
     "id": "BT-056",
     "businessId": "BT",
     "name": "Baguette pollo y pomodoro",
@@ -613,10 +628,10 @@
     "price": 70,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 57,
     "id": "BT-057",
     "businessId": "BT",
     "name": "Chap ata PEPE",
@@ -624,10 +639,10 @@
     "price": 70,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Otros",
+    "modifications": []
   },
   {
-    "NoOrder": 58,
     "id": "BT-058",
     "businessId": "BT",
     "name": "Ensalada de pollo o atún",
@@ -635,10 +650,10 @@
     "price": 75,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 59,
     "id": "BT-059",
     "businessId": "BT",
     "name": "Hamburguesa de Res doble",
@@ -646,10 +661,10 @@
     "price": 80,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 60,
     "id": "BT-060",
     "businessId": "BT",
     "name": "Buster Burger",
@@ -657,10 +672,10 @@
     "price": 85,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 61,
     "id": "BT-061",
     "businessId": "BT",
     "name": "Chilaquiles con milanesa de pollo",
@@ -668,354 +683,605 @@
     "price": 99,
     "image": "",
     "status": "active",
-    "category": "Alimentos"
+    "category": "Comidas",
+    "modifications": []
   },
   {
-    "NoOrder": 62,
     "id": "BT-062",
     "businessId": "BT",
     "name": "Frappé Café",
     "description": "Frappé de café.",
     "price": 53,
-    "modifications": "M: $53, G: $58, +G: $64",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 53
+      },
+      {
+        "name": "G",
+        "price": 58
+      },
+      {
+        "name": "+G",
+        "price": 64
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 63,
     "id": "BT-063",
     "businessId": "BT",
     "name": "Frappé Mocha / Mocha Blanco",
     "description": "Frappé de mocha o mocha blanco.",
     "price": 69,
-    "modifications": "M: $69, G: $74, +G: $85",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 69
+      },
+      {
+        "name": "G",
+        "price": 74
+      },
+      {
+        "name": "+G",
+        "price": 85
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 64,
     "id": "BT-064",
     "businessId": "BT",
     "name": "Frappé Caramelo",
     "description": "Frappé sabor caramelo.",
     "price": 71,
-    "modifications": "M: $71, G: $78, +G: $86",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 71
+      },
+      {
+        "name": "G",
+        "price": 78
+      },
+      {
+        "name": "+G",
+        "price": 86
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 65,
     "id": "BT-065",
     "businessId": "BT",
     "name": "Frappé Cookies & Cream",
     "description": "Frappé de cookies and cream.",
     "price": 74,
-    "modifications": "M: $74, G: $80, +G: $88",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 74
+      },
+      {
+        "name": "G",
+        "price": 80
+      },
+      {
+        "name": "+G",
+        "price": 88
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 66,
     "id": "BT-066",
     "businessId": "BT",
     "name": "Frappé Yoghurt Fresa / Mango",
     "description": "Frappé de yoghurt con fresa o mango.",
     "price": 64,
-    "modifications": "M: $64, G: $69, +G: $80",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 69
+      },
+      {
+        "name": "+G",
+        "price": 80
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 67,
     "id": "BT-067",
     "businessId": "BT",
     "name": "Smoothie Fresa / Mango",
     "description": "Smoothie de fresa o mango.",
     "price": 48,
-    "modifications": "M: $48, G: $53, +G: $58",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 48
+      },
+      {
+        "name": "G",
+        "price": 53
+      },
+      {
+        "name": "+G",
+        "price": 58
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 68,
     "id": "BT-068",
     "businessId": "BT",
     "name": "Frappé Chai",
     "description": "Frappé sabor chai.",
     "price": 64,
-    "modifications": "M: $64, G: $69, +G: $74",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 69
+      },
+      {
+        "name": "+G",
+        "price": 74
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 69,
     "id": "BT-069",
     "businessId": "BT",
     "name": "Tisana Frappé",
     "description": "Frappé preparado con tisana.",
     "price": 64,
-    "modifications": "M: $64, G: $69, +G: $74",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 69
+      },
+      {
+        "name": "+G",
+        "price": 74
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 70,
     "id": "BT-070",
     "businessId": "BT",
     "name": "Frappé Sabores",
     "description": "Frappé de vainilla, caramelo, ChocoBlanco o chocolate.",
     "price": 64,
-    "modifications": "M: $64, G: $69, +G: $80",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 69
+      },
+      {
+        "name": "+G",
+        "price": 80
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 71,
     "id": "BT-071",
     "businessId": "BT",
     "name": "Frappé Taro",
     "description": "Frappé sabor taro.",
     "price": 74,
-    "modifications": "M: $74, G: $80, +G: $88",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 74
+      },
+      {
+        "name": "G",
+        "price": 80
+      },
+      {
+        "name": "+G",
+        "price": 88
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 72,
     "id": "BT-072",
     "businessId": "BT",
     "name": "Licuado Plátano / Fresa / Mango",
     "description": "Licuado de plátano, fresa o mango.",
     "price": 55,
-    "modifications": "+G: $55",
+    "modifications": [
+      {
+        "name": "+G",
+        "price": 55
+      }
+    ],
     "image": "",
     "status": "active",
-    "category": "Frappe"
+    "category": "Bebidas",
+    "subcategory": "Frapé"
   },
   {
-    "NoOrder": 73,
     "id": "BT-073",
     "businessId": "BT",
     "name": "Capuchino Italiano",
     "description": "Capuchino italiano.",
     "price": 50,
-    "modifications": "M: $50, G: $60, +G: $65",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 50
+      },
+      {
+        "name": "G",
+        "price": 60
+      },
+      {
+        "name": "+G",
+        "price": 65
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 74,
     "id": "BT-074",
     "businessId": "BT",
     "name": "Café Americano",
     "description": "Café americano.",
     "price": 35,
-    "modifications": "M: $35, G: $40, +G: $45",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 35
+      },
+      {
+        "name": "G",
+        "price": 40
+      },
+      {
+        "name": "+G",
+        "price": 45
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 75,
     "id": "BT-075",
     "businessId": "BT",
     "name": "Espresso Americano",
     "description": "Espresso americano.",
     "price": 40,
-    "modifications": "M: $40, G: $45, +G: $50",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 40
+      },
+      {
+        "name": "G",
+        "price": 45
+      },
+      {
+        "name": "+G",
+        "price": 50
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 76,
     "id": "BT-076",
     "businessId": "BT",
     "name": "Café Latte",
     "description": "Café latte.",
     "price": 49,
-    "modifications": "M: $49, G: $57, +G: $62",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 49
+      },
+      {
+        "name": "G",
+        "price": 57
+      },
+      {
+        "name": "+G",
+        "price": 62
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 77,
     "id": "BT-077",
     "businessId": "BT",
     "name": "Mocha / Mocha Blanco",
     "description": "Bebida de mocha o mocha blanco.",
     "price": 64,
-    "modifications": "M: $64, G: $70, +G: $75",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 70
+      },
+      {
+        "name": "+G",
+        "price": 75
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 78,
     "id": "BT-078",
     "businessId": "BT",
     "name": "Café Caramelo",
     "description": "Café sabor caramelo.",
     "price": 65,
-    "modifications": "M: $65, G: $76, +G: $82",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 65
+      },
+      {
+        "name": "G",
+        "price": 76
+      },
+      {
+        "name": "+G",
+        "price": 82
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 79,
     "id": "BT-079",
     "businessId": "BT",
     "name": "Espresso",
     "description": "Espresso con diferentes cantidades de shots.",
     "price": 37,
-    "modifications": "Sencillo: $37, Doble: $39, Triple: $43",
+    "modifications": [
+      {
+        "name": "Sencillo",
+        "price": 37
+      },
+      {
+        "name": "Doble",
+        "price": 39
+      },
+      {
+        "name": "Triple",
+        "price": 43
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 80,
     "id": "BT-080",
     "businessId": "BT",
     "name": "Pink Lemonade",
     "description": "Limonada rosa.",
     "price": 41,
-    "modifications": "+G: $41",
+    "modifications": [
+      {
+        "name": "+G",
+        "price": 41
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 81,
     "id": "BT-081",
     "businessId": "BT",
     "name": "Chocolate",
     "description": "Chocolate caliente o helado.",
     "price": 54,
-    "modifications": "M: $54, G: $59, +G: $65",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 54
+      },
+      {
+        "name": "G",
+        "price": 59
+      },
+      {
+        "name": "+G",
+        "price": 65
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 82,
     "id": "BT-082",
     "businessId": "BT",
     "name": "Té",
     "description": "Té preparado.",
     "price": 35,
-    "modifications": "M: $35, G: $41, +G: $47",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 35
+      },
+      {
+        "name": "G",
+        "price": 41
+      },
+      {
+        "name": "+G",
+        "price": 47
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 83,
     "id": "BT-083",
     "businessId": "BT",
     "name": "Tisana",
     "description": "Tisana preparada.",
     "price": 59,
-    "modifications": "M: $59, G: $65, +G: $70",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 59
+      },
+      {
+        "name": "G",
+        "price": 65
+      },
+      {
+        "name": "+G",
+        "price": 70
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 84,
     "id": "BT-084",
     "businessId": "BT",
     "name": "Chai",
     "description": "Bebida chai.",
     "price": 70,
-    "modifications": "M: $70, G: $76, +G: $87",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 70
+      },
+      {
+        "name": "G",
+        "price": 76
+      },
+      {
+        "name": "+G",
+        "price": 87
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 85,
     "id": "BT-085",
     "businessId": "BT",
     "name": "Matcha",
     "description": "Bebida de matcha.",
     "price": 70,
-    "modifications": "M: $70, G: $76, +G: $87",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 70
+      },
+      {
+        "name": "G",
+        "price": 76
+      },
+      {
+        "name": "+G",
+        "price": 87
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 86,
     "id": "BT-086",
     "businessId": "BT",
     "name": "Taro",
     "description": "Bebida sabor taro.",
     "price": 76,
-    "modifications": "M: $76, G: $82, +G: $90",
+    "modifications": [
+      {
+        "name": "M",
+        "price": 76
+      },
+      {
+        "name": "G",
+        "price": 82
+      },
+      {
+        "name": "+G",
+        "price": 90
+      }
+    ],
     "image": "",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
   {
-    "NoOrder": 87,
-    "id": "BT-087",
-    "businessId": "BT",
-    "name": "Pine para Crocs Snoopy y Kitty",
-    "description": "Pine decorativo para Crocs de Snoopy y Kitty.",
-    "price": 25,
-    "image": "",
-    "status": "active",
-    "category": "Stickers y Pines"
-  },
-  {
-    "NoOrder": 88,
-    "id": "BT-088",
-    "businessId": "BT",
-    "name": "Pines para Crocs Genéricos 2 piezas",
-    "description": "Paquete de dos pines genéricos para Crocs.",
-    "price": 20,
-    "image": "",
-    "status": "active",
-    "category": "Stickers y Pines"
-  },
-  {
-    "NoOrder": 89,
-    "id": "BT-089",
-    "businessId": "BT",
-    "name": "Pine pieza",
-    "description": "Pine decorativo individual.",
-    "price": 25,
-    "image": "",
-    "status": "active",
-    "category": "Stickers y Pines"
-  },
-  {
-    "NoOrder": 90,
-    "id": "BT-090",
-    "businessId": "BT",
-    "name": "Paquete de Calcomanías bolsita",
-    "description": "Paquete pequeño de calcomanías.",
-    "price": 25,
-    "image": "",
-    "status": "active",
-    "category": "Stickers y Pines"
-  },
-  {
-    "NoOrder": 91,
     "id": "BT-091",
     "businessId": "BT",
     "name": "Ingrediente extra comida",
@@ -1023,10 +1289,10 @@
     "price": 12,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 92,
     "id": "BT-092",
     "businessId": "BT",
     "name": "Extra de jamón",
@@ -1034,10 +1300,10 @@
     "price": 12,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 93,
     "id": "BT-093",
     "businessId": "BT",
     "name": "Carga extra de café",
@@ -1045,10 +1311,10 @@
     "price": 12,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 94,
     "id": "BT-094",
     "businessId": "BT",
     "name": "Leche especial",
@@ -1056,10 +1322,10 @@
     "price": 12,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 95,
     "id": "BT-095",
     "businessId": "BT",
     "name": "Ingrediente extra en bebida",
@@ -1067,10 +1333,10 @@
     "price": 12,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 96,
     "id": "BT-096",
     "businessId": "BT",
     "name": "Vaso mediano hielos",
@@ -1078,10 +1344,10 @@
     "price": 5,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 97,
     "id": "BT-097",
     "businessId": "BT",
     "name": "Termo grande hielos",
@@ -1089,10 +1355,10 @@
     "price": 10,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 98,
     "id": "BT-098",
     "businessId": "BT",
     "name": "Domo ecológico",
@@ -1100,10 +1366,10 @@
     "price": 10,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 99,
     "id": "BT-099",
     "businessId": "BT",
     "name": "Pieza plato grande",
@@ -1111,10 +1377,10 @@
     "price": 5,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 100,
     "id": "BT-100",
     "businessId": "BT",
     "name": "Pieza plato chico",
@@ -1122,10 +1388,10 @@
     "price": 5,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 101,
     "id": "BT-101",
     "businessId": "BT",
     "name": "Hielo o vaso de hielo",
@@ -1133,10 +1399,10 @@
     "price": 5,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   },
   {
-    "NoOrder": 102,
     "id": "BT-102",
     "businessId": "BT",
     "name": "Tenedor o cuchara o cuchillo",
@@ -1144,6 +1410,7 @@
     "price": 5,
     "image": "",
     "status": "active",
-    "category": "Extras y Desechables"
+    "category": "Extras y Desechables",
+    "modifications": []
   }
 ]

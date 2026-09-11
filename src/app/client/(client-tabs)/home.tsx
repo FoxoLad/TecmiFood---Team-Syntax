@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -10,19 +11,25 @@ import {
   Text,
   View,
 } from "react-native";
-import productsData from "../../../../data/products.json";
 import SafeView from "../../../components/SafeView";
 
+type Modification = {
+  name: string;
+  price: number;
+};
+
 type Product = {
+  _id?: string; //ID de MongoDB
   id: string;
   businessId: string;
   name: string;
   description: string;
   price: number;
   image: string;
-  status: string;
+  inStock: boolean;
   category: string;
-  modifications?: string;
+  subcategory?: string;
+  modifications?: Modification[];
 };
 
 type CafeteriaSection = {
@@ -34,97 +41,98 @@ type CafeteriaSection = {
   data: Product[];
 };
 
-//Convertir JSON a tipo Product
-const allProducts = productsData as Product[];
-
-//Secciones de cafeterías dinámicas
-const cafeteriaSections: CafeteriaSection[] = [
-  {
-    businessId: "BT",
-    title: "BUSTERS",
-    headerColor: "#8F651A",
-    cardBgColor: "#8F651A",
-    route: "/client/cafeterias/bustershome",
-    data: allProducts.filter(
-      //Filtrar productos activos de Busters desde el json
-      (product) => product.businessId === "BT" && product.status === "active",
-    ),
-  },
-  {
-    businessId: "BS",
-    title: "BEE SWEET",
-    headerColor: "#d4af37",
-    cardBgColor: "#e2bf43",
-    /* DESCOMENTAR CUANDO SE TENGAN LOS PRODUCTOS DE BEE SWEET EN products.json
-    data: allProducts.filter( //Filtrar productos activos de BEE SWEET desde el json
-      (product) => product.businessId === "BS" && product.status === "active",
-    ),
-    */
-    //DATOS SIMULADOS TEMPORALES PARA BEE SWEET
-    data: [
-      {
-        id: "BS-001",
-        businessId: "BS",
-        name: "Panqué",
-        description: "Panqué clásico",
-        price: 102.0,
-        image: "",
-        status: "active",
-        category: "Alimentos",
-      },
-      {
-        id: "BS-002",
-        businessId: "BS",
-        name: "Chocolatín",
-        description: "Pan de chocolatín",
-        price: 35.0,
-        image: "",
-        status: "active",
-        category: "Alimentos",
-      },
-      {
-        id: "BS-003",
-        businessId: "BS",
-        name: "Muffin Chocolate",
-        description: "Muffin relleno de chocolate",
-        price: 49.0,
-        image: "",
-        status: "active",
-        category: "Alimentos",
-      },
-    ],
-  },
-];
-
+//Diseño de la Pantalla Principal
 export default function HomeScreen() {
-  const [] = useState("");
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  //Cargar productos desde MongoDB
+  useEffect(() => {
+    // IMPORTANTE: Si pruebas en un celular físico, cambia 'localhost' por tu dirección IPv4 (ej. 192.168.1.75)
+    fetch("http://localhost:5000/api/productos")
+      .then((res) => res.json())
+      .then((data) => {
+        setAllProducts(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error cargando productos:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  //Secciones de cafeterías
+  const cafeteriaSections: CafeteriaSection[] = [
+    {
+      businessId: "BT",
+      title: "BUSTERS",
+      headerColor: "#8F651A",
+      cardBgColor: "#8F651A",
+      route: "/client/cafeterias/bustershome",
+      data: allProducts.filter(
+        //Filtrar productos de Busters con stock en la base de datos
+        (product) => product.businessId === "BT" && product.inStock === true,
+      ),
+    },
+    {
+      businessId: "BS",
+      title: "BEE SWEET",
+      headerColor: "#d4af37",
+      cardBgColor: "#e2bf43",
+      //DATOS SIMULADOS TEMPORALES PARA BEE SWEET (BORRAR CUANDO SE AÑADAN LOS DE BEE SWEET)
+      data: [
+        {
+          id: "BS-001",
+          businessId: "BS",
+          name: "Panqué",
+          description: "Panqué clásico",
+          price: 102.0,
+          image: "",
+          inStock: true,
+          category: "Comidas",
+        },
+        {
+          id: "BS-002",
+          businessId: "BS",
+          name: "Chocolatín",
+          description: "Pan de chocolatín",
+          price: 35.0,
+          image: "",
+          inStock: true,
+          category: "Comidas",
+        },
+      ],
+    },
+  ];
+
   return (
     <SafeView style={styles.safeArea}>
-      {/* Barra de notificaciones*/}
+      {/*Barra de Notificaciones*/}
       <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent={true}
       />
 
+      {/*Contenedor Principal de la Pantalla*/}
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* Título Principal*/}
+        {/*Título de la Pantalla*/}
         <Text style={styles.mainTitle}>CAFETERÍAS</Text>
         <View style={styles.titleDivider} />
 
-        {/* Banner Promocional */}
+        {/*Banner Promocional*/}
         <View style={styles.bannerContainer}>
           <Image
             source={require("../../../../assets/images/promotionBanner/PromocionalPrueba.jpg")}
             style={styles.bannerImage}
-            resizeMode="cover" //"stretch" llena todo / "cover" recorta los sobrantes pero no deforma
+            resizeMode="cover"
           />
         </View>
 
-        {/* Botones de Acceso Rápido */}
+        {/*Botones de Acción*/}
         <View style={styles.ActionButtonsContainer}>
           <Pressable style={styles.ActionButton}>
             <Ionicons name="heart-outline" size={16} color="#000000" />
@@ -140,11 +148,17 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
-        {/* Secciones BUSTERS / BEE-SWEET */}
-        {cafeteriaSections.map(
-          (
-            section, //Por cada cafeteria del array "cafeteriaSections" se crea un apartado
-          ) => (
+        {/*Secciones de Cafeterías*/}
+        {isLoading ? (
+          //Indicador de Carga mientras se conecta a MongoDB
+          <View style={{ marginTop: 50 }}>
+            <ActivityIndicator size="large" color="#8F651A" />
+            <Text style={{ textAlign: "center", marginTop: 10 }}>
+              Cargando Menú...
+            </Text>
+          </View>
+        ) : (
+          cafeteriaSections.map((section) => (
             <View
               key={section.title}
               style={[
@@ -152,6 +166,7 @@ export default function HomeScreen() {
                 { backgroundColor: section.cardBgColor },
               ]}
             >
+              {/*Header de la Cafetería*/}
               <Pressable
                 style={[
                   styles.sectionHeader,
@@ -169,6 +184,7 @@ export default function HomeScreen() {
               <View style={styles.headerDivider} />
               <Text style={styles.subHeaderTitle}>Más vendidos:</Text>
 
+              {/*Contenedor del ScrollView con los Productos}*/}
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -177,9 +193,17 @@ export default function HomeScreen() {
               >
                 {section.data.map((item) => (
                   <View key={item.id} style={styles.productCard}>
-                    {/*Cambiar el ".id" por la categoria de "Más vendidos" cuando lo tengamos*/}
-                    <View style={styles.productImageWhiteBox} />
-                    {/*Aquí debería ir la imagen del producto*/}
+                    {/*Renderizado de la imagen desde Cloudinary si existe, si no mostrar el cuadro en blanco */}
+                    {item.image ? (
+                      <Image
+                        source={{ uri: item.image }}
+                        style={styles.productImage}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View style={styles.productImageWhiteBox} />
+                    )}
+
                     <Text style={styles.productName} numberOfLines={1}>
                       {item.name}
                     </Text>
@@ -190,7 +214,7 @@ export default function HomeScreen() {
                 ))}
               </ScrollView>
             </View>
-          ),
+          ))
         )}
       </ScrollView>
     </SafeView>
@@ -226,7 +250,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000000",
     overflow: "hidden",
-    backgroundColor: "#eaeaea", //NO BORRAR, es por si la imagen tarda en cargar o no carga
+    backgroundColor: "#eaeaea",
   },
   bannerImage: {
     width: "100%",
@@ -295,6 +319,12 @@ const styles = StyleSheet.create({
   },
   productImageWhiteBox: {
     backgroundColor: "#ffffff",
+    borderRadius: 12,
+    height: 90,
+    marginBottom: 8,
+    width: "100%",
+  },
+  productImage: {
     borderRadius: 12,
     height: 90,
     marginBottom: 8,

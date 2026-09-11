@@ -5,7 +5,7 @@
     "name": "Cuadritos de ate",
     "description": "Cuadritos de ate dulce.",
     "price": 15,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103457/ate.png",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -16,7 +16,7 @@
     "name": "Mazapan pieza",
     "description": "Mazapán individual.",
     "price": 15,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106316/mazapan.png",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -38,7 +38,7 @@
     "name": "Gomitas Welch's",
     "description": "Gomitas de fruta Welch's.",
     "price": 15,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106317/gomitasWelch.png",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -49,7 +49,7 @@
     "name": "Fruta",
     "description": "Una pieza de fruta: plátano o manzana.",
     "price": 15,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103456/BanApp.png",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -60,7 +60,7 @@
     "name": "Barra vainilla Rice Krispies",
     "description": "Barra de Rice Krispies sabor vainilla.",
     "price": 20,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106356/RKTreat.jpg",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -93,7 +93,7 @@
     "name": "Saborines",
     "description": "Saborines en varios sabores.",
     "price": 28,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106353/saborines.jpg",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -293,7 +293,7 @@
     "name": "Coca Cola Zero",
     "description": "Refresco Coca Cola Zero.",
     "price": 25,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106278/Cocazero.jpg",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -305,7 +305,7 @@
     "name": "Coca Cola Regular",
     "description": "Refresco Coca Cola regular.",
     "price": 35,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106279/CocaOrig.jpg",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -317,7 +317,7 @@
     "name": "Agua Mineral",
     "description": "Agua mineral embotellada.",
     "price": 28,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103456/AguaMine.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -329,7 +329,7 @@
     "name": "Free Life",
     "description": "Bebida Free Life.",
     "price": 28,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/freelife.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -341,7 +341,7 @@
     "name": "Schweppes Ginger",
     "description": "Refresco Schweppes Ginger.",
     "price": 30,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106372/schweppes.jpg",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -353,7 +353,7 @@
     "name": "Arizona tamaño regular",
     "description": "Bebida Arizona de tamaño regular.",
     "price": 30,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103454/Arizona.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -365,7 +365,7 @@
     "name": "Boing",
     "description": "Bebida Boing.",
     "price": 30,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103797/boingjugo.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -377,7 +377,7 @@
     "name": "Snapple",
     "description": "Bebida Snapple.",
     "price": 30,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106368/snapple.jpg",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -389,7 +389,7 @@
     "name": "Arizona tamaño jumbo",
     "description": "Bebida Arizona de tamaño jumbo.",
     "price": 35,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103453/Arizona_GT.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -398,22 +398,10 @@
   {
     "id": "BT-036",
     "businessId": "BT",
-    "name": "Jugo de naranja JUMEX",
-    "description": "Jugo de naranja JUMEX.",
+    "name": "Jugo JUMEX",
+    "description": "Jugo de naranja o arándano JUMEX.",
     "price": 35,
-    "image": "",
-    "status": "active",
-    "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
-  },
-  {
-    "id": "BT-037",
-    "businessId": "BT",
-    "name": "Jugo de naranja y arándano JUMEX",
-    "description": "Jugo JUMEX de naranja y arándano.",
-    "price": 35,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106325/jumex.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -425,7 +413,7 @@
     "name": "Jugo School JUMEX",
     "description": "Jugo School JUMEX.",
     "price": 35,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106326/JumexScool.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -437,7 +425,7 @@
     "name": "Electrolit",
     "description": "Bebida hidratante Electrolit.",
     "price": 40,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106287/Electrolite.png",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -449,7 +437,7 @@
     "name": "Yogurt",
     "description": "Yogurt individual.",
     "price": 25,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106370/yogurt.jpg",
     "status": "active",
     "category": "Bebidas",
     "modifications": [],
@@ -461,7 +449,7 @@
     "name": "Banderilla",
     "description": "Banderilla individual.",
     "price": 31,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103783/banderrilla.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -472,7 +460,7 @@
     "name": "Mollete 2 piezas",
     "description": "Dos piezas de mollete.",
     "price": 45,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106342/Molletes.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -483,7 +471,7 @@
     "name": "Sandwich jamón y queso",
     "description": "Sándwich de jamón y queso.",
     "price": 45,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106355/sandwich_J_Q.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -494,7 +482,7 @@
     "name": "Pizza pita jamón y queso",
     "description": "Pizza en pan pita con jamón y queso.",
     "price": 50,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106354/PizzaPita.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -516,7 +504,7 @@
     "name": "Croissant jamón y queso",
     "description": "Croissant relleno de jamón y queso.",
     "price": 55,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106279/CJQ.png",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -538,7 +526,7 @@
     "name": "Sandwich panela y espinaca",
     "description": "Sándwich de queso panela y espinaca.",
     "price": 55,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103457/2022-02_Sandwich_Pavo_Panela_1.png",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -549,7 +537,7 @@
     "name": "Dedos de queso venezolanos 3 piezas",
     "description": "Tres piezas de dedos de queso estilo venezolano.",
     "price": 55,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106287/D2Queso.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -560,7 +548,7 @@
     "name": "Hot dog",
     "description": "Hot dog individual.",
     "price": 60,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106325/jocho.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -571,7 +559,7 @@
     "name": "Avena",
     "description": "Avena preparada.",
     "price": 60,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103455/Avena.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -582,7 +570,7 @@
     "name": "Bagel",
     "description": "Bagel individual.",
     "price": 65,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103456/bagel.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -593,7 +581,7 @@
     "name": "Chapata doble jamón y queso",
     "description": "Chapata con doble jamón y queso.",
     "price": 65,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106259/chapata.jpg",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -604,7 +592,7 @@
     "name": "Chilaquiles naturales",
     "description": "Chilaquiles naturales.",
     "price": 65,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106258/chilaquiles.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -615,7 +603,7 @@
     "name": "Hamburguesa de Res Sencilla",
     "description": "Hamburguesa sencilla de carne de res.",
     "price": 65,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106315/HambSen.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -637,7 +625,7 @@
     "name": "Chapata PEPE",
     "description": "Chapata especial PEPE.",
     "price": 70,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106257/ChapataPP.jpg",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -648,7 +636,7 @@
     "name": "Ensalada de pollo o atún",
     "description": "Ensalada con opción de pollo o atún.",
     "price": 75,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/ensalada.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -659,7 +647,7 @@
     "name": "Hamburguesa de Res doble",
     "description": "Hamburguesa doble de carne de res.",
     "price": 80,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106314/HambDob.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -670,7 +658,7 @@
     "name": "Buster Burger",
     "description": "Hamburguesa Buster Burger.",
     "price": 85,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103814/BusterBurg.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -681,7 +669,7 @@
     "name": "Chilaquiles con milanesa de pollo",
     "description": "Chilaquiles acompañados de milanesa de pollo.",
     "price": 99,
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106278/chilaquilesMila.jpg",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -706,7 +694,7 @@
         "price": 64
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/cafefrap.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -731,7 +719,7 @@
         "price": 85
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106317/mochafrap.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -756,7 +744,7 @@
         "price": 86
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106248/CaraFrap.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -781,7 +769,7 @@
         "price": 88
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/C_CFrap.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -806,7 +794,7 @@
         "price": 80
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -831,7 +819,7 @@
         "price": 58
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106371/Smoothie.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -856,7 +844,7 @@
         "price": 74
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106256/ChaiFrap.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -881,7 +869,7 @@
         "price": 74
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Frapé"
@@ -1045,7 +1033,7 @@
         "price": 62
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106325/Latte.png",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1069,7 +1057,7 @@
         "price": 75
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106318/Mocha.png",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },
@@ -1117,7 +1105,7 @@
         "price": 43
       }
     ],
-    "image": "",
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/Espresso.png",
     "status": "active",
     "category": "Bebidas Calientes o Heladas"
   },

@@ -537,7 +537,8 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   horizontalScrollContainer: {
-    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 24,
   },
   loadMoreHint: {
     alignItems: "center",

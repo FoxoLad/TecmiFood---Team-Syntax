@@ -5,6 +5,8 @@ import {
     ActivityIndicator,
     Image,
     Modal,
+    NativeScrollEvent,
+    NativeSyntheticEvent,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -18,6 +20,8 @@ import { colors, radii } from "../../../constants/theme";
 import { useProductStore } from "../../../stores/useProduct";
 import type { Product } from "../../../types/product";
 
+const ORDERS_BATCH_SIZE = 5;
+
 export default function EmployeeOrdersScreen() {
   const products = useProductStore((state) => state.products);
   const isLoading = useProductStore((state) => state.isLoading);
@@ -26,12 +30,13 @@ export default function EmployeeOrdersScreen() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedFilter, setSelectedFilter] = useState("Pendientes");
   const [showReturnConfirmation, setShowReturnConfirmation] = useState(false);
+  const [visibleOrderCount, setVisibleOrderCount] = useState(ORDERS_BATCH_SIZE);
 
   useEffect(() => {
     if (products.length === 0) {
       fetchProducts();
     }
-  }, [fetchProducts]);
+  }, [fetchProducts, products.length]);
 
   const filteredProducts = products.filter((item: Product) => {
     const query = searchQuery.toLowerCase().trim();
@@ -55,6 +60,26 @@ export default function EmployeeOrdersScreen() {
     }, {}),
   );
 
+  const visibleOrders = orders.slice(0, visibleOrderCount);
+
+  const loadMoreOrders = () => {
+    setVisibleOrderCount((currentCount) =>
+      Math.min(currentCount + ORDERS_BATCH_SIZE, orders.length),
+    );
+  };
+
+  const handleOrdersScrollEnd = (
+    event: NativeSyntheticEvent<NativeScrollEvent>,
+  ) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    const reachedEnd =
+      contentOffset.y + layoutMeasurement.height >= contentSize.height - 120;
+
+    if (reachedEnd && visibleOrderCount < orders.length) {
+      loadMoreOrders();
+    }
+  };
+
   const confirmReturnToClient = () => {
     setShowReturnConfirmation(true);
   };
@@ -68,6 +93,7 @@ export default function EmployeeOrdersScreen() {
     <SafeAreaView style={style.container}>
       <ScrollView
         contentContainerStyle={style.listContent}
+        onMomentumScrollEnd={handleOrdersScrollEnd}
         showsVerticalScrollIndicator={false}
       >
         <View style={style.header}>
@@ -88,7 +114,10 @@ export default function EmployeeOrdersScreen() {
           {["Pendientes", "Entregados", "Todos"].map((filter) => (
             <Pressable
               key={filter}
-              onPress={() => setSelectedFilter(filter)}
+              onPress={() => {
+                setSelectedFilter(filter);
+                setVisibleOrderCount(ORDERS_BATCH_SIZE);
+              }}
               style={style.filterButton}
             >
               <Text
@@ -113,7 +142,10 @@ export default function EmployeeOrdersScreen() {
           <Ionicons color="#333333" name="search-outline" size={27} />
           <TextInput
             autoCapitalize="none"
-            onChangeText={setSearchQuery}
+            onChangeText={(query) => {
+              setSearchQuery(query);
+              setVisibleOrderCount(ORDERS_BATCH_SIZE);
+            }}
             placeholder="Buscar"
             placeholderTextColor="#333333"
             style={style.searchInput}
@@ -129,7 +161,7 @@ export default function EmployeeOrdersScreen() {
             </Text>
           </View>
         ) : (
-          orders.map((orderProducts) => {
+          visibleOrders.map((orderProducts) => {
             const orderNumber = orderProducts[0].NoOrder;
             const total = orderProducts.reduce(
               (sum, product) => sum + product.price,

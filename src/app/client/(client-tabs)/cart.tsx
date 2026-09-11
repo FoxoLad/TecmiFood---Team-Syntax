@@ -1,4 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { router } from "expo-router";
 import { useMemo } from "react";
 import {
     FlatList,
@@ -11,17 +12,37 @@ import {
 import SafeView from "../../../components/SafeView";
 import { getProductImageSource } from "../../../constants/images";
 import { colors, radii, spacing } from "../../../constants/theme";
-import { useCartStore } from "../../../stores/useCart";
+import { MAX_PRODUCT_QUANTITY, useCartStore } from "../../../stores/useCart";
+import { useOrders } from "../../../stores/useOrders";
 
 export default function CartScreen() {
   const items = useCartStore((state) => state.items);
+  const clearCart = useCartStore((state) => state.clearCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const addOrder = useOrders((state) => state.addOrder);
   const total = useMemo(
     () => items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
     [items],
   );
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const placeOrder = () => {
+    if (items.length === 0) {
+      return;
+    }
+
+    addOrder({
+      id: `order-${Date.now()}`,
+      customerName: "Cliente",
+      items: items.map(({ product, quantity }) => ({ product, quantity })),
+      total,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+    });
+    clearCart();
+    router.replace("/client/preparing");
+  };
 
   return (
     <SafeView style={styles.container}>
@@ -105,10 +126,15 @@ export default function CartScreen() {
                       <Pressable
                         accessibilityLabel={`Aumentar cantidad de ${item.product.name}`}
                         accessibilityRole="button"
+                        disabled={item.quantity >= MAX_PRODUCT_QUANTITY}
                         onPress={() => updateQuantity(index, item.quantity + 1)}
                         style={styles.quantityButton}
                       >
-                        <Ionicons color={colors.text} name="add" size={16} />
+                        <Ionicons
+                          color={item.quantity >= MAX_PRODUCT_QUANTITY ? colors.border : colors.text}
+                          name="add"
+                          size={16}
+                        />
                       </Pressable>
                     </View>
                   </View>
@@ -125,7 +151,18 @@ export default function CartScreen() {
             <Text style={styles.totalLabel}>Total del pedido</Text>
             <Text style={styles.totalHint}>{itemCount} productos</Text>
           </View>
-          <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+          <View style={styles.totalActions}>
+            <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+            <Pressable
+              accessibilityLabel="Realizar pedido"
+              accessibilityRole="button"
+              onPress={placeOrder}
+              style={styles.orderButton}
+            >
+              <Ionicons color="#FFFFFF" name="checkmark-circle-outline" size={21} />
+              <Text style={styles.orderButtonText}>Realizar pedido</Text>
+            </Pressable>
+          </View>
         </View>
       ) : null}
     </SafeView>
@@ -292,6 +329,26 @@ const styles = StyleSheet.create({
     color: colors.accent,
     fontSize: 25,
     fontWeight: "900",
+  },
+  totalActions: {
+    alignItems: "flex-end",
+    gap: 8,
+  },
+  orderButton: {
+    alignItems: "center",
+    backgroundColor: colors.accent,
+    borderRadius: 14,
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+    minWidth: 176,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+  },
+  orderButtonText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "800",
   },
   emptyState: {
     alignItems: "center",

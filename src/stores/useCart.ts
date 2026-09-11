@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { Product } from "../types/product";
 
+export const MAX_PRODUCT_QUANTITY = 4;
+
 export type CartItem = {
   product: Product;
   quantity: number;
@@ -20,13 +22,19 @@ export const useCartStore = create<CartStore>()((set) => ({
   items: [],
   addItem: (item) =>
     set((state) => ({
-      items: [...state.items, item],
+      items: [
+        ...state.items,
+        { ...item, quantity: Math.min(MAX_PRODUCT_QUANTITY, Math.max(1, item.quantity)) },
+      ],
     })),
   updateQuantity: (index, quantity) =>
     set((state) => ({
       items: state.items.map((item, itemIndex) =>
         itemIndex === index
-          ? { ...item, quantity: Math.max(1, quantity) }
+          ? {
+              ...item,
+              quantity: Math.min(MAX_PRODUCT_QUANTITY, Math.max(1, quantity)),
+            }
           : item,
       ),
     })),

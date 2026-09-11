@@ -6,7 +6,6 @@ import {
     Modal,
     Pressable,
     ScrollView,
-    Share,
     StyleSheet,
     Text,
     TextInput,
@@ -17,7 +16,7 @@ import SafeView from "../../../../components/SafeView";
 import { getProductImageSource } from "../../../../constants/images";
 import { colors, radii } from "../../../../constants/theme";
 import productsData from "../../../../data/products.json";
-import { useCartStore } from "../../../../stores/useCart";
+import { MAX_PRODUCT_QUANTITY, useCartStore } from "../../../../stores/useCart";
 import { useFavoritesStore } from "../../../../stores/useFavorites";
 import { Product } from "../../../../types/product";
 
@@ -85,17 +84,6 @@ export default function BustersProductScreen() {
         setModalType("success");
     };
 
-    const shareProduct = () => {
-        if (!product) {
-            return;
-        }
-
-        Share.share({
-            message: `${product.name}\n${product.description}\nPrecio: $${product.price.toFixed(2)}`,
-            title: product.name,
-        });
-    };
-
     const toggleModification = (modification: string) => {
         setSelectedModifications((current) =>
             current.includes(modification)
@@ -134,12 +122,12 @@ export default function BustersProductScreen() {
 
                 <View style={styles.headerActions}>
                     <Pressable
-                        accessibilityLabel="Compartir producto"
+                        accessibilityLabel="Ir al carrito"
                         accessibilityRole="button"
-                        onPress={shareProduct}
+                        onPress={() => router.push("/client/(client-tabs)/cart")}
                         style={styles.iconButton}
                     >
-                        <Ionicons name="share-outline" size={25} color={colors.text} />
+                        <Ionicons name="cart-outline" size={25} color={colors.text} />
                     </Pressable>
                     <Pressable
                         accessibilityLabel={isFavorite ? "Quitar de favoritos" : "Guardar como favorito"}
@@ -250,10 +238,19 @@ export default function BustersProductScreen() {
                         <Pressable
                             accessibilityLabel="Aumentar cantidad"
                             accessibilityRole="button"
-                            onPress={() => setQuantity((current) => current + 1)}
+                            disabled={quantity >= MAX_PRODUCT_QUANTITY}
+                            onPress={() =>
+                                setQuantity((current) =>
+                                    Math.min(MAX_PRODUCT_QUANTITY, current + 1),
+                                )
+                            }
                             style={styles.quantityButton}
                         >
-                            <Ionicons color={colors.text} name="add" size={18} />
+                            <Ionicons
+                                color={quantity >= MAX_PRODUCT_QUANTITY ? colors.textSecondary : colors.text}
+                                name="add"
+                                size={18}
+                            />
                         </Pressable>
                     </View>
                 </View>

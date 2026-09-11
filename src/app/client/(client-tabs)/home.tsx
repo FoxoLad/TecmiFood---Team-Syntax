@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
+import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import Constants from "expo-constants";
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -10,7 +11,6 @@ import {
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
 
@@ -46,7 +46,6 @@ export default function HomeScreen() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Truco maestro para obtener la IP automáticamente en local
   // hostUri nos da algo como "192.168.1.75:8081", lo cortamos para quedarnos solo con la IP
   const hostUri = Constants.expoConfig?.hostUri;
   const localIp = hostUri ? hostUri.split(":")[0] : "localhost";
@@ -81,7 +80,7 @@ export default function HomeScreen() {
       title: "BEE SWEET",
       headerColor: "#d4af37",
       cardBgColor: "#e2bf43",
-      // DATOS SIMULADOS TEMPORALES PARA BEE SWEET
+      //DATOS SIMULADOS TEMPORALES PARA BEE SWEET (BORRAR AL TENER LOS REALES EN LA API)
       data: [
         {
           id: "BS-001",
@@ -109,19 +108,23 @@ export default function HomeScreen() {
 
   return (
     <SafeView style={styles.safeArea}>
+      {/* Barra de notificaciones */}
       <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent={true}
       />
 
+      {/*Contenedor Principal de la página*/}
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        {/*Título principal*/}
         <Text style={styles.mainTitle}>CAFETERÍAS</Text>
         <View style={styles.titleDivider} />
 
+        {/*Banner Promocional*/}
         <View style={styles.bannerContainer}>
           <Image
             source={require("../../../../assets/images/promotionBanner/PromocionalPrueba.jpg")}
@@ -130,6 +133,7 @@ export default function HomeScreen() {
           />
         </View>
 
+        {/*Botones de Acción*/}
         <View style={styles.ActionButtonsContainer}>
           <Pressable style={styles.ActionButton}>
             <Ionicons name="heart-outline" size={16} color="#000000" />
@@ -145,10 +149,13 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
+        {/*Pantalla de carga mientras se conecta a MongoDB*/}
         {isLoading ? (
           <View style={{ marginTop: 50 }}>
             <ActivityIndicator size="large" color="#8F651A" />
-            <Text style={{ textAlign: "center", marginTop: 10 }}>Cargando menú...</Text>
+            <Text style={{ textAlign: "center", marginTop: 10 }}>
+              Cargando menú...
+            </Text>
           </View>
         ) : (
           cafeteriaSections.map((section) => (
@@ -170,12 +177,14 @@ export default function HomeScreen() {
                   }
                 }}
               >
+                {/*Header de la sección de cafetería*/}
                 <Text style={styles.sectionTitleText}>{section.title}</Text>
                 <Ionicons name="chevron-forward" size={22} color="#ffffff" />
               </Pressable>
               <View style={styles.headerDivider} />
               <Text style={styles.subHeaderTitle}>Más vendidos:</Text>
 
+              {/*Scroll horizontal de los productos*/}
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -185,15 +194,15 @@ export default function HomeScreen() {
                 {section.data.map((item) => (
                   <View key={item.id} style={styles.productCard}>
                     {item.image ? (
-                      <Image 
-                        source={{ uri: item.image }} 
-                        style={styles.productImage} 
+                      <Image
+                        source={{ uri: item.image }}
+                        style={styles.productImage}
                         resizeMode="cover"
                       />
                     ) : (
                       <View style={styles.productImageWhiteBox} />
                     )}
-                    
+
                     <Text style={styles.productName} numberOfLines={1}>
                       {item.name}
                     </Text>

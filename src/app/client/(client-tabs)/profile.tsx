@@ -1,7 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRouter } from "expo-router";
+import { useRouter, type Href } from "expo-router";
 import { useState } from "react";
 import {
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
     Pressable,
     StyleSheet,
     Text,
@@ -11,14 +14,30 @@ import {
 import SafeView from "../../../components/SafeView";
 import { colors, radii } from "../../../constants/theme";
 
+// NOTE: this value ships inside the app bundle, so it is only a soft gate.
+// Real protection needs the code to be validated by the backend.
+const EMPLOYEE_CODE = "12345";
+
 export default function ProfileScreen() {
   const [employeeCode, setEmployeeCode] = useState("");
   const [codeError, setCodeError] = useState(false);
   const router = useRouter();
 
+  // Cast to Href so these compile even if .expo/types/router.d.ts is stale.
+  // Once the route types regenerate you can drop the casts.
+  const openActiveOrders = () => router.push("/client/orders?view=active" as Href);
+
+  const openOrderHistory = () => router.push("/client/orders?view=history" as Href);
+
+  const openFavorites = () => router.push("/client/favorites");
+
   const accessEmployeeOrders = () => {
-    if (employeeCode.trim() === "12345") {
+    if (employeeCode.trim() === EMPLOYEE_CODE) {
       setCodeError(false);
+      // Clear the field: this tab stays mounted, so the code would otherwise
+      // still be sitting in the input when the employee returns to the client view.
+      setEmployeeCode("");
+      Keyboard.dismiss();
       router.push("/employee/orders");
       return;
     }
@@ -28,67 +47,86 @@ export default function ProfileScreen() {
 
   return (
     <SafeView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.title}>INFORMACIÓN DE USUARIO</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.keyboardAvoider}
+      >
+        <Pressable accessible={false} onPress={Keyboard.dismiss} style={styles.container}>
+          <Text style={styles.title}>INFORMACIÓN DE USUARIO</Text>
 
-        <Text style={styles.userName}>Usuario #001</Text>
+          <Text style={styles.userName}>Usuario #001</Text>
 
-        <View style={styles.cardsRow}>
-          <Pressable accessibilityRole="button" style={styles.smallCard}>
-            <Text style={styles.cardTitle}>Pedidos Activos</Text>
-            <View style={styles.iconCircle}>
-              <Ionicons color="#000000" name="cart-outline" size={39} />
-            </View>
-            <Text style={styles.cardDescription}>Seguimiento de tus órdenes</Text>
-          </Pressable>
+          <View style={styles.cardsRow}>
+            <Pressable
+              accessibilityLabel="Ver pedidos activos"
+              accessibilityRole="button"
+              onPress={openActiveOrders}
+              style={({ pressed }) => [styles.smallCard, pressed && styles.pressed]}
+            >
+              <Text style={styles.cardTitle}>Pedidos Activos</Text>
+              <View style={styles.iconCircle}>
+                <Ionicons color="#000000" name="cart-outline" size={39} />
+              </View>
+              <Text style={styles.cardDescription}>Seguimiento de tus órdenes</Text>
+            </Pressable>
 
-          <Pressable accessibilityRole="button" style={styles.smallCard}>
-            <Text style={styles.cardTitle}>Historial</Text>
-            <View style={styles.iconCircle}>
-              <Ionicons color="#000000" name="time-outline" size={39} />
-            </View>
-            <Text style={styles.cardDescription}>Ver detalles de tus pedidos anteriores</Text>
-          </Pressable>
-        </View>
-
-        <Pressable accessibilityRole="button" style={styles.favoritesCard}>
-          <Text style={styles.cardTitle}>Mis Favoritos</Text>
-          <View style={styles.iconCircle}>
-            <Ionicons color="#ef1d25" name="heart-outline" size={42} />
+            <Pressable
+              accessibilityLabel="Ver historial de pedidos"
+              accessibilityRole="button"
+              onPress={openOrderHistory}
+              style={({ pressed }) => [styles.smallCard, pressed && styles.pressed]}
+            >
+              <Text style={styles.cardTitle}>Historial</Text>
+              <View style={styles.iconCircle}>
+                <Ionicons color="#000000" name="time-outline" size={39} />
+              </View>
+              <Text style={styles.cardDescription}>Ver detalles de tus pedidos anteriores</Text>
+            </Pressable>
           </View>
-          <Text style={styles.cardDescription}>Tus productos guardados</Text>
-        </Pressable>
 
-        <View style={styles.employeeCodeContainer}>
-          <Ionicons color="#333333" name="search-outline" size={31} />
-          <TextInput
-            autoCapitalize="characters"
-            keyboardType="number-pad"
-            onChangeText={(code) => {
-              setEmployeeCode(code);
-              setCodeError(false);
-            }}
-            onSubmitEditing={accessEmployeeOrders}
-            placeholder="CÓDIGO DE EMPLEADO"
-            placeholderTextColor="#333333"
-            returnKeyType="done"
-            style={styles.employeeCodeInput}
-            value={employeeCode}
-          />
           <Pressable
-            accessibilityLabel="Acceder a los pedidos de empleados"
+            accessibilityLabel="Ver mis favoritos"
             accessibilityRole="button"
-            onPress={accessEmployeeOrders}
-            style={styles.accessButton}
+            onPress={openFavorites}
+            style={({ pressed }) => [styles.favoritesCard, pressed && styles.pressed]}
           >
-            <Ionicons color="#ffffff" name="arrow-forward" size={22} />
+            <Text style={styles.cardTitle}>Mis Favoritos</Text>
+            <View style={styles.iconCircle}>
+              <Ionicons color="#ef1d25" name="heart-outline" size={42} />
+            </View>
+            <Text style={styles.cardDescription}>Tus productos guardados</Text>
           </Pressable>
-        </View>
 
-        {codeError ? <Text style={styles.errorMessage}>Código de empleado inválido</Text> : null}
+          <View style={styles.employeeCodeContainer}>
+            <TextInput
+              autoCapitalize="characters"
+              keyboardType="number-pad"
+              onChangeText={(code) => {
+                setEmployeeCode(code);
+                setCodeError(false);
+              }}
+              onSubmitEditing={accessEmployeeOrders}
+              placeholder="CÓDIGO DE EMPLEADO"
+              placeholderTextColor="#333333"
+              returnKeyType="done"
+              style={styles.employeeCodeInput}
+              value={employeeCode}
+            />
+            <Pressable
+              accessibilityLabel="Acceder a los pedidos de empleados"
+              accessibilityRole="button"
+              onPress={accessEmployeeOrders}
+              style={({ pressed }) => [styles.accessButton, pressed && styles.pressed]}
+            >
+              <Ionicons color="#ffffff" name="arrow-forward" size={22} />
+            </Pressable>
+          </View>
 
-        <Text style={styles.version}>Versión 1.0.0</Text>
-      </View>
+          {codeError ? <Text style={styles.errorMessage}>Código de empleado inválido</Text> : null}
+
+          <Text style={styles.version}>Versión 1.0.0</Text>
+        </Pressable>
+      </KeyboardAvoidingView>
     </SafeView>
   );
 }
@@ -98,9 +136,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1,
   },
+  keyboardAvoider: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  pressed: {
+    opacity: 0.72,
   },
   title: {
     borderBottomColor: colors.border,

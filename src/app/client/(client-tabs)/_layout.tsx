@@ -26,16 +26,20 @@ export default function ClientTabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.blue,
+        tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.textSecondary,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "700",
+        },
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           borderTopWidth: 1,
-          height: 64 + insets.bottom,
+          height: 68 + insets.bottom,
           paddingBottom: insets.bottom + 6,
-          paddingTop: 10,
+          paddingTop: 8,
         },
         headerShown: false,
       }}
@@ -44,7 +48,7 @@ export default function ClientTabsLayout() {
       <Tabs.Screen name="explore" options={{ href: null }} />
       <Tabs.Screen name="favorites" options={{ href: null }} />
       <Tabs.Screen name="cart" options={{ title: "Carrito", tabBarIcon: renderCartIcon }} />
-      <Tabs.Screen name="notifications" options={{ title: "Notificaciones", tabBarIcon: ({ color }) => <Ionicons color={color} name="notifications-outline" size={28} /> }} />
+      <Tabs.Screen name="notifications" options={{ title: "Avisos", tabBarIcon: ({ color }) => <Ionicons color={color} name="notifications-outline" size={28} /> }} />
       <Tabs.Screen name="profile" options={{ title: "Perfil", tabBarIcon: ({ color }) => <Ionicons color={color} name="person-outline" size={28} /> }} />
     </Tabs>
   );

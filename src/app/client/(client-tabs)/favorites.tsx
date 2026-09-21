@@ -2,14 +2,13 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import {
     FlatList,
-    Image,
     Pressable,
     StyleSheet,
     Text,
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
-import { getProductImageSource } from "../../../constants/images";
+import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii, spacing } from "../../../constants/theme";
 import { useFavoritesStore } from "../../../stores/useFavorites";
 
@@ -21,7 +20,7 @@ export default function FavoritesScreen() {
     <SafeView style={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.eyebrow}>TU COLECCION</Text>
+          <Text style={styles.eyebrow}>TU COLECCIÓN</Text>
           <Text style={styles.title}>Mis favoritos</Text>
         </View>
         <View style={styles.headerIcon}>
@@ -34,9 +33,9 @@ export default function FavoritesScreen() {
           <View style={styles.emptyIcon}>
             <Ionicons name="heart-outline" size={42} color={colors.accent} />
           </View>
-          <Text style={styles.emptyTitle}>Aun no tienes favoritos</Text>
+          <Text style={styles.emptyTitle}>Aún no tienes favoritos</Text>
           <Text style={styles.emptyMessage}>
-            Toca el corazon de un producto para guardarlo aqui.
+            Toca el corazón de un producto para guardarlo aquí.
           </Text>
         </View>
       ) : (
@@ -57,10 +56,11 @@ export default function FavoritesScreen() {
               }
               style={({ pressed }) => [styles.productCard, pressed && styles.productCardPressed]}
             >
-              <Image
-                source={getProductImageSource(item.image)}
+              <ProductImage
+                contentFit="cover"
+                image={item.image}
+                name={item.name}
                 style={styles.productImage}
-                resizeMode="contain"
               />
               <View style={styles.productInfo}>
                 <Text numberOfLines={2} style={styles.productName}>
@@ -131,11 +131,16 @@ const styles = StyleSheet.create({
   productCard: {
     alignItems: "center",
     backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.medium,
+    borderColor: "#E7E2D8",
+    borderRadius: 20,
     borderWidth: 1,
+    elevation: 3,
     flexDirection: "row",
     padding: 12,
+    shadowColor: "#302512",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
   },
   productCardPressed: {
     opacity: 0.72,

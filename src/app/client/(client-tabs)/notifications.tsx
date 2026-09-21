@@ -5,51 +5,48 @@ import { colors, radii, spacing } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
 import type { OrderStatus } from "../../../types/order";
 
-const statusLabels: Record<OrderStatus, string> = {
-  delivered: "Pedido entregado",
-  pending: "Pedido recibido",
-  preparing: "Tu pedido se está preparando",
-  ready: "Tu pedido está listo",
+const statusIcon: Record<OrderStatus, keyof typeof Ionicons.glyphMap> = {
+  pending: "receipt-outline",
+  preparing: "restaurant-outline",
+  ready: "checkmark-circle-outline",
+  delivered: "checkmark-done-outline",
 };
 
 export default function NotificationsScreen() {
-  const orders = useOrders((state) => state.orders);
+  const alerts = useOrders((state) => state.alerts);
 
   return (
     <SafeView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.eyebrow}>ACTUALIZACIONES</Text>
-        <Text style={styles.title}>Notificaciones</Text>
+        <Text style={styles.title}>Avisos</Text>
+        <Text style={styles.subtitle}>Te avisamos cada vez que tu pedido cambie de estado.</Text>
       </View>
 
-      {orders.length === 0 ? (
+      {alerts.length === 0 ? (
         <View style={styles.emptyState}>
           <View style={styles.emptyIcon}>
             <Ionicons color={colors.accent} name="notifications-outline" size={42} />
           </View>
-          <Text style={styles.emptyTitle}>No tienes notificaciones</Text>
+          <Text style={styles.emptyTitle}>Todavía no hay avisos</Text>
           <Text style={styles.emptyMessage}>
-            Aquí verás las actualizaciones de tus pedidos.
+            Cuando tu pedido se reciba, se prepare o esté listo, te llegará aquí.
           </Text>
         </View>
       ) : (
         <FlatList
           contentContainerStyle={styles.listContent}
-          data={orders}
-          keyExtractor={(order) => order.id}
+          data={alerts}
+          keyExtractor={(alert) => alert.id}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <View style={styles.notificationCard}>
               <View style={styles.notificationIcon}>
-                <Ionicons color={colors.accent} name="restaurant-outline" size={24} />
+                <Ionicons color={colors.accent} name={statusIcon[item.status]} size={24} />
               </View>
               <View style={styles.notificationContent}>
-                <Text style={styles.notificationTitle}>
-                  {statusLabels[item.status]}
-                </Text>
-                <Text style={styles.notificationMessage}>
-                  Orden #{String(orders.length - index).padStart(3, "0")} · ${item.total.toFixed(2)}
-                </Text>
+                <Text style={styles.notificationTitle}>{item.title}</Text>
+                <Text style={styles.notificationMessage}>{item.body}</Text>
                 <Text style={styles.notificationDate}>
                   {new Date(item.createdAt).toLocaleString("es-MX")}
                 </Text>
@@ -83,6 +80,12 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     marginTop: 2,
   },
+  subtitle: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 6,
+  },
   listContent: {
     gap: 12,
     padding: spacing.screen,
@@ -90,11 +93,16 @@ const styles = StyleSheet.create({
   notificationCard: {
     alignItems: "center",
     backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
+    borderColor: "#E7E2D8",
+    borderRadius: 20,
     borderWidth: 1,
+    elevation: 3,
     flexDirection: "row",
     padding: 16,
+    shadowColor: "#302512",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
   },
   notificationIcon: {
     alignItems: "center",
@@ -116,6 +124,7 @@ const styles = StyleSheet.create({
   notificationMessage: {
     color: colors.textSecondary,
     fontSize: 13,
+    lineHeight: 18,
     marginTop: 5,
   },
   notificationDate: {

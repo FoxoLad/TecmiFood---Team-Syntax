@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { Product } from "../types/product";
 
+type ApiProduct = Product & { _id?: string };
+
 type ProductStore = {
   products: Product[];
   isLoading: boolean;
@@ -18,15 +20,21 @@ export const useProductStore = create<ProductStore>()((set) => ({
       const res = await fetch(
         "https://tecmifood-team-syntax.onrender.com/api/productos",
       );
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(`Error HTTP ${res.status}`);
+      }
+
+      const data: unknown = await res.json();
+      const list = Array.isArray(data) ? (data as ApiProduct[]) : [];
 
       // Asignamos un NoOrder único a cada producto de la API
       // para simular que cada producto es una orden independiente
-      const productsWithOrders = data.map((p: any, index: number) => ({
-        ...p,
+      const productsWithOrders = list.map((product, index) => ({
+        ...product,
+        id: product.id || product._id || `product-${index}`,
         NoOrder: index + 1,
-        status: p.status === "active" ? "Pendiente" : p.status,
-      })) as Product[];
+        status: product.status === "active" ? "Pendiente" : product.status,
+      }));
 
       set({ products: productsWithOrders, isLoading: false });
     } catch (error) {

@@ -2,7 +2,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
-    Image,
     Modal,
     Pressable,
     ScrollView,
@@ -13,7 +12,7 @@ import {
 } from "react-native";
 
 import SafeView from "../../../../components/SafeView";
-import { getProductImageSource } from "../../../../constants/images";
+import { ProductImage } from "../../../../components/ProductImage";
 import { colors, radii } from "../../../../constants/theme";
 import productsData from "../../../../data/products.json";
 import { MAX_PRODUCT_QUANTITY, useCartStore } from "../../../../stores/useCart";
@@ -148,13 +147,12 @@ export default function BustersProductScreen() {
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={styles.imageBox}>
-                    <Image
-                        source={getProductImageSource(product.image)}
-                        style={styles.image}
-                        resizeMode="contain"
-                    />
-                </View>
+                <ProductImage
+                    contentFit="contain"
+                    image={product.image}
+                    name={product.name}
+                    style={styles.imageBox}
+                />
 
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.category}>{product.category}</Text>
@@ -360,17 +358,15 @@ const styles = StyleSheet.create({
         paddingBottom: 24,
     },
     imageBox: {
-        alignItems: "center",
         backgroundColor: colors.surface,
-        borderColor: colors.border,
-        borderWidth: 1,
-        height: 220,
-        justifyContent: "center",
+        borderRadius: 24,
+        elevation: 4,
+        height: 240,
         marginBottom: 20,
-        width: "100%",
-    },
-    image: {
-        height: "100%",
+        shadowColor: "#302512",
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
         width: "100%",
     },
     name: {

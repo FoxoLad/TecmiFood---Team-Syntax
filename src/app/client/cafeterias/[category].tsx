@@ -2,7 +2,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
-    Image,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -12,7 +11,7 @@ import {
 } from "react-native";
 
 import SafeView from "../../../components/SafeView";
-import { getProductImageSource } from "../../../constants/images";
+import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii } from "../../../constants/theme";
 import productsData from "../../../data/products.json";
 import { Product } from "../../../types/product";
@@ -83,13 +82,12 @@ export default function CategoryScreen() {
                         }
                         style={styles.productCard}
                     >
-                        <View style={styles.productImageBox}>
-                            <Image
-                                source={getProductImageSource(product.image)}
-                                style={styles.productImage}
-                                resizeMode="contain"
-                            />
-                        </View>
+                        <ProductImage
+                            contentFit="contain"
+                            image={product.image}
+                            name={product.name}
+                            style={styles.productImageBox}
+                        />
 
                         <Text numberOfLines={2} style={styles.productName}>
                             {product.name}
@@ -157,20 +155,21 @@ const styles = StyleSheet.create({
     },
     productCard: {
         alignItems: "center",
+        backgroundColor: colors.surface,
+        borderRadius: 18,
+        padding: 10,
         width: "30%",
+        shadowColor: "#302512",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
     },
     productImageBox: {
-        alignItems: "center",
-        backgroundColor: colors.surface,
-        borderColor: colors.border,
-        borderWidth: 1,
+        backgroundColor: "#F8F3E8",
+        borderRadius: 16,
         height: 100,
-        justifyContent: "center",
         marginBottom: 8,
-        width: 100,
-    },
-    productImage: {
-        height: "100%",
         width: "100%",
     },
     productName: {

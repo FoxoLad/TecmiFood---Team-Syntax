@@ -29,7 +29,7 @@ export default function ProfileScreen() {
 
   const openOrderHistory = () => router.push("/client/orders?view=history" as Href);
 
-  const openFavorites = () => router.push("/client/favorites");
+  const openFavorites = () => router.push("/client/(client-tabs)/favorites");
 
   const accessEmployeeOrders = () => {
     if (employeeCode.trim() === EMPLOYEE_CODE) {
@@ -52,9 +52,12 @@ export default function ProfileScreen() {
         style={styles.keyboardAvoider}
       >
         <Pressable accessible={false} onPress={Keyboard.dismiss} style={styles.container}>
-          <Text style={styles.title}>INFORMACIÓN DE USUARIO</Text>
+          <View>
+            <Text style={styles.kicker}>MI CUENTA</Text>
+            <Text style={styles.title}>Mi perfil</Text>
+          </View>
 
-          <Text style={styles.userName}>Usuario #001</Text>
+          <Text style={styles.userName}>Cliente</Text>
 
           <View style={styles.cardsRow}>
             <Pressable
@@ -65,9 +68,9 @@ export default function ProfileScreen() {
             >
               <Text style={styles.cardTitle}>Pedidos Activos</Text>
               <View style={styles.iconCircle}>
-                <Ionicons color="#000000" name="cart-outline" size={39} />
+                <Ionicons color={colors.accent} name="cart-outline" size={32} />
               </View>
-              <Text style={styles.cardDescription}>Seguimiento de tus órdenes</Text>
+              <Text style={styles.cardDescription}>Sigue el estado de tus pedidos</Text>
             </Pressable>
 
             <Pressable
@@ -78,7 +81,7 @@ export default function ProfileScreen() {
             >
               <Text style={styles.cardTitle}>Historial</Text>
               <View style={styles.iconCircle}>
-                <Ionicons color="#000000" name="time-outline" size={39} />
+                <Ionicons color={colors.accent} name="time-outline" size={32} />
               </View>
               <Text style={styles.cardDescription}>Ver detalles de tus pedidos anteriores</Text>
             </Pressable>
@@ -97,6 +100,7 @@ export default function ProfileScreen() {
             <Text style={styles.cardDescription}>Tus productos guardados</Text>
           </Pressable>
 
+          <Text style={styles.employeeHint}>¿Eres de la cafetería? Ingresa tu código para ver y aceptar pedidos.</Text>
           <View style={styles.employeeCodeContainer}>
             <TextInput
               autoCapitalize="characters"
@@ -106,7 +110,7 @@ export default function ProfileScreen() {
                 setCodeError(false);
               }}
               onSubmitEditing={accessEmployeeOrders}
-              placeholder="CÓDIGO DE EMPLEADO"
+              placeholder="Código de empleado"
               placeholderTextColor="#333333"
               returnKeyType="done"
               style={styles.employeeCodeInput}
@@ -147,22 +151,23 @@ const styles = StyleSheet.create({
     opacity: 0.72,
   },
   title: {
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
-    fontSize: 29,
+    color: colors.text,
+    fontSize: 32,
     fontWeight: "800",
-    paddingBottom: 8,
-    paddingTop: 3,
-    textAlign: "center",
+    marginTop: 2,
+  },
+  kicker: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 1.4,
+    paddingTop: 8,
   },
   userName: {
-    alignSelf: "flex-start",
-    borderBottomColor: "#000000",
-    borderBottomWidth: 1,
-    fontSize: 44,
-    fontWeight: "500",
-    marginTop: 25,
-    paddingBottom: 2,
+    color: colors.textSecondary,
+    fontSize: 18,
+    fontWeight: "700",
+    marginTop: 10,
   },
   cardsRow: {
     flexDirection: "row",
@@ -172,25 +177,35 @@ const styles = StyleSheet.create({
   smallCard: {
     alignItems: "center",
     backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.medium,
-    borderWidth: 1.3,
+    borderColor: "#E7E2D8",
+    borderRadius: 20,
+    borderWidth: 1,
+    elevation: 3,
     flex: 1,
-    height: 130,
+    height: 146,
     justifyContent: "space-between",
-    paddingHorizontal: 5,
-    paddingVertical: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+    shadowColor: "#302512",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
   },
   favoritesCard: {
     alignItems: "center",
     backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.medium,
-    borderWidth: 1.3,
-    height: 130,
+    borderColor: "#E7E2D8",
+    borderRadius: 20,
+    borderWidth: 1,
+    elevation: 3,
+    height: 146,
     justifyContent: "space-between",
-    marginTop: 22,
-    paddingVertical: 8,
+    marginTop: 16,
+    paddingVertical: 12,
+    shadowColor: "#302512",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
   },
   cardTitle: {
     fontSize: 18,
@@ -198,15 +213,22 @@ const styles = StyleSheet.create({
   },
   iconCircle: {
     alignItems: "center",
-    borderColor: colors.border,
+    backgroundColor: colors.accentSoft,
     borderRadius: 30,
-    borderWidth: 1.3,
-    height: 55,
+    height: 56,
     justifyContent: "center",
-    width: 55,
+    width: 56,
   },
   cardDescription: {
     fontSize: 13,
+    textAlign: "center",
+  },
+  employeeHint: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: "auto",
+    paddingBottom: 8,
     textAlign: "center",
   },
   employeeCodeContainer: {
@@ -216,7 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.pill,
     borderWidth: 1.3,
     flexDirection: "row",
-    marginTop: "auto",
+    marginTop: 0,
     paddingHorizontal: 14,
   },
   employeeCodeInput: {

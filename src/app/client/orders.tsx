@@ -3,9 +3,10 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../components/SafeView";
+import { ProductImage } from "../../components/ProductImage";
 import { colors, radii, spacing } from "../../constants/theme";
 import { useOrders } from "../../stores/useOrders";
-import type { Order, OrderStatus } from "../../types/order";
+import { ORDER_STATUS_LABELS, type OrderStatus } from "../../types/order";
 
 type OrdersView = "active" | "history";
 
@@ -13,10 +14,10 @@ const statusStyles: Record<
   OrderStatus,
   { backgroundColor: string; color: string; label: string }
 > = {
-  pending: { backgroundColor: colors.accentSoft, color: colors.accent, label: "Recibido" },
-  preparing: { backgroundColor: "#E5F1FF", color: "#0A5FCC", label: "En preparación" },
-  ready: { backgroundColor: "#E3F6E8", color: "#15803d", label: "Listo para recoger" },
-  delivered: { backgroundColor: colors.surfaceMuted, color: colors.textSecondary, label: "Entregado" },
+  pending: { backgroundColor: colors.accentSoft, color: colors.accent, label: ORDER_STATUS_LABELS.pending },
+  preparing: { backgroundColor: "#E5F1FF", color: "#0A5FCC", label: ORDER_STATUS_LABELS.preparing },
+  ready: { backgroundColor: "#E3F6E8", color: "#15803d", label: ORDER_STATUS_LABELS.ready },
+  delivered: { backgroundColor: colors.surfaceMuted, color: colors.textSecondary, label: ORDER_STATUS_LABELS.delivered },
 };
 
 const emptyStates: Record<OrdersView, { title: string; message: string; icon: "cart-outline" | "time-outline" }> = {
@@ -32,23 +33,15 @@ const emptyStates: Record<OrdersView, { title: string; message: string; icon: "c
   },
 };
 
-type NumberedOrder = { number: number; order: Order };
-
 export default function ClientOrdersScreen() {
   const { view: viewParam } = useLocalSearchParams<{ view?: string }>();
   const [view, setView] = useState<OrdersView>(viewParam === "history" ? "history" : "active");
   const orders = useOrders((state) => state.orders);
 
-  // Same numbering scheme as the notifications screen: newest order has the highest number.
   const { active, history } = useMemo(() => {
-    const numbered: NumberedOrder[] = orders.map((order, index) => ({
-      number: orders.length - index,
-      order,
-    }));
-
     return {
-      active: numbered.filter(({ order }) => order.status !== "delivered"),
-      history: numbered.filter(({ order }) => order.status === "delivered"),
+      active: orders.filter((order) => order.status !== "delivered"),
+      history: orders.filter((order) => order.status === "delivered"),
     };
   }, [orders]);
 
@@ -59,7 +52,7 @@ export default function ClientOrdersScreen() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace("/client/profile");
+      router.replace("/client/(client-tabs)/profile");
     }
   };
 
@@ -119,15 +112,17 @@ export default function ClientOrdersScreen() {
         <FlatList
           contentContainerStyle={styles.listContent}
           data={visibleOrders}
-          keyExtractor={({ order }) => order.id}
+          keyExtractor={(order) => order.id}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item: { number, order } }) => {
+          renderItem={({ item: order }) => {
             const status = statusStyles[order.status];
 
             return (
               <View style={styles.orderCard}>
                 <View style={styles.orderHeader}>
-                  <Text style={styles.orderNumber}>Orden #{String(number).padStart(3, "0")}</Text>
+                  <Text style={styles.orderNumber}>
+                    Pedido #{String(order.orderNumber).padStart(3, "0")}
+                  </Text>
                   <View style={[styles.statusPill, { backgroundColor: status.backgroundColor }]}>
                     <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
                   </View>
@@ -139,6 +134,12 @@ export default function ClientOrdersScreen() {
                 <View style={styles.itemsList}>
                   {order.items.map((item, index) => (
                     <View key={`${item.product.id}-${index}`} style={styles.itemRow}>
+                      <ProductImage
+                        contentFit="cover"
+                        image={item.product.image}
+                        name={item.product.name}
+                        style={styles.itemImage}
+                      />
                       <Text style={styles.itemQuantity}>{item.quantity}×</Text>
                       <Text numberOfLines={2} style={styles.itemName}>
                         {item.product.name}
@@ -230,10 +231,15 @@ const styles = StyleSheet.create({
   },
   orderCard: {
     backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.medium,
+    borderColor: "#E7E2D8",
+    borderRadius: 20,
     borderWidth: 1,
+    elevation: 3,
     padding: 16,
+    shadowColor: "#302512",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
   },
   orderHeader: {
     alignItems: "center",
@@ -267,9 +273,14 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   itemRow: {
-    alignItems: "flex-start",
+    alignItems: "center",
     flexDirection: "row",
     gap: 8,
+  },
+  itemImage: {
+    borderRadius: 10,
+    height: 40,
+    width: 40,
   },
   itemQuantity: {
     color: colors.accent,

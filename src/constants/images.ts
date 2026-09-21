@@ -144,10 +144,32 @@ export function getBustersProductImageSource(productName: string) {
     return imageKey ? productsImages[imageKey] : null;
 }
 
-export function getProductImageSource(image: string) {
-    if (image.startsWith("http")) {
-        return { uri: image };
+type ProductImageInput = {
+    image?: string | null;
+    name?: string | null;
+};
+
+export function resolveProductImageSource({ image, name }: ProductImageInput) {
+    const imageValue = image?.trim() ?? "";
+
+    if (imageValue.startsWith("http://") || imageValue.startsWith("https://")) {
+        return { uri: imageValue };
     }
 
-    return productsImages[image as keyof typeof productsImages] ?? productsImages.AguaMine;
+    if (imageValue && imageValue in productsImages) {
+        return productsImages[imageValue as keyof typeof productsImages];
+    }
+
+    if (name) {
+        const byName = getBustersProductImageSource(name);
+        if (byName) {
+            return byName;
+        }
+    }
+
+    return productsImages.AguaMine;
+}
+
+export function getProductImageSource(image: string, name?: string) {
+    return resolveProductImageSource({ image, name });
 }

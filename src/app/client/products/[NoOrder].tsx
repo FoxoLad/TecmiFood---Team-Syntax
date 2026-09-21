@@ -1,16 +1,16 @@
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../constants/images";
+import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii } from "../../../constants/theme";
 import { useProductStore } from "../../../stores/useProduct";
 
 export default function ProductDetailsScreen() {
-    const { NoOrder } = useLocalSearchParams();
+    const { NoOrder } = useLocalSearchParams<{ NoOrder?: string | string[] }>();
+    const orderKey = Array.isArray(NoOrder) ? NoOrder[0] : NoOrder;
     const product = useProductStore((state) =>
-        state.products.find((p) => String(p.NoOrder) === NoOrder)
+        state.products.find((p) => String(p.NoOrder) === orderKey)
     );
-    const navigation = useNavigation();
 
     const getStatusColor = (currentStatus?: string) => {
         const normalized = (currentStatus ?? "").toLowerCase().trim();
@@ -22,7 +22,7 @@ export default function ProductDetailsScreen() {
     if (!product) {
         return (
             <SafeAreaView style={style.container}>
-                <Pressable onPress={() => navigation.goBack()}>
+                <Pressable onPress={() => router.back()}>
                     <Text style={style.backText}>← Volver</Text>
                 </Pressable>
                 <Text style={style.notFoundText}>Producto no encontrado</Text>
@@ -32,15 +32,17 @@ export default function ProductDetailsScreen() {
 
     return (
         <SafeAreaView style={style.container}>
-            <Pressable onPress={() => navigation.goBack()}>
-                <Text style={style.backText}>← Volver</Text>
-            </Pressable>
+            <Pressable onPress={() => router.back()}>
+                    <Text style={style.backText}>← Volver</Text>
+                </Pressable>
 
             <View style={style.card}>
                 <Text style={style.noOrden}>No Orden {product.NoOrder}</Text>
 
-                <Image
-                    source={productsImages[product.image as keyof typeof productsImages]}
+                <ProductImage
+                    contentFit="cover"
+                    image={product.image}
+                    name={product.name}
                     style={style.image}
                 />
 

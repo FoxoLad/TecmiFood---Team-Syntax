@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, type Href } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
@@ -14,6 +14,9 @@ import {
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
+import { ProductImage } from "../../../components/ProductImage";
+import { useOrders } from "../../../stores/useOrders";
+import { ORDER_STATUS_LABELS } from "../../../types/order";
 
 //Definición de productos y secciones
 type Modification = {
@@ -40,7 +43,7 @@ type CafeteriaSection = {
   title: string;
   headerColor: string;
   cardBgColor: string;
-  route?: any;
+  route?: Href;
   data: Product[];
 };
 
@@ -80,6 +83,9 @@ export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeBanner, setActiveBanner] = useState(0);
   const [visibleProducts, setVisibleProducts] = useState<Record<string, number>>({});
+  const activeOrder = useOrders((state) =>
+    state.orders.find((order) => order.status !== "delivered"),
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -91,8 +97,18 @@ export default function HomeScreen() {
         }
         return res.json();
       })
-      .then((data) => {
-        setAllProducts(Array.isArray(data) ? data : []);
+      .then((data: unknown) => {
+        const list = Array.isArray(data) ? data : [];
+        setAllProducts(
+          list.map((raw, index) => {
+            const product = raw as Product;
+            return {
+              ...product,
+              id: product.id || product._id || `product-${index}`,
+              inStock: product.inStock !== false,
+            };
+          }),
+        );
         setIsLoading(false);
       })
       .catch((error) => {
@@ -129,7 +145,7 @@ export default function HomeScreen() {
     return section.data.slice(0, visibleCount);
   }, [visibleProducts]);
 
-  const loadMoreProducts = (
+  const loadMoreProducts = useCallback((
     section: CafeteriaSection,
     event: NativeSyntheticEvent<NativeScrollEvent>,
   ) => {
@@ -150,7 +166,7 @@ export default function HomeScreen() {
         };
       });
     }
-  };
+  }, [visibleProducts]);
 
   const cafeteriaSections = useMemo<CafeteriaSection[]>(() => [
     {
@@ -230,36 +246,60 @@ export default function HomeScreen() {
             onPress={() => router.push("/client/(client-tabs)/favorites")}
             style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
           >
-            <Ionicons name="heart-outline" size={21} color="#000000" />
+            <Ionicons name="heart-outline" size={21} color="#8F651A" />
             <Text style={styles.actionButtonText}>Favoritos</Text>
           </Pressable>
           <Pressable
-            accessibilityLabel="Abrir historial"
+            accessibilityLabel="Abrir historial de pedidos"
             accessibilityRole="button"
-            onPress={() => router.push("/client/(client-tabs)/notifications")}
+            onPress={() => router.push("/client/orders?view=history")}
             style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
           >
-            <Ionicons name="time-outline" size={21} color="#000000" />
+            <Ionicons name="time-outline" size={21} color="#8F651A" />
             <Text style={styles.actionButtonText}>Historial</Text>
           </Pressable>
           <Pressable
-            accessibilityLabel="Abrir pedidos"
+            accessibilityLabel="Abrir pedidos activos"
             accessibilityRole="button"
-            onPress={() => router.push("/client/(client-tabs)/cart")}
+            onPress={() => router.push("/client/orders")}
             style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
           >
-            <Ionicons name="document-text-outline" size={21} color="#000000" />
+            <Ionicons name="document-text-outline" size={21} color="#8F651A" />
             <Text style={styles.actionButtonText}>Pedidos</Text>
           </Pressable>
         </View>
 
+        {activeOrder ? (
+          <Pressable
+            accessibilityLabel="Ver el estado de tu pedido"
+            accessibilityRole="button"
+            onPress={() => router.push("/client/orders")}
+            style={styles.activeOrderBanner}
+          >
+            <View style={styles.activeOrderIcon}>
+              <Ionicons
+                color="#FFFFFF"
+                name={activeOrder.status === "ready" ? "checkmark-circle" : "restaurant-outline"}
+                size={22}
+              />
+            </View>
+            <View style={styles.activeOrderCopy}>
+              <Text style={styles.activeOrderTitle}>
+                Pedido #{String(activeOrder.orderNumber).padStart(3, "0")}
+              </Text>
+              <Text style={styles.activeOrderStatus}>
+                {ORDER_STATUS_LABELS[activeOrder.status]}
+              </Text>
+            </View>
+            <Ionicons color="#FFFFFF" name="chevron-forward" size={20} />
+          </Pressable>
+        ) : null}
+
         {/*Mensaje de cargando mientras conecta con MongoDB*/}
         {isLoading ? (
-          <View style={{ marginTop: 50 }}>
+          <View style={styles.loadingState}>
             <ActivityIndicator size="large" color="#8F651A" />
-            <Text style={{ textAlign: "center", marginTop: 10 }}>
-              Cargando menú...
-            </Text>
+            <Text style={styles.loadingText}>Cargando menú...</Text>
           </View>
         ) : (
           cafeteriaSections.map((section) => (
@@ -309,15 +349,14 @@ export default function HomeScreen() {
                       pressed && item.businessId === "BT" && styles.productCardPressed,
                     ]}
                   >
-                    {item.image ? (
-                      <Image
-                        source={{ uri: item.image }}
-                        style={styles.productImage}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View style={styles.productImageWhiteBox} />
-                    )}
+                  <View style={styles.productImageWrap}>
+                    <ProductImage
+                      contentFit="cover"
+                      image={item.image}
+                      name={item.name}
+                      style={styles.productImage}
+                    />
+                  </View>
 
                     <Text style={styles.productName} numberOfLines={1}>
                       {item.name}
@@ -457,15 +496,20 @@ const styles = StyleSheet.create({
   actionButton: {
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    borderColor: "#E2DED5",
-    borderRadius: 12,
+    borderColor: "#E7E2D8",
+    borderRadius: 16,
     borderWidth: 1,
+    elevation: 2,
     flex: 1,
     flexDirection: "row",
     gap: 6,
     justifyContent: "center",
-    minHeight: 52,
+    minHeight: 56,
     paddingHorizontal: 12,
+    shadowColor: "#302512",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
   },
   actionButtonPressed: {
     backgroundColor: "#EEE9DE",
@@ -475,6 +519,45 @@ const styles = StyleSheet.create({
     color: "#000000",
     fontSize: 13,
     fontWeight: "600",
+  },
+  activeOrderBanner: {
+    alignItems: "center",
+    backgroundColor: "#8F651A",
+    borderRadius: 16,
+    flexDirection: "row",
+    gap: 12,
+    marginHorizontal: 16,
+    marginTop: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  activeOrderIcon: {
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.18)",
+    borderRadius: 12,
+    height: 40,
+    justifyContent: "center",
+    width: 40,
+  },
+  activeOrderCopy: {
+    flex: 1,
+  },
+  activeOrderTitle: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  activeOrderStatus: {
+    color: "rgba(255, 255, 255, 0.88)",
+    fontSize: 13,
+    marginTop: 2,
+  },
+  loadingState: {
+    marginTop: 50,
+  },
+  loadingText: {
+    marginTop: 10,
+    textAlign: "center",
   },
   cafeteriaSection: {
     borderRadius: 22,
@@ -555,25 +638,24 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   productCard: {
-    borderRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
+    borderRadius: 18,
     marginRight: 12,
-    padding: 9,
-    width: 132,
+    padding: 10,
+    width: 138,
   },
   productCardPressed: {
-    opacity: 0.72,
+    opacity: 0.82,
+    transform: [{ scale: 0.97 }],
   },
-  productImageWhiteBox: {
+  productImageWrap: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    height: 96,
+    borderRadius: 14,
     marginBottom: 8,
-    width: "100%",
+    overflow: "hidden",
   },
   productImage: {
-    borderRadius: 12,
-    height: 96,
-    marginBottom: 8,
+    height: 102,
     width: "100%",
   },
   productName: {

@@ -3,14 +3,13 @@ import { router } from "expo-router";
 import { useMemo } from "react";
 import {
     FlatList,
-    Image,
     Pressable,
     StyleSheet,
     Text,
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
-import { getProductImageSource } from "../../../constants/images";
+import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii, spacing } from "../../../constants/theme";
 import { MAX_PRODUCT_QUANTITY, useCartStore } from "../../../stores/useCart";
 import { useOrders } from "../../../stores/useOrders";
@@ -25,7 +24,10 @@ export default function CartScreen() {
     () => items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
     [items],
   );
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const itemCount = useMemo(
+    () => items.reduce((sum, item) => sum + item.quantity, 0),
+    [items],
+  );
 
   const placeOrder = () => {
     if (items.length === 0) {
@@ -33,12 +35,14 @@ export default function CartScreen() {
     }
 
     addOrder({
-      id: `order-${Date.now()}`,
       customerName: "Cliente",
-      items: items.map(({ product, quantity }) => ({ product, quantity })),
+      items: items.map(({ product, quantity, modifications, notes }) => ({
+        product,
+        quantity,
+        modifications,
+        notes,
+      })),
       total,
-      status: "pending",
-      createdAt: new Date().toISOString(),
     });
     clearCart();
     router.replace("/client/preparing");
@@ -67,6 +71,14 @@ export default function CartScreen() {
           <Text style={styles.emptyMessage}>
             Agrega tus productos favoritos y aparecerán aquí.
           </Text>
+          <Pressable
+            accessibilityLabel="Ir a las cafeterías"
+            accessibilityRole="button"
+            onPress={() => router.replace("/client/(client-tabs)/home")}
+            style={[styles.orderButton, styles.emptyCta]}
+          >
+            <Text style={styles.orderButtonText}>Ir a las cafeterías</Text>
+          </Pressable>
         </View>
       ) : (
         <FlatList
@@ -77,10 +89,11 @@ export default function CartScreen() {
           renderItem={({ item, index }) => {
             return (
               <View style={styles.itemCard}>
-                <Image
-                  source={getProductImageSource(item.product.image)}
+                <ProductImage
+                  contentFit="cover"
+                  image={item.product.image}
+                  name={item.product.name}
                   style={styles.productImage}
-                  resizeMode="cover"
                 />
                 <View style={styles.itemInfo}>
                   <Text numberOfLines={2} style={styles.productName}>
@@ -154,13 +167,13 @@ export default function CartScreen() {
           <View style={styles.totalActions}>
             <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
             <Pressable
-              accessibilityLabel="Realizar pedido"
+              accessibilityLabel="Enviar pedido a cocina"
               accessibilityRole="button"
               onPress={placeOrder}
               style={styles.orderButton}
             >
               <Ionicons color="#FFFFFF" name="checkmark-circle-outline" size={21} />
-              <Text style={styles.orderButtonText}>Realizar pedido</Text>
+              <Text style={styles.orderButtonText}>Enviar pedido a cocina</Text>
             </Pressable>
           </View>
         </View>
@@ -349,6 +362,9 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "800",
+  },
+  emptyCta: {
+    marginTop: 20,
   },
   emptyState: {
     alignItems: "center",

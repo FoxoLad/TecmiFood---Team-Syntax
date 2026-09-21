@@ -1,334 +1,200 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
+    FlatList,
     Modal,
-    NativeScrollEvent,
-    NativeSyntheticEvent,
     Pressable,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
-import { useProductStore } from "../../../stores/useProduct";
-import type { Product } from "../../../types/product";
+import { useOrders } from "../../../stores/useOrders";
+import {
+    ORDER_STATUS_LABELS,
+    type Order,
+    type OrderStatus,
+} from "../../../types/order";
 
-const ORDERS_BATCH_SIZE = 5;
+type OrderFilter = "pending" | "preparing" | "ready" | "delivered" | "all";
+
+const FILTERS: { key: OrderFilter; label: string }[] = [
+  { key: "pending", label: "Nuevos" },
+  { key: "preparing", label: "Preparando" },
+  { key: "ready", label: "Listos" },
+  { key: "delivered", label: "Entregados" },
+  { key: "all", label: "Todos" },
+];
+
+const statusColor: Record<OrderStatus, string> = {
+  pending: "#f27600",
+  preparing: "#0A5FCC",
+  ready: "#15803d",
+  delivered: colors.textSecondary,
+};
+
+function matchesFilter(order: Order, filter: OrderFilter) {
+  if (filter === "all") {
+    return true;
+  }
+
+  return order.status === filter;
+}
 
 export default function EmployeeOrdersScreen() {
-  const products = useProductStore((state) => state.products);
-  const isLoading = useProductStore((state) => state.isLoading);
-  const fetchProducts = useProductStore((state) => state.fetchProducts);
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedFilter, setSelectedFilter] = useState("Pendientes");
+  const orders = useOrders((state) => state.orders);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState<OrderFilter>("pending");
   const [showReturnConfirmation, setShowReturnConfirmation] = useState(false);
-  const [visibleOrderCount, setVisibleOrderCount] = useState(ORDERS_BATCH_SIZE);
 
-  useEffect(() => {
-    if (products.length === 0) {
-      fetchProducts();
+  const filterCounts = useMemo(() => {
+    const counts: Record<OrderFilter, number> = {
+      pending: 0,
+      preparing: 0,
+      ready: 0,
+      delivered: 0,
+      all: orders.length,
+    };
+
+    for (const order of orders) {
+      counts[order.status] += 1;
     }
-  }, [fetchProducts, products.length]);
 
-  const filteredProducts = products.filter((item: Product) => {
+    return counts;
+  }, [orders]);
+
+  const filteredOrders = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    const matchesName = item.name.toLowerCase().includes(query);
-    const matchesOrder = String(item.NoOrder ?? "").includes(query);
-    const normalizedStatus = (item.status || "active").toLowerCase().trim();
-    const isDelivered =
-      normalizedStatus === "entregado" || normalizedStatus === "delivered";
-    const matchesStatus =
-      selectedFilter === "Todos" ||
-      (selectedFilter === "Entregados" ? isDelivered : !isDelivered);
-    return (matchesName || matchesOrder) && matchesStatus;
-  });
 
-  const orders = Object.values(
-    filteredProducts.reduce<Record<number, Product[]>>((grouped, product) => {
-      const key = product.NoOrder || 0;
-      const orderProducts = grouped[key] ?? [];
-      grouped[key] = [...orderProducts, product];
-      return grouped;
-    }, {}),
-  );
+    return orders.filter((order) => {
+      if (!matchesFilter(order, selectedFilter)) {
+        return false;
+      }
 
-  const visibleOrders = orders.slice(0, visibleOrderCount);
+      if (!query) {
+        return true;
+      }
 
-  const loadMoreOrders = () => {
-    setVisibleOrderCount((currentCount) =>
-      Math.min(currentCount + ORDERS_BATCH_SIZE, orders.length),
-    );
-  };
+      const inNumber = String(order.orderNumber).padStart(3, "0").includes(query);
+      const inCustomer = order.customerName.toLowerCase().includes(query);
+      const inProducts = order.items.some((item) =>
+        item.product.name.toLowerCase().includes(query),
+      );
 
-  const handleOrdersScrollEnd = (
-    event: NativeSyntheticEvent<NativeScrollEvent>,
-  ) => {
-    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-    const reachedEnd =
-      contentOffset.y + layoutMeasurement.height >= contentSize.height - 120;
-
-    if (reachedEnd && visibleOrderCount < orders.length) {
-      loadMoreOrders();
-    }
-  };
-
-  const confirmReturnToClient = () => {
-    setShowReturnConfirmation(true);
-  };
+      return inNumber || inCustomer || inProducts;
+    });
+  }, [orders, searchQuery, selectedFilter]);
 
   const returnToClient = () => {
     setShowReturnConfirmation(false);
-    router.replace("/client/home");
+    router.replace("/client/(client-tabs)/home");
   };
 
   return (
-    <SafeAreaView style={style.container}>
-      <ScrollView
-        contentContainerStyle={style.listContent}
-        onMomentumScrollEnd={handleOrdersScrollEnd}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={style.header}>
-          <Pressable
-            accessibilityLabel="Volver al menú del cliente"
-            accessibilityRole="button"
-            hitSlop={12}
-            onPress={confirmReturnToClient}
-            style={style.backButton}
-          >
-            <Ionicons color="#111110" name="chevron-back" size={34} />
-          </Pressable>
-          <Text style={style.screenTitle}>ORDENES</Text>
-          <View style={style.headerSpacer} />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Pressable
+          accessibilityLabel="Volver al menú del cliente"
+          accessibilityRole="button"
+          hitSlop={12}
+          onPress={() => setShowReturnConfirmation(true)}
+          style={styles.backButton}
+        >
+          <Ionicons color={colors.text} name="chevron-back" size={28} />
+        </Pressable>
+        <View style={styles.headerTitles}>
+          <Text style={styles.eyebrow}>COCINA</Text>
+          <Text style={styles.screenTitle}>Pedidos</Text>
         </View>
+        <View style={styles.headerSpacer} />
+      </View>
 
-        <View style={style.filters}>
-          {["Pendientes", "Entregados", "Todos"].map((filter) => (
+      <Text style={styles.helperText}>
+        Aquí llegan los pedidos de los clientes. Ábrelo, prepáralo y márcalo como listo para recoger.
+      </Text>
+
+      <View style={styles.filters}>
+        {FILTERS.map((filter) => {
+          const selected = selectedFilter === filter.key;
+          const count = filterCounts[filter.key];
+
+          return (
             <Pressable
-              key={filter}
-              onPress={() => {
-                setSelectedFilter(filter);
-                setVisibleOrderCount(ORDERS_BATCH_SIZE);
-              }}
-              style={style.filterButton}
+              key={filter.key}
+              onPress={() => setSelectedFilter(filter.key)}
+              style={[styles.filterButton, selected && styles.filterButtonActive]}
             >
-              <Text
-                style={[
-                  style.filterText,
-                  selectedFilter === filter && style.activeFilterText,
-                ]}
-              >
-                {filter}
+              <Text style={[styles.filterText, selected && styles.activeFilterText]}>
+                {filter.label} ({count})
               </Text>
-              <View
-                style={[
-                  style.filterLine,
-                  selectedFilter === filter && style.activeFilterLine,
-                ]}
-              />
             </Pressable>
-          ))}
-        </View>
+          );
+        })}
+      </View>
 
-        <View style={style.searchContainer}>
-          <Ionicons color="#333333" name="search-outline" size={27} />
-          <TextInput
-            autoCapitalize="none"
-            onChangeText={(query) => {
-              setSearchQuery(query);
-              setVisibleOrderCount(ORDERS_BATCH_SIZE);
-            }}
-            placeholder="Buscar"
-            placeholderTextColor="#333333"
-            style={style.searchInput}
-            value={searchQuery}
-          />
-        </View>
+      <View style={styles.searchContainer}>
+        <Ionicons color={colors.textSecondary} name="search-outline" size={22} />
+        <TextInput
+          autoCapitalize="none"
+          onChangeText={setSearchQuery}
+          placeholder="Buscar por número, cliente o producto"
+          placeholderTextColor={colors.textSecondary}
+          style={styles.searchInput}
+          value={searchQuery}
+        />
+      </View>
 
-        {isLoading ? (
-          <View style={{ marginTop: 50 }}>
-            <ActivityIndicator size="large" color="#000000" />
-            <Text style={{ textAlign: "center", marginTop: 10 }}>
-              Cargando órdenes...
+      <FlatList
+        contentContainerStyle={styles.listContent}
+        data={filteredOrders}
+        keyExtractor={(order) => order.id}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <Ionicons color={colors.accent} name="receipt-outline" size={42} />
+            <Text style={styles.emptyTitle}>No hay pedidos en esta lista</Text>
+            <Text style={styles.emptyMessage}>
+              Cuando un cliente pulse “Enviar pedido a cocina”, aparecerá aquí para que puedas aceptarlo.
             </Text>
           </View>
-        ) : (
-          visibleOrders.map((orderProducts) => {
-            const orderNumber = orderProducts[0].NoOrder;
-            const total = orderProducts.reduce(
-              (sum, product) => sum + product.price,
-              0,
-            );
-            const isDeliveredView = selectedFilter === "Entregados";
-            const orderStatus = (orderProducts[0].status || "active")
-              .toLowerCase()
-              .trim();
-            const displayStatus =
-              orderStatus === "active" || orderStatus === "pending"
-                ? "Pendiente"
-                : orderProducts[0].status || "Pendiente";
+        }
+        renderItem={({ item: order }) => {
+          const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
-            return (
-              <View
-                key={orderNumber}
-                style={[
-                  style.orderCard,
-                  isDeliveredView && style.deliveredOrderCard,
-                ]}
-              >
-                <View
-                  style={[
-                    style.orderHeader,
-                    isDeliveredView && style.deliveredOrderHeader,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      style.orderNumber,
-                      isDeliveredView && style.deliveredOrderNumber,
-                    ]}
-                  >
-                    #{String(orderNumber).padStart(3, "0")}
-                  </Text>
-                  <Text
-                    style={[
-                      style.status,
-                      isDeliveredView && style.deliveredStatusText,
-                    ]}
-                  >
-                    Estado:{" "}
-                    <Text
-                      style={[
-                        style.statusValue,
-                        isDeliveredView && style.deliveredStatus,
-                      ]}
-                    >
-                      {displayStatus}
-                    </Text>
-                  </Text>
-                </View>
-
-                {orderProducts.map((product) => (
-                  <Pressable
-                    accessibilityLabel={`Ver detalles de la orden ${orderNumber}`}
-                    accessibilityRole="button"
-                    key={product.id}
-                    onPress={() =>
-                      router.push(`/employee/orders/${orderNumber}`)
-                    }
-                    style={[
-                      style.productRow,
-                      isDeliveredView && style.deliveredProductRow,
-                    ]}
-                  >
-                    <View
-                      style={[
-                        style.productTextRow,
-                        isDeliveredView && style.deliveredProductTextRow,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          style.quantity,
-                          isDeliveredView && style.deliveredQuantity,
-                        ]}
-                      >
-                        x1
-                      </Text>
-                      <View style={style.productInfo}>
-                        <Text
-                          style={[
-                            style.productName,
-                            isDeliveredView && style.deliveredProductName,
-                          ]}
-                        >
-                          {product.name}
-                        </Text>
-                        {!isDeliveredView ? (
-                          <>
-                            <Text style={style.description}>
-                              {product.description}
-                            </Text>
-                            <Text style={style.category}>
-                              {product.category.toUpperCase()}
-                            </Text>
-                            <Text style={style.price}>
-                              ${product.price.toFixed(2)}
-                            </Text>
-                          </>
-                        ) : null}
-                      </View>
-                    </View>
-                    <View
-                      style={[
-                        style.productActions,
-                        isDeliveredView && style.deliveredProductActions,
-                      ]}
-                    >
-                      {product.image?.startsWith("http") ? (
-                        <Image
-                          source={{ uri: product.image }}
-                          style={[
-                            style.productImage,
-                            isDeliveredView && style.deliveredProductImage,
-                          ]}
-                        />
-                      ) : product.image &&
-                        productsImages[
-                          product.image as keyof typeof productsImages
-                        ] ? (
-                        <Image
-                          source={
-                            productsImages[
-                              product.image as keyof typeof productsImages
-                            ]
-                          }
-                          style={[
-                            style.productImage,
-                            isDeliveredView && style.deliveredProductImage,
-                          ]}
-                        />
-                      ) : (
-                        <View
-                          style={[
-                            style.productImage,
-                            isDeliveredView && style.deliveredProductImage,
-                            { backgroundColor: "#f0f0f0", borderRadius: 8 },
-                          ]}
-                        />
-                      )}
-                    </View>
-                  </Pressable>
-                ))}
-
-                <View
-                  style={[
-                    style.totalBar,
-                    isDeliveredView && style.deliveredTotalBar,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      style.totalText,
-                      isDeliveredView && style.deliveredTotalText,
-                    ]}
-                  >
-                    Total: ${total.toFixed(2)}
-                  </Text>
-                </View>
+          return (
+            <Pressable
+              accessibilityLabel={`Ver pedido ${order.orderNumber}`}
+              accessibilityRole="button"
+              onPress={() => router.push(`/employee/orders/${order.id}`)}
+              style={styles.orderCard}
+            >
+              <View style={styles.orderHeader}>
+                <Text style={styles.orderNumber}>
+                  Pedido #{String(order.orderNumber).padStart(3, "0")}
+                </Text>
+                <Text style={[styles.statusValue, { color: statusColor[order.status] }]}>
+                  {ORDER_STATUS_LABELS[order.status]}
+                </Text>
               </View>
-            );
-          })
-        )}
-      </ScrollView>
+              <Text style={styles.customerName}>{order.customerName}</Text>
+              <Text style={styles.itemPreview} numberOfLines={2}>
+                {order.items
+                  .map((item) => `${item.quantity}× ${item.product.name}`)
+                  .join(" · ")}
+              </Text>
+              <View style={styles.orderFooter}>
+                <Text style={styles.itemCount}>
+                  {itemCount} {itemCount === 1 ? "producto" : "productos"}
+                </Text>
+                <Text style={styles.totalText}>Total ${order.total.toFixed(2)}</Text>
+              </View>
+            </Pressable>
+          );
+        }}
+        showsVerticalScrollIndicator={false}
+      />
 
       <Modal
         animationType="fade"
@@ -336,21 +202,21 @@ export default function EmployeeOrdersScreen() {
         transparent
         visible={showReturnConfirmation}
       >
-        <View style={style.modalBackdrop}>
-          <View style={style.confirmationModal}>
-            <Text style={style.modalTitle}>Volver al menú del cliente</Text>
-            <Text style={style.modalMessage}>
-              ¿Quieres salir del listado de pedidos?
+        <View style={styles.modalBackdrop}>
+          <View style={styles.confirmationModal}>
+            <Text style={styles.modalTitle}>Salir de cocina</Text>
+            <Text style={styles.modalMessage}>
+              Vas a volver al menú del cliente. Los pedidos seguirán guardados.
             </Text>
-            <View style={style.modalActions}>
+            <View style={styles.modalActions}>
               <Pressable
                 onPress={() => setShowReturnConfirmation(false)}
-                style={style.cancelButton}
+                style={styles.cancelButton}
               >
-                <Text style={style.cancelButtonText}>Cancelar</Text>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
               </Pressable>
-              <Pressable onPress={returnToClient} style={style.confirmButton}>
-                <Text style={style.confirmButtonText}>Volver</Text>
+              <Pressable onPress={returnToClient} style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>Volver</Text>
               </Pressable>
             </View>
           </View>
@@ -360,56 +226,73 @@ export default function EmployeeOrdersScreen() {
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.background,
-  },
-  listContent: {
-    paddingBottom: 24,
-    paddingHorizontal: 6,
+    flex: 1,
   },
   header: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingTop: 4,
   },
   backButton: {
     alignItems: "center",
+    height: 42,
     justifyContent: "center",
     width: 42,
   },
+  headerTitles: {
+    flex: 1,
+  },
+  eyebrow: {
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 1.2,
+  },
   screenTitle: {
-    fontSize: 38,
-    fontWeight: "bold",
+    color: colors.text,
+    fontSize: 28,
+    fontWeight: "800",
   },
   headerSpacer: {
-    width: 34,
+    width: 42,
+  },
+  helperText: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 20,
+    paddingHorizontal: 16,
+    paddingTop: 4,
   },
   filters: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 12,
+    flexWrap: "wrap",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 14,
   },
   filterButton: {
-    alignItems: "center",
-    paddingHorizontal: 7,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  filterButtonActive: {
+    backgroundColor: colors.accentSoft,
+    borderColor: colors.accent,
   },
   filterText: {
-    fontSize: 23,
+    color: colors.textSecondary,
+    fontSize: 13,
     fontWeight: "700",
   },
   activeFilterText: {
-    color: "#111110",
-  },
-  filterLine: {
-    backgroundColor: "transparent",
-    height: 2,
-    marginTop: 5,
-    width: "100%",
-  },
-  activeFilterLine: {
-    backgroundColor: "#ffffff",
+    color: colors.text,
   },
   searchContainer: {
     alignItems: "center",
@@ -418,155 +301,91 @@ const style = StyleSheet.create({
     borderRadius: radii.pill,
     borderWidth: 1,
     flexDirection: "row",
-    height: 48,
-    marginBottom: 10,
-    paddingHorizontal: 15,
+    height: 46,
+    marginHorizontal: 16,
+    marginTop: 12,
+    paddingHorizontal: 14,
   },
   searchInput: {
-    color: "#111110",
+    color: colors.text,
     flex: 1,
-    fontSize: 18,
+    fontSize: 15,
     height: "100%",
-    marginLeft: 10,
+    marginLeft: 8,
+  },
+  listContent: {
+    gap: 12,
+    padding: 16,
+    paddingBottom: 28,
   },
   orderCard: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: radii.large,
-    borderWidth: 1.5,
-    marginBottom: 7,
-    overflow: "hidden",
-  },
-  deliveredOrderCard: {
-    borderRadius: 16,
-    marginBottom: 5,
+    borderRadius: radii.medium,
+    borderWidth: 1,
+    padding: 14,
   },
   orderHeader: {
     alignItems: "center",
-    borderBottomColor: "#111110",
-    borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 13,
-  },
-  deliveredOrderHeader: {
-    paddingVertical: 2,
   },
   orderNumber: {
-    fontSize: 38,
-    fontWeight: "800",
-  },
-  deliveredOrderNumber: {
-    fontSize: 27,
-  },
-  status: {
+    color: colors.text,
     fontSize: 18,
-    fontWeight: "700",
-  },
-  deliveredStatusText: {
-    fontSize: 14,
+    fontWeight: "800",
   },
   statusValue: {
-    color: "#f27600",
-    fontWeight: "400",
-  },
-  deliveredStatus: {
-    color: "#15803d",
-  },
-  productRow: {
-    alignItems: "center",
-    borderBottomColor: "#111110",
-    borderBottomWidth: 1,
-    flexDirection: "row",
-    minHeight: 116,
-    paddingHorizontal: 13,
-    paddingVertical: 8,
-  },
-  deliveredProductRow: {
-    minHeight: 78,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  quantity: {
-    alignSelf: "flex-start",
-    fontSize: 23,
-    fontWeight: "700",
-    marginTop: 6,
-    width: 38,
-  },
-  deliveredQuantity: {
-    alignSelf: "flex-start",
-    fontSize: 17,
-    marginTop: 0,
-    width: 27,
-  },
-  productTextRow: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  deliveredProductTextRow: {
-    alignItems: "flex-start",
-  },
-  productInfo: {
-    flex: 1,
-  },
-  productName: {
-    fontSize: 22,
+    fontSize: 13,
     fontWeight: "800",
   },
-  deliveredProductName: {
-    fontSize: 18,
+  customerName: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginTop: 4,
   },
-  description: {
+  itemPreview: {
+    color: colors.text,
     fontSize: 14,
-    fontWeight: "600",
+    lineHeight: 20,
+    marginTop: 8,
   },
-  category: {
-    color: "#777777",
-    fontSize: 11,
-    marginTop: 3,
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  productActions: {
+  orderFooter: {
     alignItems: "center",
-    width: 125,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12,
+    paddingTop: 10,
   },
-  deliveredProductActions: {
-    width: 88,
-  },
-  productImage: {
-    height: 88,
-    resizeMode: "contain",
-    width: 118,
-  },
-  deliveredProductImage: {
-    height: 65,
-    width: 82,
-  },
-  totalBar: {
-    alignItems: "center",
-    backgroundColor: "#000000",
-    borderRadius: 22,
-    marginHorizontal: 17,
-    marginVertical: 9,
-    paddingVertical: 3,
-  },
-  deliveredTotalBar: {
-    borderRadius: 15,
-    marginHorizontal: 12,
-    marginVertical: 5,
-    paddingVertical: 1,
+  itemCount: {
+    color: colors.textSecondary,
+    fontSize: 13,
   },
   totalText: {
-    color: "#ffffff",
-    fontSize: 29,
+    color: colors.accent,
+    fontSize: 16,
     fontWeight: "800",
   },
-  deliveredTotalText: {
-    fontSize: 20,
+  emptyState: {
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingTop: 48,
+  },
+  emptyTitle: {
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: "800",
+    marginTop: 14,
+    textAlign: "center",
+  },
+  emptyMessage: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 8,
+    textAlign: "center",
   },
   modalBackdrop: {
     alignItems: "center",
@@ -578,9 +397,9 @@ const style = StyleSheet.create({
   confirmationModal: {
     backgroundColor: "#ffffff",
     borderRadius: 14,
+    maxWidth: 360,
     padding: 22,
     width: "100%",
-    maxWidth: 360,
   },
   modalTitle: {
     fontSize: 21,
@@ -619,20 +438,5 @@ const style = StyleSheet.create({
     color: "#ffffff",
     fontSize: 15,
     fontWeight: "700",
-  },
-  oldSearchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#EDE6CE",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    height: 44,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderColor: "#111110",
-    borderWidth: 1.5,
-  },
-  searchIcon: {
-    marginRight: 8,
   },
 });

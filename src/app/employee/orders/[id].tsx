@@ -2,32 +2,55 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
-	Image,
-	Modal,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
+    Image,
+    Modal,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../constants/images";
+import { getProductImageSource } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
-import { useProductStore } from "../../../stores/useProduct";
+import { useOrders } from "../../../stores/useOrders";
+import {
+    ORDER_STATUS_HINTS,
+    ORDER_STATUS_LABELS,
+    type OrderStatus,
+} from "../../../types/order";
+
+const nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
+  pending: "preparing",
+  preparing: "ready",
+  ready: "delivered",
+};
+
+const actionLabels: Partial<Record<OrderStatus, { title: string; confirm: string; button: string }>> = {
+  pending: {
+    button: "Aceptar y empezar a preparar",
+    title: "Aceptar pedido",
+    confirm: "El cliente verá que su pedido está en preparación.",
+  },
+  preparing: {
+    button: "Marcar listo para recoger",
+    title: "Pedido listo",
+    confirm: "El cliente recibirá el aviso de que ya puede recogerlo.",
+  },
+  ready: {
+    button: "Confirmar que ya lo recogió",
+    title: "Marcar como entregado",
+    confirm: "Esto cierra el pedido. Úsalo cuando el cliente ya lo haya recogido.",
+  },
+};
 
 export default function EmployeeOrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const products = useProductStore((state) => state.products);
-  const updateProductsStatus = useProductStore(
-    (state) => state.updateProductsStatus,
-  );
-  const [showDeliveryConfirmation, setShowDeliveryConfirmation] =
-    useState(false);
-  const orderProducts = products.filter(
-    (product) => String(product.NoOrder) === id,
-  );
+  const order = useOrders((state) => state.orders.find((item) => item.id === id));
+  const updateOrderStatus = useOrders((state) => state.updateOrderStatus);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
-  if (orderProducts.length === 0) {
+  if (!order) {
     return (
       <SafeAreaView style={styles.container}>
         <Pressable
@@ -35,27 +58,30 @@ export default function EmployeeOrderDetailsScreen() {
           onPress={() => router.back()}
           style={styles.backButton}
         >
-          <Ionicons color="#111110" name="chevron-back" size={30} />
+          <Ionicons color={colors.text} name="chevron-back" size={28} />
           <Text style={styles.backText}>Volver</Text>
         </Pressable>
-        <Text style={styles.notFound}>Pedido no encontrado</Text>
+        <Text style={styles.notFound}>No encontramos este pedido.</Text>
       </SafeAreaView>
     );
   }
 
-  const orderNumber = orderProducts[0].NoOrder;
+  const action = actionLabels[order.status];
+  const upcomingStatus = nextStatus[order.status];
 
-  const deliverOrder = () => {
-    updateProductsStatus(orderNumber, "Entregado");
-    setShowDeliveryConfirmation(false);
+  const confirmStatusChange = () => {
+    if (!upcomingStatus) {
+      setShowConfirmation(false);
+      return;
+    }
+
+    updateOrderStatus(order.id, upcomingStatus);
+    setShowConfirmation(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Pressable
             accessibilityLabel="Volver a la lista de pedidos"
@@ -63,104 +89,99 @@ export default function EmployeeOrderDetailsScreen() {
             onPress={() => router.back()}
             style={styles.backButton}
           >
-            <Ionicons color="#111110" name="chevron-back" size={30} />
+            <Ionicons color={colors.text} name="chevron-back" size={28} />
             <Text style={styles.backText}>Pedidos</Text>
           </Pressable>
-          <Text style={styles.title}>
-            ORDEN #{String(orderNumber).padStart(3, "0")}
-          </Text>
         </View>
+
+        <Text style={styles.title}>Pedido #{String(order.orderNumber).padStart(3, "0")}</Text>
+        <Text style={styles.customerName}>{order.customerName}</Text>
+        <Text style={styles.orderDate}>
+          {new Date(order.createdAt).toLocaleString("es-MX")}
+        </Text>
 
         <View style={styles.statusRow}>
           <Text style={styles.statusLabel}>Estado</Text>
           <Text
             style={[
               styles.statusValue,
-              (orderProducts[0].status || "").toLowerCase() === "entregado" &&
-                styles.deliveredStatus,
+              order.status === "ready" && styles.readyStatus,
+              order.status === "delivered" && styles.deliveredStatus,
             ]}
           >
-            {orderProducts[0].status || "Pendiente"}
+            {ORDER_STATUS_LABELS[order.status]}
           </Text>
         </View>
+        <Text style={styles.statusHint}>{ORDER_STATUS_HINTS[order.status]}</Text>
 
-        {orderProducts.map((product) => (
-          <View key={product.id} style={styles.productCard}>
-            {product.image?.startsWith("http") ? (
-              <Image
-                source={{ uri: product.image }}
-                style={styles.productImage}
-              />
-            ) : product.image &&
-              productsImages[product.image as keyof typeof productsImages] ? (
-              <Image
-                source={
-                  productsImages[product.image as keyof typeof productsImages]
-                }
-                style={styles.productImage}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.productImage,
-                  { backgroundColor: "#f0f0f0", borderRadius: 8 },
-                ]}
-              />
-            )}
+        {order.items.map((item, index) => (
+          <View key={`${item.product.id}-${index}`} style={styles.productCard}>
+            <Image
+              source={getProductImageSource(item.product.image)}
+              style={styles.productImage}
+            />
             <View style={styles.productDetails}>
-              <Text style={styles.productName}>{product.name}</Text>
-              <Text style={styles.description}>{product.description}</Text>
-              <Text style={styles.category}>
-                {product.category.toUpperCase()}
+              <Text style={styles.quantity}>x{item.quantity}</Text>
+              <Text style={styles.productName}>{item.product.name}</Text>
+              <Text style={styles.description}>
+                {item.product.description || "Sin descripción"}
               </Text>
-              <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-            </View>
-            <View style={styles.modificationsBox}>
-              <Text style={styles.modificationsTitle}>Modificaciones</Text>
-              <Text style={styles.modificationsText}>
-                {Array.isArray(product.modifications)
-                  ? product.modifications
-                      .map((m) => `${m.name} (+$${m.price})`)
-                      .join(", ") || "Sin modificaciones"
-                  : typeof product.modifications === "string" &&
-                      product.modifications.trim() !== ""
-                    ? product.modifications.trim()
-                    : "Sin modificaciones"}
+              <Text style={styles.price}>
+                ${(item.product.price * item.quantity).toFixed(2)}
               </Text>
+              {item.modifications.length > 0 ? (
+                <View style={styles.modificationsBox}>
+                  <Text style={styles.modificationsTitle}>Cambios del cliente</Text>
+                  <Text style={styles.modificationsText}>{item.modifications.join(" · ")}</Text>
+                </View>
+              ) : null}
+              {item.notes ? (
+                <View style={styles.modificationsBox}>
+                  <Text style={styles.modificationsTitle}>Notas</Text>
+                  <Text style={styles.modificationsText}>{item.notes}</Text>
+                </View>
+              ) : null}
             </View>
           </View>
         ))}
 
-        <Pressable
-          onPress={() => setShowDeliveryConfirmation(true)}
-          style={styles.deliverButton}
-        >
-          <Text style={styles.deliverButtonText}>ENTREGAR</Text>
-        </Pressable>
+        <View style={styles.totalBar}>
+          <Text style={styles.totalText}>Total: ${order.total.toFixed(2)}</Text>
+        </View>
+
+        {action ? (
+          <Pressable
+            accessibilityLabel={action.button}
+            accessibilityRole="button"
+            onPress={() => setShowConfirmation(true)}
+            style={styles.actionButton}
+          >
+            <Text style={styles.actionButtonText}>{action.button}</Text>
+          </Pressable>
+        ) : (
+          <Text style={styles.completedNote}>Este pedido ya fue entregado.</Text>
+        )}
       </ScrollView>
 
       <Modal
         animationType="fade"
-        onRequestClose={() => setShowDeliveryConfirmation(false)}
+        onRequestClose={() => setShowConfirmation(false)}
         transparent
-        visible={showDeliveryConfirmation}
+        visible={showConfirmation}
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.confirmationModal}>
-            <Text style={styles.modalTitle}>Entregar producto</Text>
-            <Text style={styles.modalMessage}>
-              Este producto pasará a estar en entregado. ¿Seguro que deseas
-              continuar?
-            </Text>
+            <Text style={styles.modalTitle}>{action?.title}</Text>
+            <Text style={styles.modalMessage}>{action?.confirm}</Text>
             <View style={styles.modalActions}>
               <Pressable
-                onPress={() => setShowDeliveryConfirmation(false)}
+                onPress={() => setShowConfirmation(false)}
                 style={styles.cancelButton}
               >
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </Pressable>
-              <Pressable onPress={deliverOrder} style={styles.confirmButton}>
-                <Text style={styles.confirmButtonText}>Continuar</Text>
+              <Pressable onPress={confirmStatusChange} style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>Confirmar</Text>
               </Pressable>
             </View>
           </View>
@@ -176,90 +197,107 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 14,
-    paddingBottom: 28,
+    padding: 16,
+    paddingBottom: 32,
   },
   header: {
-    alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 14,
+    marginBottom: 8,
   },
   backButton: {
     alignItems: "center",
+    alignSelf: "flex-start",
     flexDirection: "row",
     gap: 2,
     paddingVertical: 6,
   },
   backText: {
-    color: "#111110",
+    color: colors.text,
     fontSize: 17,
     fontWeight: "700",
   },
   title: {
-    flex: 1,
-    fontSize: 27,
-    fontWeight: "900",
-    textAlign: "right",
+    color: colors.text,
+    fontSize: 28,
+    fontWeight: "800",
+  },
+  customerName: {
+    color: colors.textSecondary,
+    fontSize: 15,
+    marginTop: 4,
+  },
+  orderDate: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginTop: 2,
   },
   statusRow: {
     alignItems: "center",
-    backgroundColor: "#EDE6CE",
-    borderColor: "#111110",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderRadius: 12,
-    borderWidth: 1.5,
+    borderWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginTop: 16,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
   },
   statusLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "800",
   },
   statusValue: {
     color: "#f27600",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
   },
-  deliveredStatus: {
+  readyStatus: {
     color: "#15803d",
+  },
+  deliveredStatus: {
+    color: colors.textSecondary,
+  },
+  statusHint: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    marginTop: 8,
   },
   productCard: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: radii.medium,
-    borderWidth: 1.5,
-    marginBottom: 12,
-    padding: 12,
+    borderWidth: 1,
+    marginTop: 14,
+    overflow: "hidden",
   },
   productImage: {
-    alignSelf: "center",
-    height: 130,
-    resizeMode: "contain",
+    backgroundColor: "#F8F3E8",
+    height: 160,
+    resizeMode: "cover",
     width: "100%",
   },
   productDetails: {
-    marginTop: 4,
+    padding: 14,
+  },
+  quantity: {
+    color: colors.accent,
+    fontSize: 15,
+    fontWeight: "800",
   },
   productName: {
-    fontSize: 24,
-    fontWeight: "900",
+    fontSize: 22,
+    fontWeight: "800",
+    marginTop: 2,
   },
   description: {
-    fontSize: 15,
-    lineHeight: 20,
+    color: colors.textSecondary,
+    fontSize: 14,
     marginTop: 4,
   },
-  category: {
-    color: "#777777",
-    fontSize: 12,
-    marginTop: 6,
-  },
   price: {
-    fontSize: 23,
+    fontSize: 20,
     fontWeight: "800",
-    marginTop: 3,
+    marginTop: 8,
   },
   modificationsBox: {
     backgroundColor: "#fff8e7",
@@ -271,25 +309,44 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
   },
   modificationsTitle: {
-    fontSize: 16,
-    fontWeight: "900",
+    fontSize: 14,
+    fontWeight: "800",
   },
   modificationsText: {
     color: "#444444",
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 3,
   },
-  deliverButton: {
+  totalBar: {
+    alignItems: "center",
+    backgroundColor: colors.text,
+    borderRadius: 16,
+    marginTop: 16,
+    paddingVertical: 12,
+  },
+  totalText: {
+    color: "#ffffff",
+    fontSize: 20,
+    fontWeight: "800",
+  },
+  actionButton: {
     alignItems: "center",
     backgroundColor: "#15803d",
-    borderRadius: 22,
-    marginTop: 2,
-    paddingVertical: 7,
+    borderRadius: 16,
+    marginTop: 14,
+    paddingVertical: 14,
   },
-  deliverButtonText: {
+  actionButtonText: {
     color: "#ffffff",
-    fontSize: 29,
-    fontWeight: "900",
+    fontSize: 17,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  completedNote: {
+    color: colors.textSecondary,
+    fontSize: 15,
+    marginTop: 16,
+    textAlign: "center",
   },
   modalBackdrop: {
     alignItems: "center",

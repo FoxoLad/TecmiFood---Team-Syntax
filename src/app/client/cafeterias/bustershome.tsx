@@ -13,6 +13,9 @@ import {
 } from "react-native";
 
 import SafeView from "../../../components/SafeView";
+import {
+    getBustersProductImageSource,
+} from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
 import productsData from "../../../data/products.json";
 import { Product } from "../../../types/product";
@@ -61,6 +64,7 @@ const splitIntoGroups = (products: Product[], groupSize: number) => {
 
 export default function HomeScreen() {
     const { name } = useLocalSearchParams<{ name: string }>();
+    const cafeteriaName = name || "Busters";
     const [search, setSearch] = useState("");
     const [selectedFilter, setSelectedFilter] = useState<QuickFilter>("Todos");
     const { width: screenWidth } = useWindowDimensions();
@@ -98,7 +102,7 @@ export default function HomeScreen() {
                 <Ionicons name="arrow-back" size={32} color="#000000" />
             </Pressable>
 
-            <Text style={styles.title}>{name}</Text>
+            <Text style={styles.title}>{cafeteriaName}</Text>
 
             <View style={styles.buttonRow}>
                 <Pressable
@@ -231,11 +235,13 @@ export default function HomeScreen() {
                                                             styles.productImageBox
                                                         }
                                                     >
-                                                        {product.image ? (
+                                                        {getBustersProductImageSource(
+                                                            product.name,
+                                                        ) ? (
                                                             <Image
-                                                                source={{
-                                                                    uri: product.image,
-                                                                }}
+                                                                source={getBustersProductImageSource(
+                                                                    product.name,
+                                                                )}
                                                                 style={
                                                                     styles.productImage
                                                                 }

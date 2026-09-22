@@ -40,8 +40,8 @@ export default function ClientOrdersScreen() {
 
   const { active, history } = useMemo(() => {
     return {
-      active: orders.filter((order) => order.status !== "delivered"),
-      history: orders.filter((order) => order.status === "delivered"),
+      active: orders.filter((order) => order.status !== "Entregado"),
+      history: orders.filter((order) => order.status === "Entregado"),
     };
   }, [orders]);
 
@@ -112,10 +112,10 @@ export default function ClientOrdersScreen() {
         <FlatList
           contentContainerStyle={styles.listContent}
           data={visibleOrders}
-          keyExtractor={(order) => order.id}
+          keyExtractor={(order) => order._id}
           showsVerticalScrollIndicator={false}
           renderItem={({ item: order }) => {
-            const status = statusStyles[order.status];
+            const status = (statusStyles as any)[order.status] || { backgroundColor: "#ccc", color: "#000", label: order.status };
 
             return (
               <View style={styles.orderCard}>
@@ -133,19 +133,19 @@ export default function ClientOrdersScreen() {
 
                 <View style={styles.itemsList}>
                   {order.items.map((item, index) => (
-                    <View key={`${item.product.id}-${index}`} style={styles.itemRow}>
+                    <View key={`${item.productId}-${index}`} style={styles.itemRow}>
                       <ProductImage
                         contentFit="cover"
-                        image={item.product.image}
-                        name={item.product.name}
+                        image={item.image}
+                        name={item.name}
                         style={styles.itemImage}
                       />
                       <Text style={styles.itemQuantity}>{item.quantity}×</Text>
                       <Text numberOfLines={2} style={styles.itemName}>
-                        {item.product.name}
+                        {item.name}
                       </Text>
                       <Text style={styles.itemPrice}>
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        ${(item.price * item.quantity).toFixed(2)}
                       </Text>
                     </View>
                   ))}
@@ -153,7 +153,7 @@ export default function ClientOrdersScreen() {
 
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Total</Text>
-                  <Text style={styles.totalValue}>${order.total.toFixed(2)}</Text>
+                  <Text style={styles.totalValue}>${order.totalAmount.toFixed(2)}</Text>
                 </View>
               </View>
             );

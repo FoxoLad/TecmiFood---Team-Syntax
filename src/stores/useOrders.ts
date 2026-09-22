@@ -21,14 +21,14 @@ export type RealOrder = {
 };
 
 interface OrderStore {
-  orders: RealOrder[];
+  orders: RealOrder[]; alerts?: any[];
   isLoading: boolean;
   fetchOrders: () => Promise<void>;
   updateOrderStatus: (orderNumber: number, status: string) => Promise<void>;
 }
 
 export const useOrders = create<OrderStore>((set, get) => ({
-  orders: [],
+  orders: [], alerts: [],
   isLoading: false,
   fetchOrders: async () => {
     set({ isLoading: true });

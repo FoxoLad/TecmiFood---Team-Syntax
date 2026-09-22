@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Image,
     Modal,
@@ -11,14 +11,13 @@ import {
     Text,
     TextInput,
     View,
+    ActivityIndicator,
 } from "react-native";
 
 import SafeView from "../../../../components/SafeView";
 import { colors, radii } from "../../../../constants/theme";
-import productsData from "../../../../data/products.json";
-import { Product } from "../../../../types/product";
-
-const bustersProducts = productsData as Product[];
+import { useProductStore } from "../../../../stores/useProduct";
+import { useCartStore } from "../../../../stores/useCartStore";
 
 const getModificationOptions = (category: string) => {
     if (category === "Alimentos") {
@@ -42,16 +41,29 @@ export default function BustersProductScreen() {
     const [isFavorite, setIsFavorite] = useState(false);
     const [selectedModifications, setSelectedModifications] = useState<string[]>([]);
     const [additionalNotes, setAdditionalNotes] = useState("");
+    
+    const products = useProductStore((state) => state.products);
+    const fetchProducts = useProductStore((state) => state.fetchProducts);
+    const isLoading = useProductStore((state) => state.isLoading);
+    const addItemToCart = useCartStore((state) => state.addItem);
+
+    useEffect(() => {
+        if (products.length === 0) {
+            fetchProducts();
+        }
+    }, [fetchProducts]);
+
     const productId = Array.isArray(id) ? id[0] : id;
     const product = useMemo(
-        () =>
-            bustersProducts.find(
-                (currentProduct) =>
-                    currentProduct.id === productId &&
-                    currentProduct.businessId === "BT",
-            ),
-        [productId],
+        () => products.find((currentProduct) => currentProduct.id === productId),
+        [productId, products],
     );
+
+    const handleConfirmOrder = () => {
+        if (!product) return;
+        addItemToCart(product, 1, selectedModifications, additionalNotes);
+        setModalType("success");
+    };
 
     const orderProduct = () => {
         if (!product) {
@@ -79,6 +91,15 @@ export default function BustersProductScreen() {
                 : [...current, modification],
         );
     };
+
+    if (isLoading && !product) {
+        return (
+            <SafeView style={styles.container}>
+                <ActivityIndicator size="large" color={colors.accent} style={{ marginTop: 50 }} />
+                <Text style={styles.emptyText}>Cargando producto...</Text>
+            </SafeView>
+        );
+    }
 
     if (!product) {
         return (
@@ -256,8 +277,8 @@ export default function BustersProductScreen() {
                                         CANCELAR
                                     </Text>
                                 </Pressable>
-                                <Pressable
-                                    onPress={() => setModalType("success")}
+                            <Pressable
+                                    onPress={handleConfirmOrder}
                                     style={styles.confirmButton}
                                 >
                                     <Text style={styles.confirmButtonText}>

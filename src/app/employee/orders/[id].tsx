@@ -13,21 +13,16 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { productsImages } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
-import { useProductStore } from "../../../stores/useProduct";
+import { useOrders } from "../../../stores/useOrders";
 
 export default function EmployeeOrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const products = useProductStore((state) => state.products);
-  const updateProductsStatus = useProductStore(
-    (state) => state.updateProductsStatus,
-  );
-  const [showDeliveryConfirmation, setShowDeliveryConfirmation] =
-    useState(false);
-  const orderProducts = products.filter(
-    (product) => String(product.NoOrder) === id,
-  );
+  const { orders, updateOrderStatus } = useOrders();
+  const [showDeliveryConfirmation, setShowDeliveryConfirmation] = useState(false);
+  
+  const order = orders.find((o) => String(o.orderNumber) === id);
 
-  if (orderProducts.length === 0) {
+  if (!order) {
     return (
       <SafeAreaView style={styles.container}>
         <Pressable
@@ -43,10 +38,10 @@ export default function EmployeeOrderDetailsScreen() {
     );
   }
 
-  const orderNumber = orderProducts[0].NoOrder;
+  const orderNumber = order.orderNumber;
 
   const deliverOrder = () => {
-    updateProductsStatus(orderNumber, "Entregado");
+    updateOrderStatus(orderNumber, "Entregado");
     setShowDeliveryConfirmation(false);
   };
 
@@ -72,20 +67,24 @@ export default function EmployeeOrderDetailsScreen() {
         </View>
 
         <View style={styles.statusRow}>
+          <Text style={styles.statusLabel}>Cliente</Text>
+          <Text style={styles.statusValue}>{order.customerName}</Text>
+        </View>
+
+        <View style={styles.statusRow}>
           <Text style={styles.statusLabel}>Estado</Text>
           <Text
             style={[
               styles.statusValue,
-              (orderProducts[0].status || "").toLowerCase() === "entregado" &&
-                styles.deliveredStatus,
+              order.status === "Entregado" && styles.deliveredStatus,
             ]}
           >
-            {orderProducts[0].status || "Pendiente"}
+            {order.status}
           </Text>
         </View>
 
-        {orderProducts.map((product) => (
-          <View key={product.id} style={styles.productCard}>
+        {order.items.map((product, idx) => (
+          <View key={`${product.productId}-${idx}`} style={styles.productCard}>
             {product.image?.startsWith("http") ? (
               <Image
                 source={{ uri: product.image }}
@@ -108,25 +107,21 @@ export default function EmployeeOrderDetailsScreen() {
               />
             )}
             <View style={styles.productDetails}>
-              <Text style={styles.productName}>{product.name}</Text>
-              <Text style={styles.description}>{product.description}</Text>
-              <Text style={styles.category}>
-                {product.category.toUpperCase()}
-              </Text>
-              <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+              <Text style={styles.productName}>{product.quantity}x {product.name}</Text>
+              <Text style={styles.price}>${(product.price * product.quantity).toFixed(2)}</Text>
             </View>
             <View style={styles.modificationsBox}>
-              <Text style={styles.modificationsTitle}>Modificaciones</Text>
+              <Text style={styles.modificationsTitle}>Modificaciones / Notas</Text>
               <Text style={styles.modificationsText}>
-                {Array.isArray(product.modifications)
-                  ? product.modifications
-                      .map((m) => `${m.name} (+$${m.price})`)
-                      .join(", ") || "Sin modificaciones"
-                  : typeof product.modifications === "string" &&
-                      product.modifications.trim() !== ""
-                    ? product.modifications.trim()
-                    : "Sin modificaciones"}
+                {product.modifications && product.modifications.length > 0 
+                  ? product.modifications.join(", ") 
+                  : "Sin modificaciones"}
               </Text>
+              {product.notes ? (
+                  <Text style={[styles.modificationsText, { marginTop: 4, fontStyle: 'italic' }]}>
+                    Nota: {product.notes}
+                  </Text>
+              ) : null}
             </View>
           </View>
         ))}

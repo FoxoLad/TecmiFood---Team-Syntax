@@ -1,59 +1,55 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  ActivityIndicator,
+  Image,
+  Modal,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { productsImages } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
-import { useProductStore } from "../../../stores/useProduct";
-import type { Product } from "../../../types/product";
+import { useOrders } from "../../../stores/useOrders";
 
 export default function EmployeeOrdersScreen() {
-  const products = useProductStore((state) => state.products);
-  const isLoading = useProductStore((state) => state.isLoading);
-  const fetchProducts = useProductStore((state) => state.fetchProducts);
-
+  const { orders, isLoading, fetchOrders } = useOrders();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedFilter, setSelectedFilter] = useState("Pendientes");
   const [showReturnConfirmation, setShowReturnConfirmation] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    if (products.length === 0) {
-      fetchProducts();
-    }
-  }, [fetchProducts]);
+    fetchOrders();
+    //Auto-refresh cada 10 segundos
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [fetchOrders]);
 
-  const filteredProducts = products.filter((item: Product) => {
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchOrders();
+    setRefreshing(false);
+  }, [fetchOrders]);
+
+  const filteredOrders = orders.filter((order) => {
     const query = searchQuery.toLowerCase().trim();
-    const matchesName = item.name.toLowerCase().includes(query);
-    const matchesOrder = String(item.NoOrder ?? "").includes(query);
-    const normalizedStatus = (item.status || "active").toLowerCase().trim();
-    const isDelivered =
-      normalizedStatus === "entregado" || normalizedStatus === "delivered";
+    const matchesName = order.customerName.toLowerCase().includes(query);
+    const matchesOrder = String(order.orderNumber).includes(query);
+    const isDelivered = order.status === "Entregado";
     const matchesStatus =
       selectedFilter === "Todos" ||
       (selectedFilter === "Entregados" ? isDelivered : !isDelivered);
     return (matchesName || matchesOrder) && matchesStatus;
   });
-
-  const orders = Object.values(
-    filteredProducts.reduce<Record<number, Product[]>>((grouped, product) => {
-      const key = product.NoOrder || 0;
-      const orderProducts = grouped[key] ?? [];
-      grouped[key] = [...orderProducts, product];
-      return grouped;
-    }, {}),
-  );
 
   const confirmReturnToClient = () => {
     setShowReturnConfirmation(true);
@@ -69,6 +65,9 @@ export default function EmployeeOrdersScreen() {
       <ScrollView
         contentContainerStyle={style.listContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         <View style={style.header}>
           <Pressable
@@ -81,7 +80,12 @@ export default function EmployeeOrdersScreen() {
             <Ionicons color="#111110" name="chevron-back" size={34} />
           </Pressable>
           <Text style={style.screenTitle}>ORDENES</Text>
-          <View style={style.headerSpacer} />
+          <Pressable
+            style={style.historyButton}
+            onPress={() => router.push("/employee/history" as any)}
+          >
+            <Ionicons name="bar-chart-outline" size={24} color={colors.text} />
+          </Pressable>
         </View>
 
         <View style={style.filters}>
@@ -121,7 +125,7 @@ export default function EmployeeOrdersScreen() {
           />
         </View>
 
-        {isLoading ? (
+        {isLoading && orders.length === 0 ? (
           <View style={{ marginTop: 50 }}>
             <ActivityIndicator size="large" color="#000000" />
             <Text style={{ textAlign: "center", marginTop: 10 }}>
@@ -129,24 +133,15 @@ export default function EmployeeOrdersScreen() {
             </Text>
           </View>
         ) : (
-          orders.map((orderProducts) => {
-            const orderNumber = orderProducts[0].NoOrder;
-            const total = orderProducts.reduce(
-              (sum, product) => sum + product.price,
-              0,
-            );
+          filteredOrders.map((order) => {
+            const orderNumber = order.orderNumber;
+            const total = order.totalAmount;
             const isDeliveredView = selectedFilter === "Entregados";
-            const orderStatus = (orderProducts[0].status || "active")
-              .toLowerCase()
-              .trim();
-            const displayStatus =
-              orderStatus === "active" || orderStatus === "pending"
-                ? "Pendiente"
-                : orderProducts[0].status || "Pendiente";
+            const displayStatus = order.status;
 
             return (
               <View
-                key={orderNumber}
+                key={order._id || orderNumber}
                 style={[
                   style.orderCard,
                   isDeliveredView && style.deliveredOrderCard,
@@ -164,7 +159,8 @@ export default function EmployeeOrdersScreen() {
                       isDeliveredView && style.deliveredOrderNumber,
                     ]}
                   >
-                    #{String(orderNumber).padStart(3, "0")}
+                    #{String(orderNumber).padStart(3, "0")} -{" "}
+                    {order.customerName}
                   </Text>
                   <Text
                     style={[
@@ -184,11 +180,11 @@ export default function EmployeeOrdersScreen() {
                   </Text>
                 </View>
 
-                {orderProducts.map((product) => (
+                {order.items.map((product, idx) => (
                   <Pressable
                     accessibilityLabel={`Ver detalles de la orden ${orderNumber}`}
                     accessibilityRole="button"
-                    key={product.id}
+                    key={`${product.productId}-${idx}`}
                     onPress={() =>
                       router.push(`/employee/orders/${orderNumber}`)
                     }
@@ -197,44 +193,6 @@ export default function EmployeeOrdersScreen() {
                       isDeliveredView && style.deliveredProductRow,
                     ]}
                   >
-                    <View
-                      style={[
-                        style.productTextRow,
-                        isDeliveredView && style.deliveredProductTextRow,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          style.quantity,
-                          isDeliveredView && style.deliveredQuantity,
-                        ]}
-                      >
-                        x1
-                      </Text>
-                      <View style={style.productInfo}>
-                        <Text
-                          style={[
-                            style.productName,
-                            isDeliveredView && style.deliveredProductName,
-                          ]}
-                        >
-                          {product.name}
-                        </Text>
-                        {!isDeliveredView ? (
-                          <>
-                            <Text style={style.description}>
-                              {product.description}
-                            </Text>
-                            <Text style={style.category}>
-                              {product.category.toUpperCase()}
-                            </Text>
-                            <Text style={style.price}>
-                              ${product.price.toFixed(2)}
-                            </Text>
-                          </>
-                        ) : null}
-                      </View>
-                    </View>
                     <View
                       style={[
                         style.productActions,
@@ -274,13 +232,29 @@ export default function EmployeeOrdersScreen() {
                         />
                       )}
                     </View>
+                    <View style={style.productDetails}>
+                      <Text
+                        style={[
+                          style.productName,
+                          isDeliveredView && style.deliveredProductName,
+                        ]}
+                      >
+                        {product.quantity}x {product.name}
+                      </Text>
+                      {product.modifications &&
+                        product.modifications.length > 0 && (
+                          <Text style={style.productName} numberOfLines={1}>
+                            Mods: {product.modifications.join(", ")}
+                          </Text>
+                        )}
+                    </View>
                   </Pressable>
                 ))}
 
                 <View
                   style={[
-                    style.totalBar,
-                    isDeliveredView && style.deliveredTotalBar,
+                    style.totalContainer,
+                    isDeliveredView && style.deliveredTotalContainer,
                   ]}
                 >
                   <Text
@@ -289,7 +263,15 @@ export default function EmployeeOrdersScreen() {
                       isDeliveredView && style.deliveredTotalText,
                     ]}
                   >
-                    Total: ${total.toFixed(2)}
+                    Total:
+                  </Text>
+                  <Text
+                    style={[
+                      style.totalAmount,
+                      isDeliveredView && style.deliveredTotalAmount,
+                    ]}
+                  >
+                    ${total.toFixed(2)}
                   </Text>
                 </View>
               </View>
@@ -343,6 +325,11 @@ const style = StyleSheet.create({
     justifyContent: "space-between",
   },
   backButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 42,
+  },
+  historyButton: {
     alignItems: "center",
     justifyContent: "center",
     width: 42,
@@ -421,11 +408,11 @@ const style = StyleSheet.create({
     paddingVertical: 2,
   },
   orderNumber: {
-    fontSize: 38,
+    fontSize: 22,
     fontWeight: "800",
   },
   deliveredOrderNumber: {
-    fontSize: 27,
+    fontSize: 18,
   },
   status: {
     fontSize: 18,
@@ -442,99 +429,71 @@ const style = StyleSheet.create({
     color: "#15803d",
   },
   productRow: {
-    alignItems: "center",
-    borderBottomColor: "#111110",
-    borderBottomWidth: 1,
     flexDirection: "row",
-    minHeight: 116,
-    paddingHorizontal: 13,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    alignItems: "center",
   },
   deliveredProductRow: {
-    minHeight: 78,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  quantity: {
-    alignSelf: "flex-start",
-    fontSize: 23,
-    fontWeight: "700",
-    marginTop: 6,
-    width: 38,
-  },
-  deliveredQuantity: {
-    alignSelf: "flex-start",
-    fontSize: 17,
-    marginTop: 0,
-    width: 27,
-  },
-  productTextRow: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  deliveredProductTextRow: {
-    alignItems: "flex-start",
-  },
-  productInfo: {
-    flex: 1,
-  },
-  productName: {
-    fontSize: 22,
-    fontWeight: "800",
-  },
-  deliveredProductName: {
-    fontSize: 18,
-  },
-  description: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  category: {
-    color: "#777777",
-    fontSize: 11,
-    marginTop: 3,
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: "700",
+    paddingVertical: 5,
   },
   productActions: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+    justifyContent: "center",
     alignItems: "center",
-    width: 125,
   },
   deliveredProductActions: {
-    width: 88,
+    width: 40,
+    height: 40,
   },
   productImage: {
-    height: 88,
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
-    width: 118,
   },
   deliveredProductImage: {
-    height: 65,
-    width: 82,
+    opacity: 0.8,
   },
-  totalBar: {
-    alignItems: "center",
-    backgroundColor: "#000000",
-    borderRadius: 22,
-    marginHorizontal: 17,
-    marginVertical: 9,
-    paddingVertical: 3,
+  productDetails: {
+    flex: 1,
+    justifyContent: "center",
   },
-  deliveredTotalBar: {
-    borderRadius: 15,
-    marginHorizontal: 12,
-    marginVertical: 5,
-    paddingVertical: 1,
+  productName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: colors.text,
+  },
+  deliveredProductName: {
+    fontSize: 15,
+  },
+  totalContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: colors.surfaceMuted,
+  },
+  deliveredTotalContainer: {
+    paddingVertical: 6,
   },
   totalText: {
-    color: "#ffffff",
-    fontSize: 29,
-    fontWeight: "800",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.text,
   },
   deliveredTotalText: {
-    fontSize: 20,
+    fontSize: 15,
+  },
+  deliveredTotalAmount: {
+    fontSize: 15,
   },
   modalBackdrop: {
     alignItems: "center",

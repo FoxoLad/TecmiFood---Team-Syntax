@@ -6,6 +6,7 @@ import SafeView from "../../components/SafeView";
 import { ProductImage } from "../../components/ProductImage";
 import { colors, radii, spacing } from "../../constants/theme";
 import { useOrders } from "../../stores/useOrders";
+import { useUserStore } from "../../stores/useUserStore";
 import { ORDER_STATUS_LABELS, type OrderStatus } from "../../types/order";
 
 type OrdersView = "active" | "history";
@@ -37,13 +38,16 @@ export default function ClientOrdersScreen() {
   const { view: viewParam } = useLocalSearchParams<{ view?: string }>();
   const [view, setView] = useState<OrdersView>(viewParam === "history" ? "history" : "active");
   const orders = useOrders((state) => state.orders);
+  const clientId = useUserStore((state) => state.clientId);
 
   const { active, history } = useMemo(() => {
+    // Only show orders belonging to this user
+    const myOrders = orders.filter((order) => order.customerName === `Usuario ${clientId}`);
     return {
-      active: orders.filter((order) => order.status !== "Entregado"),
-      history: orders.filter((order) => order.status === "Entregado"),
+      active: myOrders.filter((order) => order.status !== "Entregado"),
+      history: myOrders.filter((order) => order.status === "Entregado"),
     };
-  }, [orders]);
+  }, [orders, clientId]);
 
   const visibleOrders = view === "active" ? active : history;
   const emptyState = emptyStates[view];

@@ -3,17 +3,37 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../../components/SafeView";
 import { colors, radii, spacing } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
+import { useUserStore } from "../../../stores/useUserStore";
 import type { OrderStatus } from "../../../types/order";
 
-const statusIcon: Record<OrderStatus, keyof typeof Ionicons.glyphMap> = {
-  pending: "receipt-outline",
-  preparing: "restaurant-outline",
-  ready: "checkmark-circle-outline",
-  delivered: "checkmark-done-outline",
+const getStatusIcon = (status: string): keyof typeof Ionicons.glyphMap => {
+  if (status === "Pendiente") return "receipt-outline";
+  if (status === "Preparando") return "restaurant-outline";
+  if (status === "Listo") return "checkmark-circle-outline";
+  return "checkmark-done-outline";
+};
+
+const getStatusMessage = (status: string, orderNumber: string) => {
+  if (status === "Pendiente") return `Hemos recibido tu pedido #${orderNumber}.`;
+  if (status === "Preparando") return `Tu pedido #${orderNumber} ya se está preparando.`;
+  if (status === "Listo") return `¡Tu pedido #${orderNumber} está listo para recoger!`;
+  return `Tu pedido #${orderNumber} ha sido entregado.`;
 };
 
 export default function NotificationsScreen() {
-  const alerts = useOrders((state) => state.alerts);
+  const clientId = useUserStore((state) => state.clientId);
+  const orders = useOrders((state) => state.orders);
+  
+  const alerts = orders
+    .filter(o => o.customerName === `Usuario ${clientId}`)
+    .map(order => ({
+      id: order._id,
+      status: order.status,
+      title: order.status === "Listo" ? "¡Pedido Listo!" : `Pedido ${order.status}`,
+      body: getStatusMessage(order.status, String(order.orderNumber).padStart(3, "0")),
+      date: new Date(order.createdAt).toLocaleString("es-MX"),
+    }))
+    .reverse();
 
   return (
     <SafeView style={styles.container}>
@@ -42,13 +62,13 @@ export default function NotificationsScreen() {
           renderItem={({ item }) => (
             <View style={styles.notificationCard}>
               <View style={styles.notificationIcon}>
-                <Ionicons color={colors.accent} name={statusIcon[item.status]} size={24} />
+                <Ionicons color={colors.accent} name={getStatusIcon(item.status)} size={24} />
               </View>
               <View style={styles.notificationContent}>
                 <Text style={styles.notificationTitle}>{item.title}</Text>
                 <Text style={styles.notificationMessage}>{item.body}</Text>
                 <Text style={styles.notificationDate}>
-                  {new Date(item.createdAt).toLocaleString("es-MX")}
+                  {item.date}
                 </Text>
               </View>
             </View>

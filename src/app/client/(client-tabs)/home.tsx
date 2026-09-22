@@ -16,6 +16,7 @@ import {
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { useOrders } from "../../../stores/useOrders";
+import { useUserStore } from "../../../stores/useUserStore";
 import { ORDER_STATUS_LABELS } from "../../../types/order";
 
 //Definición de productos y secciones
@@ -83,8 +84,9 @@ export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeBanner, setActiveBanner] = useState(0);
   const [visibleProducts, setVisibleProducts] = useState<Record<string, number>>({});
+  const clientId = useUserStore((state) => state.clientId);
   const activeOrder = useOrders((state) =>
-    state.orders.find((order) => order.status !== "delivered"),
+    state.orders.find((order) => order.customerName === `Usuario ${clientId}` && order.status !== "Entregado"),
   );
 
   useEffect(() => {
@@ -288,7 +290,7 @@ export default function HomeScreen() {
                 Pedido #{String(activeOrder.orderNumber).padStart(3, "0")}
               </Text>
               <Text style={styles.activeOrderStatus}>
-                {ORDER_STATUS_LABELS[activeOrder.status]}
+                {(ORDER_STATUS_LABELS as any)[activeOrder.status] || activeOrder.status}
               </Text>
             </View>
             <Ionicons color="#FFFFFF" name="chevron-forward" size={20} />

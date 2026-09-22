@@ -6,13 +6,13 @@ import { colors, radii, spacing } from "../../constants/theme";
 import { useOrders } from "../../stores/useOrders";
 import { ORDER_STATUS_HINTS, ORDER_STATUS_LABELS, type OrderStatus } from "../../types/order";
 
-const STEPS: OrderStatus[] = ["pending", "preparing", "ready"];
+const STEPS = ["Pendiente", "Preparando", "Listo"];
 
 export default function PreparingOrderScreen() {
   const latestOrder = useOrders((state) => state.orders[0]);
-  const status = latestOrder?.status ?? "pending";
-  const isReady = status === "ready" || status === "delivered";
-  const stepStatus = status === "delivered" ? "ready" : status;
+  const status = latestOrder?.status ?? "Pendiente";
+  const isReady = status === "Listo" || status === "Entregado";
+  const stepStatus = status === "Entregado" ? "Listo" : status;
   const stepIndex = STEPS.indexOf(stepStatus);
   const currentIndex = stepIndex < 0 ? 0 : stepIndex;
 
@@ -32,9 +32,9 @@ export default function PreparingOrderScreen() {
             ? `Pedido #${String(latestOrder.orderNumber).padStart(3, "0")}`
             : "Pedido enviado"}
         </Text>
-        <Text style={styles.statusLabel}>{ORDER_STATUS_LABELS[status]}</Text>
+        <Text style={styles.statusLabel}>{(ORDER_STATUS_LABELS as any)[status] || status}</Text>
         <Text style={styles.message}>
-          {latestOrder ? ORDER_STATUS_HINTS[status] : "Recibimos tu pedido. Te avisaremos cuando esté listo."}
+          {latestOrder ? (ORDER_STATUS_HINTS as any)[status] : "Recibimos tu pedido. Te avisaremos cuando esté listo."}
         </Text>
 
         {latestOrder ? (

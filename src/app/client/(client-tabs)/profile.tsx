@@ -14,6 +14,8 @@ import {
 import SafeView from "../../../components/SafeView";
 import { colors, radii } from "../../../constants/theme";
 
+import { useUserStore } from "../../../stores/useUserStore";
+
 // NOTE: this value ships inside the app bundle, so it is only a soft gate.
 // Real protection needs the code to be validated by the backend.
 const EMPLOYEE_CODE = "12345";
@@ -22,6 +24,7 @@ export default function ProfileScreen() {
   const [employeeCode, setEmployeeCode] = useState("");
   const [codeError, setCodeError] = useState(false);
   const router = useRouter();
+  const clientId = useUserStore((state) => state.clientId);
 
   // Cast to Href so these compile even if .expo/types/router.d.ts is stale.
   // Once the route types regenerate you can drop the casts.
@@ -57,7 +60,7 @@ export default function ProfileScreen() {
             <Text style={styles.title}>Mi perfil</Text>
           </View>
 
-          <Text style={styles.userName}>Cliente</Text>
+          <Text style={styles.userName}>Usuario {clientId || ""}</Text>
 
           <View style={styles.cardsRow}>
             <Pressable

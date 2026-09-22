@@ -14,7 +14,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
 
@@ -57,7 +56,7 @@ export default function EmployeeOrdersScreen() {
 
   const returnToClient = () => {
     setShowReturnConfirmation(false);
-    router.replace("/client/home");
+    router.replace("/client/(client-tabs)/home");
   };
 
   return (
@@ -87,43 +86,43 @@ export default function EmployeeOrdersScreen() {
             <Ionicons name="bar-chart-outline" size={24} color={colors.text} />
           </Pressable>
         </View>
+        <View style={styles.headerSpacer} />
+      </View>
 
-        <View style={style.filters}>
-          {["Pendientes", "Entregados", "Todos"].map((filter) => (
+      <Text style={styles.helperText}>
+        Aquí llegan los pedidos de los clientes. Ábrelo, prepáralo y márcalo como listo para recoger.
+      </Text>
+
+      <View style={styles.filters}>
+        {FILTERS.map((filter) => {
+          const selected = selectedFilter === filter.key;
+          const count = filterCounts[filter.key];
+
+          return (
             <Pressable
-              key={filter}
-              onPress={() => setSelectedFilter(filter)}
-              style={style.filterButton}
+              key={filter.key}
+              onPress={() => setSelectedFilter(filter.key)}
+              style={[styles.filterButton, selected && styles.filterButtonActive]}
             >
-              <Text
-                style={[
-                  style.filterText,
-                  selectedFilter === filter && style.activeFilterText,
-                ]}
-              >
-                {filter}
+              <Text style={[styles.filterText, selected && styles.activeFilterText]}>
+                {filter.label} ({count})
               </Text>
-              <View
-                style={[
-                  style.filterLine,
-                  selectedFilter === filter && style.activeFilterLine,
-                ]}
-              />
             </Pressable>
-          ))}
-        </View>
+          );
+        })}
+      </View>
 
-        <View style={style.searchContainer}>
-          <Ionicons color="#333333" name="search-outline" size={27} />
-          <TextInput
-            autoCapitalize="none"
-            onChangeText={setSearchQuery}
-            placeholder="Buscar"
-            placeholderTextColor="#333333"
-            style={style.searchInput}
-            value={searchQuery}
-          />
-        </View>
+      <View style={styles.searchContainer}>
+        <Ionicons color={colors.textSecondary} name="search-outline" size={22} />
+        <TextInput
+          autoCapitalize="none"
+          onChangeText={setSearchQuery}
+          placeholder="Buscar por número, cliente o producto"
+          placeholderTextColor={colors.textSecondary}
+          style={styles.searchInput}
+          value={searchQuery}
+        />
+      </View>
 
         {isLoading && orders.length === 0 ? (
           <View style={{ marginTop: 50 }}>
@@ -275,10 +274,23 @@ export default function EmployeeOrdersScreen() {
                   </Text>
                 </View>
               </View>
-            );
-          })
-        )}
-      </ScrollView>
+              <Text style={styles.customerName}>{order.customerName}</Text>
+              <Text style={styles.itemPreview} numberOfLines={2}>
+                {order.items
+                  .map((item) => `${item.quantity}× ${item.product.name}`)
+                  .join(" · ")}
+              </Text>
+              <View style={styles.orderFooter}>
+                <Text style={styles.itemCount}>
+                  {itemCount} {itemCount === 1 ? "producto" : "productos"}
+                </Text>
+                <Text style={styles.totalText}>Total ${order.total.toFixed(2)}</Text>
+              </View>
+            </Pressable>
+          );
+        }}
+        showsVerticalScrollIndicator={false}
+      />
 
       <Modal
         animationType="fade"
@@ -286,21 +298,21 @@ export default function EmployeeOrdersScreen() {
         transparent
         visible={showReturnConfirmation}
       >
-        <View style={style.modalBackdrop}>
-          <View style={style.confirmationModal}>
-            <Text style={style.modalTitle}>Volver al menú del cliente</Text>
-            <Text style={style.modalMessage}>
-              ¿Quieres salir del listado de pedidos?
+        <View style={styles.modalBackdrop}>
+          <View style={styles.confirmationModal}>
+            <Text style={styles.modalTitle}>Salir de cocina</Text>
+            <Text style={styles.modalMessage}>
+              Vas a volver al menú del cliente. Los pedidos seguirán guardados.
             </Text>
-            <View style={style.modalActions}>
+            <View style={styles.modalActions}>
               <Pressable
                 onPress={() => setShowReturnConfirmation(false)}
-                style={style.cancelButton}
+                style={styles.cancelButton}
               >
-                <Text style={style.cancelButtonText}>Cancelar</Text>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
               </Pressable>
-              <Pressable onPress={returnToClient} style={style.confirmButton}>
-                <Text style={style.confirmButtonText}>Volver</Text>
+              <Pressable onPress={returnToClient} style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>Volver</Text>
               </Pressable>
             </View>
           </View>
@@ -310,22 +322,20 @@ export default function EmployeeOrdersScreen() {
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.background,
-  },
-  listContent: {
-    paddingBottom: 24,
-    paddingHorizontal: 6,
+    flex: 1,
   },
   header: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingTop: 4,
   },
   backButton: {
     alignItems: "center",
+    height: 42,
     justifyContent: "center",
     width: 42,
   },
@@ -335,36 +345,46 @@ const style = StyleSheet.create({
     width: 42,
   },
   screenTitle: {
-    fontSize: 38,
-    fontWeight: "bold",
+    color: colors.text,
+    fontSize: 28,
+    fontWeight: "800",
   },
   headerSpacer: {
-    width: 34,
+    width: 42,
+  },
+  helperText: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 20,
+    paddingHorizontal: 16,
+    paddingTop: 4,
   },
   filters: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 12,
+    flexWrap: "wrap",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 14,
   },
   filterButton: {
-    alignItems: "center",
-    paddingHorizontal: 7,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  filterButtonActive: {
+    backgroundColor: colors.accentSoft,
+    borderColor: colors.accent,
   },
   filterText: {
-    fontSize: 23,
+    color: colors.textSecondary,
+    fontSize: 13,
     fontWeight: "700",
   },
   activeFilterText: {
-    color: "#111110",
-  },
-  filterLine: {
-    backgroundColor: "transparent",
-    height: 2,
-    marginTop: 5,
-    width: "100%",
-  },
-  activeFilterLine: {
-    backgroundColor: "#ffffff",
+    color: colors.text,
   },
   searchContainer: {
     alignItems: "center",
@@ -373,39 +393,34 @@ const style = StyleSheet.create({
     borderRadius: radii.pill,
     borderWidth: 1,
     flexDirection: "row",
-    height: 48,
-    marginBottom: 10,
-    paddingHorizontal: 15,
+    height: 46,
+    marginHorizontal: 16,
+    marginTop: 12,
+    paddingHorizontal: 14,
   },
   searchInput: {
-    color: "#111110",
+    color: colors.text,
     flex: 1,
-    fontSize: 18,
+    fontSize: 15,
     height: "100%",
-    marginLeft: 10,
+    marginLeft: 8,
+  },
+  listContent: {
+    gap: 12,
+    padding: 16,
+    paddingBottom: 28,
   },
   orderCard: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: radii.large,
-    borderWidth: 1.5,
-    marginBottom: 7,
-    overflow: "hidden",
-  },
-  deliveredOrderCard: {
-    borderRadius: 16,
-    marginBottom: 5,
+    borderRadius: radii.medium,
+    borderWidth: 1,
+    padding: 14,
   },
   orderHeader: {
     alignItems: "center",
-    borderBottomColor: "#111110",
-    borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 13,
-  },
-  deliveredOrderHeader: {
-    paddingVertical: 2,
   },
   orderNumber: {
     fontSize: 22,
@@ -416,10 +431,7 @@ const style = StyleSheet.create({
   },
   status: {
     fontSize: 18,
-    fontWeight: "700",
-  },
-  deliveredStatusText: {
-    fontSize: 14,
+    fontWeight: "800",
   },
   statusValue: {
     color: "#f27600",
@@ -505,9 +517,9 @@ const style = StyleSheet.create({
   confirmationModal: {
     backgroundColor: "#ffffff",
     borderRadius: 14,
+    maxWidth: 360,
     padding: 22,
     width: "100%",
-    maxWidth: 360,
   },
   modalTitle: {
     fontSize: 21,
@@ -546,20 +558,5 @@ const style = StyleSheet.create({
     color: "#ffffff",
     fontSize: 15,
     fontWeight: "700",
-  },
-  oldSearchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#EDE6CE",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    height: 44,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderColor: "#111110",
-    borderWidth: 1.5,
-  },
-  searchIcon: {
-    marginRight: 8,
   },
 });

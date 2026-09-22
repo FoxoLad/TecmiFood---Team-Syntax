@@ -2,7 +2,7 @@
   {
     "id": "BT-001",
     "businessId": "BT",
-    "name": "Cuadritos de ate",
+    "name": "Cuadritos de Ate",
     "description": "Cuadritos de ate dulce.",
     "price": 15,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103457/ate.png",
@@ -13,7 +13,7 @@
   {
     "id": "BT-002",
     "businessId": "BT",
-    "name": "Mazapan pieza",
+    "name": "Mazapan 1pz",
     "description": "Mazapán individual.",
     "price": 15,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106316/mazapan.png",
@@ -24,10 +24,10 @@
   {
     "id": "BT-003",
     "businessId": "BT",
-    "name": "Galletas 2 piezas mermelada",
+    "name": "Galletas 2pz Mermelada",
     "description": "Paquete de dos galletas con mermelada.",
     "price": 15,
-    "image": "",
+    "image": "GalletaChispa",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -46,7 +46,7 @@
   {
     "id": "BT-005",
     "businessId": "BT",
-    "name": "Fruta",
+    "name": "1pz de Fruta: Plátano o Manzana",
     "description": "Una pieza de fruta: plátano o manzana.",
     "price": 15,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103456/BanApp.png",
@@ -57,7 +57,7 @@
   {
     "id": "BT-006",
     "businessId": "BT",
-    "name": "Barra vainilla Rice Krispies",
+    "name": "Barra Vainilla Rice Krispies",
     "description": "Barra de Rice Krispies sabor vainilla.",
     "price": 20,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106356/RKTreat.jpg",
@@ -68,7 +68,7 @@
   {
     "id": "BT-007",
     "businessId": "BT",
-    "name": "Barra proteína cacahuate",
+    "name": "Barra Proteina Cacahuate",
     "description": "Barra de proteína con cacahuate.",
     "price": 20,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094828/BarraP.jpg",
@@ -79,7 +79,7 @@
   {
     "id": "BT-008",
     "businessId": "BT",
-    "name": "Obleas de amaranto",
+    "name": "Obleas de Amaranto",
     "description": "Obleas de amaranto en varios sabores.",
     "price": 28,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094829/ObleaAm.jpg",
@@ -101,10 +101,10 @@
   {
     "id": "BT-010",
     "businessId": "BT",
-    "name": "Chicles de 18 piezas",
+    "name": "Chicles de 18pz",
     "description": "Paquete de 18 piezas de chicle.",
     "price": 30,
-    "image": "",
+    "image": "Arizona",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -112,10 +112,10 @@
   {
     "id": "BT-011",
     "businessId": "BT",
-    "name": "Chicles de 9 piezas",
+    "name": "Chicles de 9pz",
     "description": "Paquete de 9 piezas de chicle.",
     "price": 25,
-    "image": "",
+    "image": "Arizona",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -178,7 +178,7 @@
   {
     "id": "BT-017",
     "businessId": "BT",
-    "name": "Galletas chispas chocolate",
+    "name": "Galletas Chispas Chocolate",
     "description": "Galletas con chispas de chocolate.",
     "price": 37,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094876/GalletaChispa.jpg",
@@ -189,7 +189,7 @@
   {
     "id": "BT-018",
     "businessId": "BT",
-    "name": "Galletas Chispas Georgio Kinder M M",
+    "name": "Galletas Giorgio Kinder M&M",
     "description": "Galletas con chispas y chocolate Kinder M&M.",
     "price": 40,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094877/GalletaKinder.jpg",
@@ -203,7 +203,7 @@
     "name": "Biónico",
     "description": "Biónico de fruta.",
     "price": 55,
-    "image": "",
+    "image": "Yogurt",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -216,13 +216,13 @@
     "price": 50,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094142/CroissantNute.jpg",
     "status": "active",
-    "category": "Comidas",
+    "category": "Otros",
     "modifications": []
   },
   {
     "id": "BT-021",
     "businessId": "BT",
-    "name": "Macarrón",
+    "name": "Macarrón 1pz",
     "description": "Macarrón individual.",
     "price": 25,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094829/macaron.jpg",
@@ -233,7 +233,7 @@
   {
     "id": "BT-022",
     "businessId": "BT",
-    "name": "Conejito Turin",
+    "name": "Conejito Turin 1pz",
     "description": "Chocolate Conejito Turin individual.",
     "price": 25,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094823/conejo_turin.webp",
@@ -247,7 +247,7 @@
     "name": "Galletas Anny",
     "description": "Galletas Anny.",
     "price": 35,
-    "image": "",
+    "image": "GalletaKinder",
     "status": "active",
     "category": "Otros",
     "modifications": []
@@ -255,37 +255,37 @@
   {
     "id": "BT-024",
     "businessId": "BT",
-    "name": "Galletas Chía, Avena y Blueberry",
+    "name": "Galletas Chia/Avena/Blueberry",
     "description": "Galletas de chía, avena y blueberry.",
     "price": 25,
-    "image": "",
+    "image": "Avena",
     "status": "active",
-    "category": "Comidas",
+    "category": "Otros",
     "modifications": []
   },
   {
     "id": "BT-025",
     "businessId": "BT",
-    "name": "Agua medio litro",
+    "name": "Agua Medio Litro",
     "description": "Botella de agua de medio litro.",
     "price": 15,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-026",
     "businessId": "BT",
-    "name": "Agua Bonafont y Libre 1 litro",
+    "name": "Agua Bonafont y libre 1lt",
     "description": "Botella de agua de un litro.",
     "price": 20,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-027",
@@ -296,20 +296,20 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106278/Cocazero.jpg",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-028",
     "businessId": "BT",
     "name": "Coca Cola Regular",
-    "description": "Refresco Coca Cola regular.",
+    "description": "Refresco Coca Cola Regular.",
     "price": 35,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106279/CocaOrig.jpg",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-029",
@@ -320,8 +320,8 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103456/AguaMine.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-030",
@@ -332,8 +332,8 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/freelife.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-031",
@@ -344,20 +344,20 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106372/schweppes.jpg",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-032",
     "businessId": "BT",
-    "name": "Arizona tamaño regular",
+    "name": "Arizona Tamaño Regular",
     "description": "Bebida Arizona de tamaño regular.",
     "price": 30,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103454/Arizona.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-033",
@@ -368,8 +368,8 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103797/boingjugo.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-034",
@@ -380,44 +380,44 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106368/snapple.jpg",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-035",
     "businessId": "BT",
-    "name": "Arizona tamaño jumbo",
+    "name": "Arizona Tamaño Jumbo",
     "description": "Bebida Arizona de tamaño jumbo.",
     "price": 35,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103453/Arizona_GT.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-036",
     "businessId": "BT",
     "name": "Jugo JUMEX",
-    "description": "Jugo de naranja o arándano JUMEX.",
+    "description": "Jugo JUMEX de naranja o arándano.",
     "price": 35,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106325/jumex.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-038",
     "businessId": "BT",
-    "name": "Jugo School JUMEX",
+    "name": "Jugo JUMEX Scool",
     "description": "Jugo School JUMEX.",
     "price": 35,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106326/JumexScool.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-039",
@@ -428,20 +428,20 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106287/Electrolite.png",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-040",
     "businessId": "BT",
     "name": "Yogurt",
-    "description": "Yogurt individual.",
+    "description": "Yogurt individual sabor Fresa o Mango.",
     "price": 25,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106370/yogurt.jpg",
     "status": "active",
     "category": "Bebidas",
-    "modifications": [],
-    "subcategory": "Otros"
+    "subcategory": "Otros",
+    "modifications": []
   },
   {
     "id": "BT-041",
@@ -457,8 +457,8 @@
   {
     "id": "BT-042",
     "businessId": "BT",
-    "name": "Mollete 2 piezas",
-    "description": "Dos piezas de mollete.",
+    "name": "Molletec",
+    "description": "Dos piezas de molletes.",
     "price": 45,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106342/Molletes.jpg",
     "status": "active",
@@ -493,7 +493,7 @@
     "name": "Croissant Nutella",
     "description": "Croissant relleno de Nutella.",
     "price": 50,
-    "image": "",
+    "image": "CroissantNute",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -501,7 +501,7 @@
   {
     "id": "BT-046",
     "businessId": "BT",
-    "name": "Croissant jamón y queso",
+    "name": "Croissant Jamón y Queso",
     "description": "Croissant relleno de jamón y queso.",
     "price": 55,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106279/CJQ.png",
@@ -512,10 +512,10 @@
   {
     "id": "BT-047",
     "businessId": "BT",
-    "name": "Pizza pita Pepperoni",
+    "name": "Pizza pita Pepperonni",
     "description": "Pizza en pan pita con pepperoni.",
     "price": 55,
-    "image": "",
+    "image": "PizzaPita",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -534,7 +534,7 @@
   {
     "id": "BT-049",
     "businessId": "BT",
-    "name": "Dedos de queso venezolanos 3 piezas",
+    "name": "Dedos de queso venezolanos",
     "description": "Tres piezas de dedos de queso estilo venezolano.",
     "price": 55,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106287/D2Queso.jpg",
@@ -583,7 +583,7 @@
     "price": 65,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106259/chapata.jpg",
     "status": "active",
-    "category": "Otros",
+    "category": "Comidas",
     "modifications": []
   },
   {
@@ -611,10 +611,10 @@
   {
     "id": "BT-056",
     "businessId": "BT",
-    "name": "Baguette pollo y pomodoro",
+    "name": "Baguette Pollo y Pomodoro",
     "description": "Baguette de pollo y pomodoro.",
     "price": 70,
-    "image": "",
+    "image": "ChapataPomo",
     "status": "active",
     "category": "Comidas",
     "modifications": []
@@ -627,7 +627,7 @@
     "price": 70,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106257/ChapataPP.jpg",
     "status": "active",
-    "category": "Otros",
+    "category": "Comidas",
     "modifications": []
   },
   {
@@ -644,7 +644,7 @@
   {
     "id": "BT-059",
     "businessId": "BT",
-    "name": "Hamburguesa de Res doble",
+    "name": "Hamburguesa de Res Doble",
     "description": "Hamburguesa doble de carne de res.",
     "price": 80,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106314/HambDob.jpg",
@@ -666,7 +666,7 @@
   {
     "id": "BT-061",
     "businessId": "BT",
-    "name": "Chilaquiles con milanesa de pollo",
+    "name": "Chilaquiles con Milanesa de Pollo",
     "description": "Chilaquiles acompañados de milanesa de pollo.",
     "price": 99,
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106278/chilaquilesMila.jpg",
@@ -677,7 +677,7 @@
   {
     "id": "BT-062",
     "businessId": "BT",
-    "name": "Frappé Café",
+    "name": "Frappé de Café",
     "description": "Frappé de café.",
     "price": 53,
     "modifications": [
@@ -697,12 +697,12 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/cafefrap.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-063",
     "businessId": "BT",
-    "name": "Frappé Mocha / Mocha Blanco",
+    "name": "Frappé Mocha/Mocha Blanco",
     "description": "Frappé de mocha o mocha blanco.",
     "price": 69,
     "modifications": [
@@ -722,7 +722,7 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106317/mochafrap.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-064",
@@ -747,7 +747,7 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106248/CaraFrap.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-065",
@@ -772,13 +772,13 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/C_CFrap.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-066",
     "businessId": "BT",
-    "name": "Frappé Yoghurt Fresa / Mango",
-    "description": "Frappé de yoghurt con fresa o mango.",
+    "name": "Frappé Yogurt Fresa/Mango",
+    "description": "Frappé de yogurt con fresa o mango.",
     "price": 64,
     "modifications": [
       {
@@ -797,12 +797,12 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-067",
     "businessId": "BT",
-    "name": "Smoothie Fresa / Mango",
+    "name": "Smoothie Fresa/Mango",
     "description": "Smoothie de fresa o mango.",
     "price": 48,
     "modifications": [
@@ -822,7 +822,7 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106371/Smoothie.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-068",
@@ -847,12 +847,12 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106256/ChaiFrap.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-069",
     "businessId": "BT",
-    "name": "Tisana Frappé",
+    "name": "Frappé Tisana",
     "description": "Frappé preparado con tisana.",
     "price": 64,
     "modifications": [
@@ -872,13 +872,13 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-070",
     "businessId": "BT",
-    "name": "Frappé Sabores",
-    "description": "Frappé de vainilla, caramelo, ChocoBlanco o chocolate.",
+    "name": "Frappé Vainilla",
+    "description": "Frappé de vainilla.",
     "price": 64,
     "modifications": [
       {
@@ -894,10 +894,85 @@
         "price": 80
       }
     ],
-    "image": "",
+    "image": "C&CFrap",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
+  },
+  {
+    "id": "BT-070-2",
+    "businessId": "BT",
+    "name": "Frappé Caramelo",
+    "description": "Frappé de caramelo.",
+    "price": 64,
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 69
+      },
+      {
+        "name": "+G",
+        "price": 80
+      }
+    ],
+    "image": "C&CFrap",
+    "status": "active",
+    "category": "Bebidas",
+    "subcategory": "Frappé"
+  },
+  {
+    "id": "BT-070-3",
+    "businessId": "BT",
+    "name": "Frappé Chocolate Blanco",
+    "description": "Frappé de chocolate blanco.",
+    "price": 64,
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 69
+      },
+      {
+        "name": "+G",
+        "price": 80
+      }
+    ],
+    "image": "C&CFrap",
+    "status": "active",
+    "category": "Bebidas",
+    "subcategory": "Frappé"
+  },
+  {
+    "id": "BT-070-4",
+    "businessId": "BT",
+    "name": "Frappé Chocolate",
+    "description": "Frappé de chocolate.",
+    "price": 64,
+    "modifications": [
+      {
+        "name": "M",
+        "price": 64
+      },
+      {
+        "name": "G",
+        "price": 69
+      },
+      {
+        "name": "+G",
+        "price": 80
+      }
+    ],
+    "image": "C&CFrap",
+    "status": "active",
+    "category": "Bebidas",
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-071",
@@ -919,15 +994,15 @@
         "price": 88
       }
     ],
-    "image": "",
+    "image": "TisanaFrap",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-072",
     "businessId": "BT",
-    "name": "Licuado Plátano / Fresa / Mango",
+    "name": "Licuado Plátano/Fresa/Mango",
     "description": "Licuado de plátano, fresa o mango.",
     "price": 55,
     "modifications": [
@@ -936,10 +1011,10 @@
         "price": 55
       }
     ],
-    "image": "",
+    "image": "Smoothie",
     "status": "active",
     "category": "Bebidas",
-    "subcategory": "Frapé"
+    "subcategory": "Frappé"
   },
   {
     "id": "BT-073",
@@ -961,9 +1036,10 @@
         "price": 65
       }
     ],
-    "image": "",
+    "image": "Latte",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Calientes"
   },
   {
     "id": "BT-074",
@@ -985,9 +1061,10 @@
         "price": 45
       }
     ],
-    "image": "",
+    "image": "Espresso",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Calientes"
   },
   {
     "id": "BT-075",
@@ -1009,9 +1086,10 @@
         "price": 50
       }
     ],
-    "image": "",
+    "image": "Espresso",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Calientes"
   },
   {
     "id": "BT-076",
@@ -1035,7 +1113,8 @@
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106325/Latte.png",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Calientes"
   },
   {
     "id": "BT-077",
@@ -1059,7 +1138,8 @@
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106318/Mocha.png",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Calientes"
   },
   {
     "id": "BT-078",
@@ -1081,9 +1161,10 @@
         "price": 82
       }
     ],
-    "image": "",
+    "image": "Mocha",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Calientes"
   },
   {
     "id": "BT-079",
@@ -1107,7 +1188,8 @@
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/Espresso.png",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Calientes"
   },
   {
     "id": "BT-080",
@@ -1121,9 +1203,10 @@
         "price": 41
       }
     ],
-    "image": "",
+    "image": "Arizona",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Frías"
   },
   {
     "id": "BT-081",
@@ -1145,9 +1228,10 @@
         "price": 65
       }
     ],
-    "image": "",
+    "image": "Mocha",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Frías"
   },
   {
     "id": "BT-082",
@@ -1169,9 +1253,10 @@
         "price": 47
       }
     ],
-    "image": "",
+    "image": "ChaiFrap",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Frías"
   },
   {
     "id": "BT-083",
@@ -1193,9 +1278,10 @@
         "price": 70
       }
     ],
-    "image": "",
+    "image": "TisanaFrap",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Frías"
   },
   {
     "id": "BT-084",
@@ -1217,9 +1303,10 @@
         "price": 87
       }
     ],
-    "image": "",
+    "image": "ChaiFrap",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Frías"
   },
   {
     "id": "BT-085",
@@ -1241,9 +1328,10 @@
         "price": 87
       }
     ],
-    "image": "",
+    "image": "Latte",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Frías"
   },
   {
     "id": "BT-086",
@@ -1265,9 +1353,10 @@
         "price": 90
       }
     ],
-    "image": "",
+    "image": "CaraFrap",
     "status": "active",
-    "category": "Bebidas Calientes o Heladas"
+    "category": "Bebidas",
+    "subcategory": "Frías"
   },
   {
     "id": "BT-091",
@@ -1275,7 +1364,7 @@
     "name": "Ingrediente extra comida",
     "description": "Ingrediente adicional para una comida.",
     "price": 12,
-    "image": "",
+    "image": "D2Queso",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1286,7 +1375,7 @@
     "name": "Extra de jamón",
     "description": "Porción adicional de jamón.",
     "price": 12,
-    "image": "",
+    "image": "D2Queso",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1297,7 +1386,7 @@
     "name": "Carga extra de café",
     "description": "Carga adicional de café.",
     "price": 12,
-    "image": "",
+    "image": "Latte",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1308,7 +1397,7 @@
     "name": "Leche especial",
     "description": "Cambio o adición de leche especial.",
     "price": 12,
-    "image": "",
+    "image": "Latte",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1319,7 +1408,7 @@
     "name": "Ingrediente extra en bebida",
     "description": "Ingrediente adicional para una bebida.",
     "price": 12,
-    "image": "",
+    "image": "Mocha",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1330,7 +1419,7 @@
     "name": "Vaso mediano hielos",
     "description": "Vaso mediano con hielos.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1341,7 +1430,7 @@
     "name": "Termo grande hielos",
     "description": "Termo grande con hielos.",
     "price": 10,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1352,7 +1441,7 @@
     "name": "Domo ecológico",
     "description": "Domo ecológico para bebidas.",
     "price": 10,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1363,7 +1452,7 @@
     "name": "Pieza plato grande",
     "description": "Plato grande individual.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1374,7 +1463,7 @@
     "name": "Pieza plato chico",
     "description": "Plato chico individual.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1385,7 +1474,7 @@
     "name": "Hielo o vaso de hielo",
     "description": "Hielo o vaso con hielo.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
@@ -1396,7 +1485,7 @@
     "name": "Tenedor o cuchara o cuchillo",
     "description": "Cubierto desechable individual.",
     "price": 5,
-    "image": "",
+    "image": "AguaMine",
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []

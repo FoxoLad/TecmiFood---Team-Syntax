@@ -2,16 +2,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
-	Image,
-	Modal,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
+    Image,
+    Modal,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../constants/images";
+import { getProductImageSource } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
 
@@ -30,10 +30,10 @@ export default function EmployeeOrderDetailsScreen() {
           onPress={() => router.back()}
           style={styles.backButton}
         >
-          <Ionicons color="#111110" name="chevron-back" size={30} />
+          <Ionicons color={colors.text} name="chevron-back" size={28} />
           <Text style={styles.backText}>Volver</Text>
         </Pressable>
-        <Text style={styles.notFound}>Pedido no encontrado</Text>
+        <Text style={styles.notFound}>No encontramos este pedido.</Text>
       </SafeAreaView>
     );
   }
@@ -47,10 +47,7 @@ export default function EmployeeOrderDetailsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Pressable
             accessibilityLabel="Volver a la lista de pedidos"
@@ -58,13 +55,16 @@ export default function EmployeeOrderDetailsScreen() {
             onPress={() => router.back()}
             style={styles.backButton}
           >
-            <Ionicons color="#111110" name="chevron-back" size={30} />
+            <Ionicons color={colors.text} name="chevron-back" size={28} />
             <Text style={styles.backText}>Pedidos</Text>
           </Pressable>
-          <Text style={styles.title}>
-            ORDEN #{String(orderNumber).padStart(3, "0")}
-          </Text>
         </View>
+
+        <Text style={styles.title}>Pedido #{String(order.orderNumber).padStart(3, "0")}</Text>
+        <Text style={styles.customerName}>{order.customerName}</Text>
+        <Text style={styles.orderDate}>
+          {new Date(order.createdAt).toLocaleString("es-MX")}
+        </Text>
 
         <View style={styles.statusRow}>
           <Text style={styles.statusLabel}>Cliente</Text>
@@ -82,6 +82,7 @@ export default function EmployeeOrderDetailsScreen() {
             {order.status}
           </Text>
         </View>
+        <Text style={styles.statusHint}>{ORDER_STATUS_HINTS[order.status]}</Text>
 
         {order.items.map((product, idx) => (
           <View key={`${product.productId}-${idx}`} style={styles.productCard}>
@@ -126,36 +127,43 @@ export default function EmployeeOrderDetailsScreen() {
           </View>
         ))}
 
-        <Pressable
-          onPress={() => setShowDeliveryConfirmation(true)}
-          style={styles.deliverButton}
-        >
-          <Text style={styles.deliverButtonText}>ENTREGAR</Text>
-        </Pressable>
+        <View style={styles.totalBar}>
+          <Text style={styles.totalText}>Total: ${order.total.toFixed(2)}</Text>
+        </View>
+
+        {action ? (
+          <Pressable
+            accessibilityLabel={action.button}
+            accessibilityRole="button"
+            onPress={() => setShowConfirmation(true)}
+            style={styles.actionButton}
+          >
+            <Text style={styles.actionButtonText}>{action.button}</Text>
+          </Pressable>
+        ) : (
+          <Text style={styles.completedNote}>Este pedido ya fue entregado.</Text>
+        )}
       </ScrollView>
 
       <Modal
         animationType="fade"
-        onRequestClose={() => setShowDeliveryConfirmation(false)}
+        onRequestClose={() => setShowConfirmation(false)}
         transparent
-        visible={showDeliveryConfirmation}
+        visible={showConfirmation}
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.confirmationModal}>
-            <Text style={styles.modalTitle}>Entregar producto</Text>
-            <Text style={styles.modalMessage}>
-              Este producto pasará a estar en entregado. ¿Seguro que deseas
-              continuar?
-            </Text>
+            <Text style={styles.modalTitle}>{action?.title}</Text>
+            <Text style={styles.modalMessage}>{action?.confirm}</Text>
             <View style={styles.modalActions}>
               <Pressable
-                onPress={() => setShowDeliveryConfirmation(false)}
+                onPress={() => setShowConfirmation(false)}
                 style={styles.cancelButton}
               >
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </Pressable>
-              <Pressable onPress={deliverOrder} style={styles.confirmButton}>
-                <Text style={styles.confirmButtonText}>Continuar</Text>
+              <Pressable onPress={confirmStatusChange} style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>Confirmar</Text>
               </Pressable>
             </View>
           </View>
@@ -171,90 +179,107 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 14,
-    paddingBottom: 28,
+    padding: 16,
+    paddingBottom: 32,
   },
   header: {
-    alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 14,
+    marginBottom: 8,
   },
   backButton: {
     alignItems: "center",
+    alignSelf: "flex-start",
     flexDirection: "row",
     gap: 2,
     paddingVertical: 6,
   },
   backText: {
-    color: "#111110",
+    color: colors.text,
     fontSize: 17,
     fontWeight: "700",
   },
   title: {
-    flex: 1,
-    fontSize: 27,
-    fontWeight: "900",
-    textAlign: "right",
+    color: colors.text,
+    fontSize: 28,
+    fontWeight: "800",
+  },
+  customerName: {
+    color: colors.textSecondary,
+    fontSize: 15,
+    marginTop: 4,
+  },
+  orderDate: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginTop: 2,
   },
   statusRow: {
     alignItems: "center",
-    backgroundColor: "#EDE6CE",
-    borderColor: "#111110",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderRadius: 12,
-    borderWidth: 1.5,
+    borderWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginTop: 16,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
   },
   statusLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "800",
   },
   statusValue: {
     color: "#f27600",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
   },
-  deliveredStatus: {
+  readyStatus: {
     color: "#15803d",
+  },
+  deliveredStatus: {
+    color: colors.textSecondary,
+  },
+  statusHint: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    marginTop: 8,
   },
   productCard: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: radii.medium,
-    borderWidth: 1.5,
-    marginBottom: 12,
-    padding: 12,
+    borderWidth: 1,
+    marginTop: 14,
+    overflow: "hidden",
   },
   productImage: {
-    alignSelf: "center",
-    height: 130,
-    resizeMode: "contain",
+    backgroundColor: "#F8F3E8",
+    height: 160,
+    resizeMode: "cover",
     width: "100%",
   },
   productDetails: {
-    marginTop: 4,
+    padding: 14,
+  },
+  quantity: {
+    color: colors.accent,
+    fontSize: 15,
+    fontWeight: "800",
   },
   productName: {
-    fontSize: 24,
-    fontWeight: "900",
+    fontSize: 22,
+    fontWeight: "800",
+    marginTop: 2,
   },
   description: {
-    fontSize: 15,
-    lineHeight: 20,
+    color: colors.textSecondary,
+    fontSize: 14,
     marginTop: 4,
   },
-  category: {
-    color: "#777777",
-    fontSize: 12,
-    marginTop: 6,
-  },
   price: {
-    fontSize: 23,
+    fontSize: 20,
     fontWeight: "800",
-    marginTop: 3,
+    marginTop: 8,
   },
   modificationsBox: {
     backgroundColor: "#fff8e7",
@@ -266,25 +291,44 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
   },
   modificationsTitle: {
-    fontSize: 16,
-    fontWeight: "900",
+    fontSize: 14,
+    fontWeight: "800",
   },
   modificationsText: {
     color: "#444444",
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 3,
   },
-  deliverButton: {
+  totalBar: {
+    alignItems: "center",
+    backgroundColor: colors.text,
+    borderRadius: 16,
+    marginTop: 16,
+    paddingVertical: 12,
+  },
+  totalText: {
+    color: "#ffffff",
+    fontSize: 20,
+    fontWeight: "800",
+  },
+  actionButton: {
     alignItems: "center",
     backgroundColor: "#15803d",
-    borderRadius: 22,
-    marginTop: 2,
-    paddingVertical: 7,
+    borderRadius: 16,
+    marginTop: 14,
+    paddingVertical: 14,
   },
-  deliverButtonText: {
+  actionButtonText: {
     color: "#ffffff",
-    fontSize: 29,
-    fontWeight: "900",
+    fontSize: 17,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  completedNote: {
+    color: colors.textSecondary,
+    fontSize: 15,
+    marginTop: 16,
+    textAlign: "center",
   },
   modalBackdrop: {
     alignItems: "center",

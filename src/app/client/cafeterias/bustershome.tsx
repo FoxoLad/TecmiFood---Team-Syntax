@@ -2,7 +2,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
-    Image,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -13,6 +12,7 @@ import {
 } from "react-native";
 
 import SafeView from "../../../components/SafeView";
+import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii } from "../../../constants/theme";
 import productsData from "../../../data/products.json";
 import { Product } from "../../../types/product";
@@ -61,6 +61,7 @@ const splitIntoGroups = (products: Product[], groupSize: number) => {
 
 export default function HomeScreen() {
     const { name } = useLocalSearchParams<{ name: string }>();
+    const cafeteriaName = name || "Busters";
     const [search, setSearch] = useState("");
     const [selectedFilter, setSelectedFilter] = useState<QuickFilter>("Todos");
     const { width: screenWidth } = useWindowDimensions();
@@ -98,7 +99,7 @@ export default function HomeScreen() {
                 <Ionicons name="arrow-back" size={32} color="#000000" />
             </Pressable>
 
-            <Text style={styles.title}>{name}</Text>
+            <Text style={styles.title}>{cafeteriaName}</Text>
 
             <View style={styles.buttonRow}>
                 <Pressable
@@ -226,23 +227,12 @@ export default function HomeScreen() {
                                                     }
                                                     style={styles.productCard}
                                                 >
-                                                    <View
-                                                        style={
-                                                            styles.productImageBox
-                                                        }
-                                                    >
-                                                        {product.image ? (
-                                                            <Image
-                                                                source={{
-                                                                    uri: product.image,
-                                                                }}
-                                                                style={
-                                                                    styles.productImage
-                                                                }
-                                                                resizeMode="contain"
-                                                            />
-                                                        ) : null}
-                                                    </View>
+                                                    <ProductImage
+                                                        contentFit="contain"
+                                                        image={product.image}
+                                                        name={product.name}
+                                                        style={styles.productImageBox}
+                                                    />
 
                                                     <Text
                                                         numberOfLines={2}
@@ -279,7 +269,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: colors.background,
         padding: 16,
     },
     backButton: {
@@ -353,6 +343,11 @@ const styles = StyleSheet.create({
         borderRadius: radii.large,
         marginBottom: 20,
         padding: 16,
+        shadowColor: "#5C3D0E",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.18,
+        shadowRadius: 12,
+        elevation: 5,
     },
     categoryHeader: {
         alignItems: "center",
@@ -382,21 +377,14 @@ const styles = StyleSheet.create({
     },
     productCard: {
         alignItems: "center",
-        backgroundColor: colors.accent,
-        borderRadius: radii.small,
         width: "31%",
     },
     productImageBox: {
-        alignItems: "center",
-        backgroundColor: colors.surface,
+        backgroundColor: "#FFFFFF",
+        borderRadius: 16,
         height: 100,
-        justifyContent: "center",
         marginBottom: 8,
         width: 100,
-    },
-    productImage: {
-        height: "100%",
-        width: "100%",
     },
     productName: {
         color: colors.surface,

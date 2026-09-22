@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { productsImages } from "../constants/images";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { ProductImage } from "./ProductImage";
 import { useProductStore } from "../stores/useProduct";
 import { Product } from "../types/product";
 
@@ -10,8 +10,8 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-    const orderNumber = (product as Product & { NoOrder?: number }).NoOrder ?? 0;
-    const status = (product as Product & { status?: string }).status ?? "Sin estado";
+    const orderNumber = product.NoOrder ?? 0;
+    const status = product.status ?? "Sin estado";
     const deleteProduct = useProductStore((state) => state.deleteProduct);
 
     // Función para asignar color dinámico según el estado
@@ -33,13 +33,15 @@ export function ProductCard({ product }: ProductCardProps) {
             <Pressable
                 onPress={() =>
                     router.push({
-                        pathname: "/client/products/[NoOrder]" as any,
+                        pathname: "/client/products/[NoOrder]",
                         params: { NoOrder: String(orderNumber) },
-                    } as any)
+                    })
                 }
             >
-                <Image
-                    source={productsImages[product.image as keyof typeof productsImages]}
+                <ProductImage
+                    contentFit="cover"
+                    image={product.image}
+                    name={product.name}
                     style={style.image}
                 />
             </Pressable>

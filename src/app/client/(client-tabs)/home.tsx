@@ -1,17 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, type Href } from "expo-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    Image,
+    NativeScrollEvent,
+    NativeSyntheticEvent,
+    Pressable,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
+import { ProductImage } from "../../../components/ProductImage";
+import { useOrders } from "../../../stores/useOrders";
+import { ORDER_STATUS_LABELS } from "../../../types/order";
 
 //Definición de productos y secciones
 type Modification = {
@@ -38,31 +43,132 @@ type CafeteriaSection = {
   title: string;
   headerColor: string;
   cardBgColor: string;
-  route?: any;
+  route?: Href;
   data: Product[];
 };
+
+const API_URL = "https://tecmifood-team-syntax.onrender.com/api/productos";
+const BATCH_SIZE = 4;
+const BANNERS = [
+  require("../../../../assets/images/promotionBanner/PromocionalPrueba.jpg"),
+  require("../../../../assets/images/promotionBanner/PromocionalTecmilenio.png"),
+  require("../../../../assets/images/promotionBanner/PromocionBustersTest.jpg"),
+];
+
+const BEE_SWEET_PRODUCTS: Product[] = [
+  {
+    id: "BS-001",
+    businessId: "BS",
+    name: "Panqué",
+    description: "Panqué clásico",
+    price: 102.0,
+    image: "",
+    inStock: true,
+    category: "Comidas",
+  },
+  {
+    id: "BS-002",
+    businessId: "BS",
+    name: "Chocolatín",
+    description: "Pan de chocolatín",
+    price: 35.0,
+    image: "",
+    inStock: true,
+    category: "Comidas",
+  },
+];
 
 export default function HomeScreen() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  //Enlace de producción en Render
-  const API_URL = "https://tecmifood-team-syntax.onrender.com/api/productos";
+  const [activeBanner, setActiveBanner] = useState(0);
+  const [visibleProducts, setVisibleProducts] = useState<Record<string, number>>({});
+  const activeOrder = useOrders((state) =>
+    state.orders.find((order) => order.status !== "delivered"),
+  );
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        setAllProducts(data);
+    const controller = new AbortController();
+
+    fetch(API_URL, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Error HTTP ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data: unknown) => {
+        const list = Array.isArray(data) ? data : [];
+        setAllProducts(
+          list.map((raw, index) => {
+            const product = raw as Product;
+            return {
+              ...product,
+              id: product.id || product._id || `product-${index}`,
+              inStock: product.inStock !== false,
+            };
+          }),
+        );
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error cargando productos desde", API_URL, ":", error);
+        if (error.name !== "AbortError") {
+          console.error("Error cargando productos desde", API_URL, ":", error);
+        }
         setIsLoading(false);
       });
+
+    return () => controller.abort();
   }, []);
 
-  const cafeteriaSections: CafeteriaSection[] = [
+  useEffect(() => {
+    const bannerTimer = setInterval(() => {
+      setActiveBanner((current) => (current + 1) % BANNERS.length);
+    }, 4500);
+
+    return () => clearInterval(bannerTimer);
+  }, []);
+
+  const openProduct = useCallback((product: Product) => {
+    if (product.businessId !== "BT") {
+      return;
+    }
+
+    router.push({
+      pathname: "/client/cafeterias/product/[id]",
+      params: { id: product.id },
+    });
+  }, []);
+
+  const getVisibleProducts = useCallback((section: CafeteriaSection) => {
+    const visibleCount = visibleProducts[section.businessId] ?? BATCH_SIZE;
+    return section.data.slice(0, visibleCount);
+  }, [visibleProducts]);
+
+  const loadMoreProducts = useCallback((
+    section: CafeteriaSection,
+    event: NativeSyntheticEvent<NativeScrollEvent>,
+  ) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    const reachedEnd = contentOffset.x + layoutMeasurement.width >= contentSize.width - 40;
+    const currentCount = visibleProducts[section.businessId] ?? BATCH_SIZE;
+
+    if (reachedEnd && currentCount < section.data.length) {
+      setVisibleProducts((current) => {
+        const latestCount = current[section.businessId] ?? BATCH_SIZE;
+        if (latestCount >= section.data.length) {
+          return current;
+        }
+
+        return {
+          ...current,
+          [section.businessId]: latestCount + BATCH_SIZE,
+        };
+      });
+    }
+  }, [visibleProducts]);
+
+  const cafeteriaSections = useMemo<CafeteriaSection[]>(() => [
     {
       businessId: "BT",
       title: "BUSTERS",
@@ -78,31 +184,9 @@ export default function HomeScreen() {
       title: "BEE SWEET",
       headerColor: "#d4af37",
       cardBgColor: "#e2bf43",
-      //DATOS SIMULADOS TEMPORALES PARA BEE SWEET (BORRAR CUANDO SE SUBAN LOS PRODUCTOS A MONGODB)
-      data: [
-        {
-          id: "BS-001",
-          businessId: "BS",
-          name: "Panqué",
-          description: "Panqué clásico",
-          price: 102.0,
-          image: "",
-          inStock: true,
-          category: "Comidas",
-        },
-        {
-          id: "BS-002",
-          businessId: "BS",
-          name: "Chocolatín",
-          description: "Pan de chocolatín",
-          price: 35.0,
-          image: "",
-          inStock: true,
-          category: "Comidas",
-        },
-      ],
+      data: BEE_SWEET_PRODUCTS,
     },
-  ];
+  ], [allProducts]);
 
   return (
     <SafeView style={styles.safeArea}>
@@ -118,42 +202,104 @@ export default function HomeScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/*Titulo Principal*/}
-        <Text style={styles.mainTitle}>CAFETERÍAS</Text>
-        <View style={styles.titleDivider} />
+        <View style={styles.heroHeader}>
+          <View>
+            <Text style={styles.kicker}>ORDENA A TU MANERA</Text>
+            <Text style={styles.mainTitle}>Cafeterías</Text>
+            <Text style={styles.subtitle}>Tu antojo, a un toque de distancia.</Text>
+          </View>
+          <View style={styles.headerIcon}>
+            <Ionicons name="cafe-outline" size={25} color="#FFFFFF" />
+          </View>
+        </View>
 
         {/*Banner Promocional*/}
         <View style={styles.bannerContainer}>
           <Image
-            source={require("../../../../assets/images/promotionBanner/PromocionalPrueba.jpg")}
+            source={BANNERS[activeBanner]}
             style={styles.bannerImage}
             resizeMode="cover"
           />
+          <View style={styles.bannerShade} />
+          <View style={styles.bannerCaption}>
+            <Text style={styles.bannerCaptionTitle}>Lo bueno empieza aquí</Text>
+            <Text style={styles.bannerCaptionText}>Descubre algo delicioso hoy.</Text>
+          </View>
+          <View style={styles.bannerDots}>
+            {BANNERS.map((_, index) => (
+              <Pressable
+                accessibilityLabel={`Ver promoción ${index + 1}`}
+                accessibilityRole="button"
+                key={index}
+                onPress={() => setActiveBanner(index)}
+                style={[styles.bannerDot, index === activeBanner && styles.bannerDotActive]}
+              />
+            ))}
+          </View>
         </View>
 
         {/*Botones de acción*/}
-        <View style={styles.ActionButtonsContainer}>
-          <Pressable style={styles.ActionButton}>
-            <Ionicons name="heart-outline" size={16} color="#000000" />
-            <Text style={styles.ActionButtonText}>Favoritos</Text>
+        <View style={styles.actionButtonsContainer}>
+          <Pressable
+            accessibilityLabel="Abrir favoritos"
+            accessibilityRole="button"
+            onPress={() => router.push("/client/(client-tabs)/favorites")}
+            style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
+          >
+            <Ionicons name="heart-outline" size={21} color="#8F651A" />
+            <Text style={styles.actionButtonText}>Favoritos</Text>
           </Pressable>
-          <Pressable style={styles.ActionButton}>
-            <Ionicons name="time-outline" size={16} color="#000000" />
-            <Text style={styles.ActionButtonText}>Historial</Text>
+          <Pressable
+            accessibilityLabel="Abrir historial de pedidos"
+            accessibilityRole="button"
+            onPress={() => router.push("/client/orders?view=history")}
+            style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
+          >
+            <Ionicons name="time-outline" size={21} color="#8F651A" />
+            <Text style={styles.actionButtonText}>Historial</Text>
           </Pressable>
-          <Pressable style={styles.ActionButton}>
-            <Ionicons name="document-text-outline" size={16} color="#000000" />
-            <Text style={styles.ActionButtonText}>Pedidos</Text>
+          <Pressable
+            accessibilityLabel="Abrir pedidos activos"
+            accessibilityRole="button"
+            onPress={() => router.push("/client/orders")}
+            style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
+          >
+            <Ionicons name="document-text-outline" size={21} color="#8F651A" />
+            <Text style={styles.actionButtonText}>Pedidos</Text>
           </Pressable>
         </View>
 
+        {activeOrder ? (
+          <Pressable
+            accessibilityLabel="Ver el estado de tu pedido"
+            accessibilityRole="button"
+            onPress={() => router.push("/client/orders")}
+            style={styles.activeOrderBanner}
+          >
+            <View style={styles.activeOrderIcon}>
+              <Ionicons
+                color="#FFFFFF"
+                name={activeOrder.status === "ready" ? "checkmark-circle" : "restaurant-outline"}
+                size={22}
+              />
+            </View>
+            <View style={styles.activeOrderCopy}>
+              <Text style={styles.activeOrderTitle}>
+                Pedido #{String(activeOrder.orderNumber).padStart(3, "0")}
+              </Text>
+              <Text style={styles.activeOrderStatus}>
+                {ORDER_STATUS_LABELS[activeOrder.status]}
+              </Text>
+            </View>
+            <Ionicons color="#FFFFFF" name="chevron-forward" size={20} />
+          </Pressable>
+        ) : null}
+
         {/*Mensaje de cargando mientras conecta con MongoDB*/}
         {isLoading ? (
-          <View style={{ marginTop: 50 }}>
+          <View style={styles.loadingState}>
             <ActivityIndicator size="large" color="#8F651A" />
-            <Text style={{ textAlign: "center", marginTop: 10 }}>
-              Cargando menú...
-            </Text>
+            <Text style={styles.loadingText}>Cargando menú...</Text>
           </View>
         ) : (
           cafeteriaSections.map((section) => (
@@ -165,6 +311,7 @@ export default function HomeScreen() {
               ]}
             >
               <Pressable
+                disabled={!section.route}
                 style={[
                   styles.sectionHeader,
                   { backgroundColor: section.headerColor },
@@ -185,21 +332,31 @@ export default function HomeScreen() {
               {/*Scroll horizontal de productos*/}
               <ScrollView
                 horizontal
+                onMomentumScrollEnd={(event) => loadMoreProducts(section, event)}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalScrollContainer}
                 nestedScrollEnabled={true}
               >
-                {section.data.map((item) => (
-                  <View key={item.id} style={styles.productCard}>
-                    {item.image ? (
-                      <Image
-                        source={{ uri: item.image }}
-                        style={styles.productImage}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View style={styles.productImageWhiteBox} />
-                    )}
+                {getVisibleProducts(section).map((item) => (
+                  <Pressable
+                    accessibilityLabel={`Ver ${item.name}`}
+                    accessibilityRole={item.businessId === "BT" ? "button" : undefined}
+                    disabled={item.businessId !== "BT"}
+                    key={item.id}
+                    onPress={() => openProduct(item)}
+                    style={({ pressed }) => [
+                      styles.productCard,
+                      pressed && item.businessId === "BT" && styles.productCardPressed,
+                    ]}
+                  >
+                  <View style={styles.productImageWrap}>
+                    <ProductImage
+                      contentFit="cover"
+                      image={item.image}
+                      name={item.name}
+                      style={styles.productImage}
+                    />
+                  </View>
 
                     <Text style={styles.productName} numberOfLines={1}>
                       {item.name}
@@ -207,9 +364,29 @@ export default function HomeScreen() {
                     <Text style={styles.productPrice}>
                       ${item.price.toFixed(2)}
                     </Text>
-                  </View>
+                    {item.businessId === "BT" ? (
+                      <View style={styles.viewProductLabel}>
+                        <Text style={styles.viewProductText}>Ver producto</Text>
+                        <Ionicons name="arrow-forward" size={13} color="#FFFFFF" />
+                      </View>
+                    ) : null}
+                  </Pressable>
                 ))}
+                {(visibleProducts[section.businessId] ?? BATCH_SIZE) < section.data.length ? (
+                  <View style={styles.loadMoreHint}>
+                    <Ionicons name="chevron-forward" size={18} color="#FFFFFF" />
+                    <Text style={styles.loadMoreText}>Desliza para ver más</Text>
+                  </View>
+                ) : null}
               </ScrollView>
+              {!section.route ? (
+                <View pointerEvents="none" style={styles.comingSoonOverlay}>
+                  <View style={styles.comingSoonBadge}>
+                    <Ionicons name="time-outline" size={20} color="#FFFFFF" />
+                    <Text style={styles.comingSoonText}>PRÓXIMAMENTE</Text>
+                  </View>
+                </View>
+              ) : null}
             </View>
           ))
         )}
@@ -220,66 +397,203 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#F7F5F0",
     flex: 1,
   },
   content: {
-    paddingBottom: 28,
+    paddingBottom: 36,
+  },
+  heroHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 18,
+    paddingTop: 12,
+  },
+  kicker: {
+    color: "#8F651A",
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 1.4,
   },
   mainTitle: {
     color: "#000000",
-    fontSize: 35,
+    fontSize: 36,
     fontWeight: "900",
-    textAlign: "center",
-    marginTop: 5,
+    marginTop: 2,
   },
-  titleDivider: {
-    borderBottomColor: "rgba(0, 0, 0, 0.1)",
-    borderBottomWidth: 1,
-    marginHorizontal: 16,
-    marginBottom: 10,
+  subtitle: {
+    color: "#6A6965",
+    fontSize: 14,
+    marginTop: 2,
+  },
+  headerIcon: {
+    alignItems: "center",
+    backgroundColor: "#8F651A",
+    borderRadius: 18,
+    height: 48,
+    justifyContent: "center",
+    width: 48,
   },
   bannerContainer: {
-    height: 110,
+    height: 178,
     marginHorizontal: 16,
     marginTop: 16,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "#000000",
+    borderRadius: 20,
     overflow: "hidden",
-    backgroundColor: "#eaeaea",
+    backgroundColor: "#DDD5C5",
   },
   bannerImage: {
-    width: "100%",
     height: "100%",
+    width: "100%",
   },
-  ActionButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: 16,
-    marginTop: 12,
+  bannerShade: {
+    backgroundColor: "rgba(0, 0, 0, 0.18)",
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
   },
-  ActionButton: {
-    alignItems: "center",
-    borderColor: "#000000",
-    borderRadius: 10,
-    borderWidth: 1,
+  bannerCaption: {
+    bottom: 30,
+    left: 18,
+    position: "absolute",
+  },
+  bannerCaptionTitle: {
+    color: "#FFFFFF",
+    fontSize: 21,
+    fontWeight: "900",
+  },
+  bannerCaptionText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    marginTop: 3,
+  },
+  bannerDots: {
+    bottom: 12,
     flexDirection: "row",
     gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    left: 18,
+    position: "absolute",
   },
-  ActionButtonText: {
+  bannerDot: {
+    backgroundColor: "rgba(255, 255, 255, 0.55)",
+    borderRadius: 5,
+    height: 7,
+    width: 7,
+  },
+  bannerDotActive: {
+    backgroundColor: "#FFFFFF",
+    width: 22,
+  },
+  actionButtonsContainer: {
+    gap: 8,
+    flexDirection: "row",
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  actionButton: {
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderColor: "#E7E2D8",
+    borderRadius: 16,
+    borderWidth: 1,
+    elevation: 2,
+    flex: 1,
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+    minHeight: 56,
+    paddingHorizontal: 12,
+    shadowColor: "#302512",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+  },
+  actionButtonPressed: {
+    backgroundColor: "#EEE9DE",
+    transform: [{ scale: 0.97 }],
+  },
+  actionButtonText: {
     color: "#000000",
     fontSize: 13,
     fontWeight: "600",
   },
+  activeOrderBanner: {
+    alignItems: "center",
+    backgroundColor: "#8F651A",
+    borderRadius: 16,
+    flexDirection: "row",
+    gap: 12,
+    marginHorizontal: 16,
+    marginTop: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  activeOrderIcon: {
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.18)",
+    borderRadius: 12,
+    height: 40,
+    justifyContent: "center",
+    width: 40,
+  },
+  activeOrderCopy: {
+    flex: 1,
+  },
+  activeOrderTitle: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  activeOrderStatus: {
+    color: "rgba(255, 255, 255, 0.88)",
+    fontSize: 13,
+    marginTop: 2,
+  },
+  loadingState: {
+    marginTop: 50,
+  },
+  loadingText: {
+    marginTop: 10,
+    textAlign: "center",
+  },
   cafeteriaSection: {
-    borderRadius: 20,
+    borderRadius: 22,
     marginHorizontal: 16,
     marginTop: 20,
     overflow: "hidden",
+    paddingTop: 2,
     paddingBottom: 16,
+    position: "relative",
+  },
+  comingSoonOverlay: {
+    alignItems: "center",
+    backgroundColor: "rgba(20, 18, 14, 0.58)",
+    bottom: 0,
+    justifyContent: "center",
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
+  comingSoonBadge: {
+    alignItems: "center",
+    backgroundColor: "rgba(20, 18, 14, 0.78)",
+    borderColor: "rgba(255, 255, 255, 0.75)",
+    borderRadius: 14,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+  comingSoonText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "900",
+    letterSpacing: 1,
   },
   sectionHeader: {
     alignItems: "center",
@@ -303,28 +617,45 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     marginHorizontal: 16,
-    marginVertical: 6,
+    marginVertical: 8,
   },
   horizontalScrollContainer: {
-    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 24,
+  },
+  loadMoreHint: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 14,
+    width: 76,
+  },
+  loadMoreText: {
+    color: "rgba(255, 255, 255, 0.82)",
+    fontSize: 11,
+    fontWeight: "700",
+    lineHeight: 15,
+    marginTop: 4,
+    textAlign: "center",
   },
   productCard: {
-    borderRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
+    borderRadius: 18,
     marginRight: 12,
     padding: 10,
-    width: 120,
+    width: 138,
   },
-  productImageWhiteBox: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    height: 90,
+  productCardPressed: {
+    opacity: 0.82,
+    transform: [{ scale: 0.97 }],
+  },
+  productImageWrap: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
     marginBottom: 8,
-    width: "100%",
+    overflow: "hidden",
   },
   productImage: {
-    borderRadius: 12,
-    height: 90,
-    marginBottom: 8,
+    height: 102,
     width: "100%",
   },
   productName: {
@@ -338,5 +669,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     textAlign: "center",
+  },
+  viewProductLabel: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 4,
+    justifyContent: "center",
+    marginTop: 6,
+  },
+  viewProductText: {
+    color: "rgba(255, 255, 255, 0.82)",
+    fontSize: 11,
+    fontWeight: "700",
   },
 });

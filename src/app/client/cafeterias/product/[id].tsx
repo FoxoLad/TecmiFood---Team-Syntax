@@ -2,11 +2,9 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-    Image,
     Modal,
     Pressable,
     ScrollView,
-    Share,
     StyleSheet,
     Text,
     TextInput,
@@ -15,6 +13,7 @@ import {
 } from "react-native";
 
 import SafeView from "../../../../components/SafeView";
+import { ProductImage } from "../../../../components/ProductImage";
 import { colors, radii } from "../../../../constants/theme";
 import { useProductStore } from "../../../../stores/useProduct";
 import { useCartStore } from "../../../../stores/useCartStore";
@@ -38,7 +37,7 @@ const getModificationOptions = (category: string) => {
 export default function BustersProductScreen() {
     const { id } = useLocalSearchParams<{ id?: string | string[] }>();
     const [modalType, setModalType] = useState<"confirm" | "success" | null>(null);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [quantity, setQuantity] = useState(1);
     const [selectedModifications, setSelectedModifications] = useState<string[]>([]);
     const [additionalNotes, setAdditionalNotes] = useState("");
     
@@ -58,6 +57,9 @@ export default function BustersProductScreen() {
         () => products.find((currentProduct) => currentProduct.id === productId),
         [productId, products],
     );
+    const isFavorite = useFavoritesStore((state) =>
+        product ? state.items.some((item) => item.id === product.id) : false,
+    );
 
     const handleConfirmOrder = () => {
         if (!product) return;
@@ -73,15 +75,20 @@ export default function BustersProductScreen() {
         setModalType("confirm");
     };
 
-    const shareProduct = () => {
+    const totalPrice = product ? product.price * quantity : 0;
+
+    const confirmAddToCart = () => {
         if (!product) {
             return;
         }
 
-        Share.share({
-            message: `${product.name}\n${product.description}\nPrecio: $${product.price.toFixed(2)}`,
-            title: product.name,
+        addItem({
+            product,
+            quantity,
+            modifications: selectedModifications,
+            notes: additionalNotes.trim(),
         });
+        setModalType("success");
     };
 
     const toggleModification = (modification: string) => {
@@ -131,17 +138,17 @@ export default function BustersProductScreen() {
 
                 <View style={styles.headerActions}>
                     <Pressable
-                        accessibilityLabel="Compartir producto"
+                        accessibilityLabel="Ir al carrito"
                         accessibilityRole="button"
-                        onPress={shareProduct}
+                        onPress={() => router.push("/client/(client-tabs)/cart")}
                         style={styles.iconButton}
                     >
-                        <Ionicons name="share-outline" size={25} color={colors.text} />
+                        <Ionicons name="cart-outline" size={25} color={colors.text} />
                     </Pressable>
                     <Pressable
                         accessibilityLabel={isFavorite ? "Quitar de favoritos" : "Guardar como favorito"}
                         accessibilityRole="button"
-                        onPress={() => setIsFavorite((current) => !current)}
+                        onPress={() => product && toggleFavorite(product)}
                         style={styles.iconButton}
                     >
                         <Ionicons
@@ -157,15 +164,12 @@ export default function BustersProductScreen() {
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={styles.imageBox}>
-                    {product.image.startsWith("http") ? (
-                        <Image
-                            source={{ uri: product.image }}
-                            style={styles.image}
-                            resizeMode="contain"
-                        />
-                    ) : null}
-                </View>
+                <ProductImage
+                    contentFit="contain"
+                    image={product.image}
+                    name={product.name}
+                    style={styles.imageBox}
+                />
 
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.category}>{product.category}</Text>
@@ -219,14 +223,52 @@ export default function BustersProductScreen() {
                     value={additionalNotes}
                 />
 
-                <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Agregar ${product.name} al carrito`}
-                    onPress={orderProduct}
-                    style={styles.orderButton}
-                >
-                    <Text style={styles.orderButtonText}>AGREGAR AL CARRITO</Text>
-                </Pressable>
+                <View style={styles.orderRow}>
+                    <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel={`Agregar ${product.name} al carrito`}
+                        onPress={orderProduct}
+                        style={styles.orderButton}
+                    >
+                        <Text style={styles.orderButtonText}>AGREGAR AL CARRITO</Text>
+                    </Pressable>
+
+                    <View style={styles.quantityControl}>
+                        <Pressable
+                            accessibilityLabel="Disminuir cantidad"
+                            accessibilityRole="button"
+                            disabled={quantity === 1}
+                            onPress={() => setQuantity((current) => Math.max(1, current - 1))}
+                            style={styles.quantityButton}
+                        >
+                            <Ionicons
+                                color={quantity === 1 ? colors.textSecondary : colors.text}
+                                name="remove"
+                                size={18}
+                            />
+                        </Pressable>
+                        <Text accessibilityLabel={`Cantidad: ${quantity}`} style={styles.quantityText}>
+                            {quantity}
+                        </Text>
+                        <Pressable
+                            accessibilityLabel="Aumentar cantidad"
+                            accessibilityRole="button"
+                            disabled={quantity >= MAX_PRODUCT_QUANTITY}
+                            onPress={() =>
+                                setQuantity((current) =>
+                                    Math.min(MAX_PRODUCT_QUANTITY, current + 1),
+                                )
+                            }
+                            style={styles.quantityButton}
+                        >
+                            <Ionicons
+                                color={quantity >= MAX_PRODUCT_QUANTITY ? colors.textSecondary : colors.text}
+                                name="add"
+                                size={18}
+                            />
+                        </Pressable>
+                    </View>
+                </View>
             </ScrollView>
 
             <Modal
@@ -252,9 +294,14 @@ export default function BustersProductScreen() {
                         </Text>
                         <Text style={styles.modalMessage}>
                             {modalType === "confirm"
-                                ? `¿Deseas agregar ${product.name} al carrito por $${product.price.toFixed(2)}?`
+                                ? `¿Deseas agregar ${quantity} ${quantity === 1 ? "unidad" : "unidades"} de ${product.name}?`
                                 : `${product.name} se agregó al carrito.`}
                         </Text>
+                        {modalType === "confirm" ? (
+                            <Text style={styles.modalTotal}>
+                                Total a pagar: ${totalPrice.toFixed(2)}
+                            </Text>
+                        ) : null}
                         {modalType === "confirm" &&
                         (selectedModifications.length > 0 || additionalNotes.trim()) ? (
                             <Text style={styles.modalDetails}>
@@ -328,17 +375,15 @@ const styles = StyleSheet.create({
         paddingBottom: 24,
     },
     imageBox: {
-        alignItems: "center",
         backgroundColor: colors.surface,
-        borderColor: colors.border,
-        borderWidth: 1,
-        height: 220,
-        justifyContent: "center",
+        borderRadius: 24,
+        elevation: 4,
+        height: 240,
         marginBottom: 20,
-        width: "100%",
-    },
-    image: {
-        height: "100%",
+        shadowColor: "#302512",
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
         width: "100%",
     },
     name: {
@@ -413,17 +458,44 @@ const styles = StyleSheet.create({
         marginTop: 16,
         padding: 12,
     },
+    orderRow: {
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 12,
+        marginTop: 24,
+    },
     orderButton: {
         alignItems: "center",
         backgroundColor: colors.accent,
         borderRadius: radii.pill,
-        marginTop: 24,
+        flex: 1,
         paddingVertical: 15,
     },
     orderButtonText: {
         color: "#FFFFFF",
         fontSize: 17,
         fontWeight: "bold",
+    },
+    quantityControl: {
+        alignItems: "center",
+        borderColor: colors.border,
+        borderRadius: radii.pill,
+        borderWidth: 1,
+        flexDirection: "row",
+        height: 50,
+    },
+    quantityButton: {
+        alignItems: "center",
+        height: 48,
+        justifyContent: "center",
+        width: 38,
+    },
+    quantityText: {
+        color: colors.text,
+        fontSize: 17,
+        fontWeight: "bold",
+        minWidth: 20,
+        textAlign: "center",
     },
     modalOverlay: {
         alignItems: "center",
@@ -453,6 +525,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 22,
         marginTop: 12,
+        textAlign: "center",
+    },
+    modalTotal: {
+        color: colors.text,
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 16,
         textAlign: "center",
     },
     modalDetails: {

@@ -1,397 +1,328 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useMemo } from "react";
+import { useState } from "react";
 import {
-    FlatList,
+    ActivityIndicator,
+    Alert,
+    Image,
     Pressable,
+    ScrollView,
     StyleSheet,
     Text,
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
-import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii, spacing } from "../../../constants/theme";
-import { MAX_PRODUCT_QUANTITY, useCartStore } from "../../../stores/useCart";
-import { useOrders } from "../../../stores/useOrders";
+import { colors, radii } from "../../../constants/theme";
+import { useCartStore } from "../../../stores/useCartStore";
+import { useUserStore } from "../../../stores/useUserStore";
 
 export default function CartScreen() {
-  const items = useCartStore((state) => state.items);
-  const clearCart = useCartStore((state) => state.clearCart);
-  const updateQuantity = useCartStore((state) => state.updateQuantity);
-  const removeItem = useCartStore((state) => state.removeItem);
-  const addOrder = useOrders((state) => state.addOrder);
-  const total = useMemo(
-    () => items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
-    [items],
-  );
-  const itemCount = useMemo(
-    () => items.reduce((sum, item) => sum + item.quantity, 0),
-    [items],
-  );
+  const { items, removeItem, clearCart, getTotal } = useCartStore();
+  const clientId = useUserStore((state) => state.clientId) || "Cliente Anónimo";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const placeOrder = () => {
-    if (items.length === 0) {
-      return;
+  const handleCheckout = async () => {
+    if (items.length === 0) return;
+
+    setIsSubmitting(true);
+    try {
+      //Preparar los datos según el modelo Order.js en el backend
+      const orderData = {
+        customerName: `Usuario ${clientId}`, //Identificador único
+        totalAmount: getTotal(),
+        items: items.map((item) => ({
+          productId: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          quantity: item.quantity,
+          image: item.product.image,
+          modifications: item.modifications,
+          notes: item.notes,
+        })),
+      };
+
+      const response = await fetch(
+        "https://tecmifood-team-syntax.onrender.com/api/orders",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderData),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al enviar el pedido");
+      }
+
+      const result = await response.json();
+
+      Alert.alert(
+        "¡Pedido Enviado!",
+        `Tu número de orden es: #${result.orderNumber}`,
+        [
+          {
+            text: "Ver Menú",
+            onPress: () => {
+              clearCart();
+              router.push("/client/home");
+            },
+          },
+        ],
+      );
+    } catch (error) {
+      console.error("Error al enviar orden:", error);
+      Alert.alert(
+        "Error",
+        "Hubo un problema al procesar tu pedido. Intenta nuevamente.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    addOrder({
-      customerName: "Cliente",
-      items: items.map(({ product, quantity, modifications, notes }) => ({
-        product,
-        quantity,
-        modifications,
-        notes,
-      })),
-      total,
-    });
-    clearCart();
-    router.replace("/client/preparing");
   };
+
+  if (items.length === 0) {
+    return (
+      <SafeView style={styles.emptyContainer}>
+        <Ionicons name="cart-outline" size={80} color={colors.textSecondary} />
+        <Text style={styles.emptyTitle}>Tu carrito está vacío</Text>
+        <Text style={styles.emptySubtitle}>
+          Agrega productos desde las cafeterías para empezar tu pedido.
+        </Text>
+        <Pressable
+          style={styles.browseButton}
+          onPress={() => router.push("/client/home")}
+        >
+          <Text style={styles.browseButtonText}>Ir a comprar</Text>
+        </Pressable>
+      </SafeView>
+    );
+  }
 
   return (
     <SafeView style={styles.container}>
       <View style={styles.header}>
-        <View>
-          <Text style={styles.eyebrow}>TU PEDIDO</Text>
-          <Text style={styles.title}>Mi carrito</Text>
-        </View>
-        {itemCount > 0 ? (
-          <View style={styles.countBadge}>
-            <Text style={styles.countBadgeText}>{itemCount}</Text>
-          </View>
-        ) : null}
+        <Text style={styles.title}>Tu Carrito</Text>
+        <Pressable onPress={clearCart} style={styles.clearButton}>
+          <Text style={styles.clearButtonText}>Vaciar</Text>
+        </Pressable>
       </View>
 
-      {items.length === 0 ? (
-        <View style={styles.emptyState}>
-          <View style={styles.emptyIcon}>
-            <Ionicons name="cart-outline" size={42} color={colors.accent} />
-          </View>
-          <Text style={styles.emptyTitle}>Tu carrito está vacío</Text>
-          <Text style={styles.emptyMessage}>
-            Agrega tus productos favoritos y aparecerán aquí.
-          </Text>
-          <Pressable
-            accessibilityLabel="Ir a las cafeterías"
-            accessibilityRole="button"
-            onPress={() => router.replace("/client/(client-tabs)/home")}
-            style={[styles.orderButton, styles.emptyCta]}
-          >
-            <Text style={styles.orderButtonText}>Ir a las cafeterías</Text>
-          </Pressable>
-        </View>
-      ) : (
-        <FlatList
-          contentContainerStyle={styles.listContent}
-          data={items}
-          keyExtractor={(item, index) => `${item.product.id}-${index}`}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => {
-            return (
-              <View style={styles.itemCard}>
-                <ProductImage
-                  contentFit="cover"
-                  image={item.product.image}
-                  name={item.product.name}
-                  style={styles.productImage}
+      <ScrollView
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {items.map((item) => (
+          <View key={item.cartItemId} style={styles.cartItem}>
+            <View style={styles.itemImageContainer}>
+              {item.product.image ? (
+                <Image
+                  source={{ uri: item.product.image }}
+                  style={styles.itemImage}
                 />
-                <View style={styles.itemInfo}>
-                  <Text numberOfLines={2} style={styles.productName}>
-                    {item.product.name}
-                  </Text>
-                  <Text numberOfLines={2} style={styles.descriptionText}>
-                    {item.product.description || "Sin descripción disponible."}
-                  </Text>
-                  {item.modifications.length > 0 ? (
-                    <Text numberOfLines={2} style={styles.detailsText}>
-                      {item.modifications.join(" · ")}
-                    </Text>
-                  ) : null}
-                  <View style={styles.itemFooter}>
-                    <Text style={styles.unitPrice}>${item.product.price.toFixed(2)} c/u</Text>
-                  </View>
-                </View>
-                <View style={styles.actionColumn}>
-                  <Pressable
-                    accessibilityLabel={`Eliminar ${item.product.name} del carrito`}
-                    accessibilityRole="button"
-                    onPress={() => removeItem(index)}
-                    style={styles.removeButton}
-                  >
-                    <Ionicons name="trash-outline" size={20} color={colors.danger} />
-                  </Pressable>
-                  <View style={styles.itemControls}>
-                    <View style={styles.quantityControl}>
-                      <Pressable
-                        accessibilityLabel={`Disminuir cantidad de ${item.product.name}`}
-                        accessibilityRole="button"
-                        disabled={item.quantity === 1}
-                        onPress={() => updateQuantity(index, item.quantity - 1)}
-                        style={styles.quantityButton}
-                      >
-                        <Ionicons
-                          color={item.quantity === 1 ? colors.border : colors.text}
-                          name="remove"
-                          size={16}
-                        />
-                      </Pressable>
-                      <Text style={styles.quantityText}>{item.quantity}</Text>
-                      <Pressable
-                        accessibilityLabel={`Aumentar cantidad de ${item.product.name}`}
-                        accessibilityRole="button"
-                        disabled={item.quantity >= MAX_PRODUCT_QUANTITY}
-                        onPress={() => updateQuantity(index, item.quantity + 1)}
-                        style={styles.quantityButton}
-                      >
-                        <Ionicons
-                          color={item.quantity >= MAX_PRODUCT_QUANTITY ? colors.border : colors.text}
-                          name="add"
-                          size={16}
-                        />
-                      </Pressable>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            );
-          }}
-        />
-      )}
+              ) : (
+                <Ionicons
+                  name="fast-food-outline"
+                  size={24}
+                  color={colors.textSecondary}
+                />
+              )}
+            </View>
+            <View style={styles.itemInfo}>
+              <Text style={styles.itemName}>{item.product.name}</Text>
+              <Text style={styles.itemPrice}>
+                ${item.product.price.toFixed(2)}
+              </Text>
 
-      {items.length > 0 ? (
-        <View style={styles.totalPanel}>
-          <View>
-            <Text style={styles.totalLabel}>Total del pedido</Text>
-            <Text style={styles.totalHint}>{itemCount} productos</Text>
-          </View>
-          <View style={styles.totalActions}>
-            <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+              {item.modifications.length > 0 && (
+                <Text style={styles.itemMods}>
+                  Mods: {item.modifications.join(", ")}
+                </Text>
+              )}
+              {item.notes ? (
+                <Text style={styles.itemNotes}>Nota: {item.notes}</Text>
+              ) : null}
+            </View>
+
             <Pressable
-              accessibilityLabel="Enviar pedido a cocina"
-              accessibilityRole="button"
-              onPress={placeOrder}
-              style={styles.orderButton}
+              style={styles.deleteButton}
+              onPress={() => removeItem(item.cartItemId)}
             >
-              <Ionicons color="#FFFFFF" name="checkmark-circle-outline" size={21} />
-              <Text style={styles.orderButtonText}>Enviar pedido a cocina</Text>
+              <Ionicons name="trash-outline" size={22} color={colors.danger} />
             </Pressable>
           </View>
+        ))}
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <View style={styles.totalRow}>
+          <Text style={styles.totalLabel}>Total a pagar:</Text>
+          <Text style={styles.totalValue}>${getTotal().toFixed(2)}</Text>
         </View>
-      ) : null}
+
+        <Pressable
+          style={[
+            styles.checkoutButton,
+            isSubmitting && styles.checkoutButtonDisabled,
+          ]}
+          onPress={handleCheckout}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.checkoutButtonText}>HACER PEDIDO</Text>
+          )}
+        </Pressable>
+      </View>
     </SafeView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
+  emptyContainer: {
     flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: colors.text,
+    marginTop: 16,
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginTop: 8,
+    lineHeight: 22,
+  },
+  browseButton: {
+    marginTop: 24,
+    backgroundColor: colors.accent,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: radii.pill,
+  },
+  browseButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
   header: {
-    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: spacing.screen,
-    paddingTop: 10,
-  },
-  eyebrow: {
-    color: colors.accent,
-    fontSize: 12,
-    fontWeight: "800",
-    letterSpacing: 1.4,
+    alignItems: "center",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   title: {
+    fontSize: 24,
+    fontWeight: "bold",
     color: colors.text,
-    fontSize: 32,
-    fontWeight: "800",
-    marginTop: 2,
   },
-  countBadge: {
-    alignItems: "center",
-    backgroundColor: colors.accent,
-    borderRadius: radii.pill,
-    height: 36,
-    justifyContent: "center",
-    minWidth: 36,
-    paddingHorizontal: 10,
+  clearButton: {
+    padding: 8,
   },
-  countBadgeText: {
-    color: "#FFFFFF",
+  clearButtonText: {
+    color: colors.danger,
     fontSize: 16,
-    fontWeight: "800",
+    fontWeight: "bold",
   },
   listContent: {
-    gap: 12,
-    paddingHorizontal: spacing.screen,
-    paddingTop: 18,
-    paddingBottom: 28,
+    padding: 20,
+    gap: 16,
   },
-  itemCard: {
-    alignItems: "flex-start",
-    backgroundColor: colors.surface,
-    borderColor: "#E7E2D8",
-    borderRadius: 18,
-    borderWidth: 1,
+  cartItem: {
     flexDirection: "row",
+    backgroundColor: colors.surface,
+    borderRadius: radii.medium,
     padding: 12,
-    shadowColor: "#302512",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  productImage: {
-    backgroundColor: "#F8F3E8",
-    borderRadius: 14,
-    height: 94,
-    width: 94,
+  itemImageContainer: {
+    width: 60,
+    height: 60,
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radii.small,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  itemImage: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
   },
   itemInfo: {
     flex: 1,
-    minWidth: 0,
-    paddingHorizontal: 13,
-    paddingTop: 1,
   },
-  actionColumn: {
-    alignItems: "center",
-    paddingTop: 1,
-    width: 70,
-  },
-  productName: {
+  itemName: {
+    fontSize: 16,
+    fontWeight: "bold",
     color: colors.text,
-    fontSize: 17,
-    fontWeight: "800",
-    lineHeight: 22,
   },
-  removeButton: {
-    alignItems: "center",
-    backgroundColor: "#FFF1F0",
-    borderRadius: 10,
-    height: 32,
-    justifyContent: "center",
-    width: 32,
-  },
-  itemControls: {
-    alignItems: "center",
-    marginTop: 10,
-  },
-  quantityControl: {
-    alignItems: "center",
-    backgroundColor: "#F4F1EB",
-    borderRadius: 10,
-    flexDirection: "row",
-    height: 34,
-  },
-  quantityButton: {
-    alignItems: "center",
-    height: 34,
-    justifyContent: "center",
-    width: 25,
-  },
-  quantityText: {
-    color: colors.text,
+  itemPrice: {
     fontSize: 15,
-    fontWeight: "800",
-    minWidth: 20,
-    textAlign: "center",
-  },
-  descriptionText: {
-    color: colors.textSecondary,
-    fontSize: 12,
-    lineHeight: 17,
-    marginTop: 4,
-  },
-  detailsText: {
-    color: colors.textSecondary,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  itemFooter: {
-    alignItems: "flex-end",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 13,
-  },
-  unitPrice: {
     color: colors.accent,
-    fontSize: 18,
-    fontWeight: "900",
+    marginTop: 2,
   },
-  totalPanel: {
-    alignItems: "center",
+  itemMods: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    marginTop: 4,
+  },
+  itemNotes: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    marginTop: 2,
+    fontStyle: "italic",
+  },
+  deleteButton: {
+    padding: 8,
+  },
+  footer: {
+    padding: 20,
     backgroundColor: colors.surface,
-    borderTopColor: colors.border,
     borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingBottom: 16,
-    paddingHorizontal: spacing.screen,
-    paddingTop: 14,
+    alignItems: "center",
+    marginBottom: 16,
   },
   totalLabel: {
-    color: colors.text,
     fontSize: 18,
-    fontWeight: "800",
-  },
-  totalHint: {
     color: colors.textSecondary,
-    fontSize: 13,
-    marginTop: 3,
   },
   totalValue: {
-    color: colors.accent,
-    fontSize: 25,
-    fontWeight: "900",
-  },
-  totalActions: {
-    alignItems: "flex-end",
-    gap: 8,
-  },
-  orderButton: {
-    alignItems: "center",
-    backgroundColor: colors.accent,
-    borderRadius: 14,
-    flexDirection: "row",
-    gap: 6,
-    justifyContent: "center",
-    minWidth: 176,
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-  },
-  orderButtonText: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    fontWeight: "800",
-  },
-  emptyCta: {
-    marginTop: 20,
-  },
-  emptyState: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-    padding: 36,
-  },
-  emptyIcon: {
-    alignItems: "center",
-    backgroundColor: colors.accentSoft,
-    borderRadius: radii.pill,
-    height: 86,
-    justifyContent: "center",
-    width: 86,
-  },
-  emptyTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
     color: colors.text,
-    fontSize: 21,
-    fontWeight: "800",
-    marginTop: 18,
   },
-  emptyMessage: {
-    color: colors.textSecondary,
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 8,
-    maxWidth: 280,
-    textAlign: "center",
+  checkoutButton: {
+    backgroundColor: colors.accent,
+    borderRadius: radii.pill,
+    paddingVertical: 16,
+    alignItems: "center",
+  },
+  checkoutButtonDisabled: {
+    backgroundColor: colors.textSecondary,
+  },
+  checkoutButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

@@ -14,41 +14,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getProductImageSource } from "../../../constants/images";
 import { colors, radii } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
-import {
-    ORDER_STATUS_HINTS,
-    ORDER_STATUS_LABELS,
-    type OrderStatus,
-} from "../../../types/order";
-
-const nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
-  pending: "preparing",
-  preparing: "ready",
-  ready: "delivered",
-};
-
-const actionLabels: Partial<Record<OrderStatus, { title: string; confirm: string; button: string }>> = {
-  pending: {
-    button: "Aceptar y empezar a preparar",
-    title: "Aceptar pedido",
-    confirm: "El cliente verá que su pedido está en preparación.",
-  },
-  preparing: {
-    button: "Marcar listo para recoger",
-    title: "Pedido listo",
-    confirm: "El cliente recibirá el aviso de que ya puede recogerlo.",
-  },
-  ready: {
-    button: "Confirmar que ya lo recogió",
-    title: "Marcar como entregado",
-    confirm: "Esto cierra el pedido. Úsalo cuando el cliente ya lo haya recogido.",
-  },
-};
 
 export default function EmployeeOrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const order = useOrders((state) => state.orders.find((item) => item.id === id));
-  const updateOrderStatus = useOrders((state) => state.updateOrderStatus);
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const { orders, updateOrderStatus } = useOrders();
+  const [showDeliveryConfirmation, setShowDeliveryConfirmation] = useState(false);
+  
+  const order = orders.find((o) => String(o.orderNumber) === id);
 
   if (!order) {
     return (
@@ -66,17 +38,11 @@ export default function EmployeeOrderDetailsScreen() {
     );
   }
 
-  const action = actionLabels[order.status];
-  const upcomingStatus = nextStatus[order.status];
+  const orderNumber = order.orderNumber;
 
-  const confirmStatusChange = () => {
-    if (!upcomingStatus) {
-      setShowConfirmation(false);
-      return;
-    }
-
-    updateOrderStatus(order.id, upcomingStatus);
-    setShowConfirmation(false);
+  const deliverOrder = () => {
+    updateOrderStatus(orderNumber, "Entregado");
+    setShowDeliveryConfirmation(false);
   };
 
   return (
@@ -101,45 +67,61 @@ export default function EmployeeOrderDetailsScreen() {
         </Text>
 
         <View style={styles.statusRow}>
+          <Text style={styles.statusLabel}>Cliente</Text>
+          <Text style={styles.statusValue}>{order.customerName}</Text>
+        </View>
+
+        <View style={styles.statusRow}>
           <Text style={styles.statusLabel}>Estado</Text>
           <Text
             style={[
               styles.statusValue,
-              order.status === "ready" && styles.readyStatus,
-              order.status === "delivered" && styles.deliveredStatus,
+              order.status === "Entregado" && styles.deliveredStatus,
             ]}
           >
-            {ORDER_STATUS_LABELS[order.status]}
+            {order.status}
           </Text>
         </View>
         <Text style={styles.statusHint}>{ORDER_STATUS_HINTS[order.status]}</Text>
 
-        {order.items.map((item, index) => (
-          <View key={`${item.product.id}-${index}`} style={styles.productCard}>
-            <Image
-              source={getProductImageSource(item.product.image)}
-              style={styles.productImage}
-            />
+        {order.items.map((product, idx) => (
+          <View key={`${product.productId}-${idx}`} style={styles.productCard}>
+            {product.image?.startsWith("http") ? (
+              <Image
+                source={{ uri: product.image }}
+                style={styles.productImage}
+              />
+            ) : product.image &&
+              productsImages[product.image as keyof typeof productsImages] ? (
+              <Image
+                source={
+                  productsImages[product.image as keyof typeof productsImages]
+                }
+                style={styles.productImage}
+              />
+            ) : (
+              <View
+                style={[
+                  styles.productImage,
+                  { backgroundColor: "#f0f0f0", borderRadius: 8 },
+                ]}
+              />
+            )}
             <View style={styles.productDetails}>
-              <Text style={styles.quantity}>x{item.quantity}</Text>
-              <Text style={styles.productName}>{item.product.name}</Text>
-              <Text style={styles.description}>
-                {item.product.description || "Sin descripción"}
+              <Text style={styles.productName}>{product.quantity}x {product.name}</Text>
+              <Text style={styles.price}>${(product.price * product.quantity).toFixed(2)}</Text>
+            </View>
+            <View style={styles.modificationsBox}>
+              <Text style={styles.modificationsTitle}>Modificaciones / Notas</Text>
+              <Text style={styles.modificationsText}>
+                {product.modifications && product.modifications.length > 0 
+                  ? product.modifications.join(", ") 
+                  : "Sin modificaciones"}
               </Text>
-              <Text style={styles.price}>
-                ${(item.product.price * item.quantity).toFixed(2)}
-              </Text>
-              {item.modifications.length > 0 ? (
-                <View style={styles.modificationsBox}>
-                  <Text style={styles.modificationsTitle}>Cambios del cliente</Text>
-                  <Text style={styles.modificationsText}>{item.modifications.join(" · ")}</Text>
-                </View>
-              ) : null}
-              {item.notes ? (
-                <View style={styles.modificationsBox}>
-                  <Text style={styles.modificationsTitle}>Notas</Text>
-                  <Text style={styles.modificationsText}>{item.notes}</Text>
-                </View>
+              {product.notes ? (
+                  <Text style={[styles.modificationsText, { marginTop: 4, fontStyle: 'italic' }]}>
+                    Nota: {product.notes}
+                  </Text>
               ) : null}
             </View>
           </View>

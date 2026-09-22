@@ -1,63 +1,72 @@
 import { create } from "zustand";
-import { Order, OrderAlert, OrderStatus } from "../types/order";
-import { ORDER_NOTIFICATIONS } from "../utils/orderNotifications";
 
-type NewOrder = Omit<Order, "id" | "orderNumber" | "createdAt" | "status"> & {
-  status?: OrderStatus;
+export type OrderItem = {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  modifications: string[];
+  notes?: string;
+};
+
+export type RealOrder = {
+  _id: string;
+  orderNumber: number;
+  customerName: string;
+  items: OrderItem[];
+  totalAmount: number;
+  status: string;
+  createdAt: string;
 };
 
 interface OrderStore {
-  orders: Order[];
-  alerts: OrderAlert[];
-  addOrder: (order: NewOrder) => Order;
-  updateOrderStatus: (id: string, status: OrderStatus) => void;
-}
-
-function createAlert(order: Pick<Order, "id" | "orderNumber">, status: OrderStatus): OrderAlert {
-  const message = ORDER_NOTIFICATIONS[status];
-
-  return {
-    id: `alert-${order.id}-${status}-${Date.now()}`,
-    orderId: order.id,
-    orderNumber: order.orderNumber,
-    status,
-    title: message.title,
-    body: message.body(order.orderNumber),
-    createdAt: new Date().toISOString(),
-  };
+  orders: RealOrder[];
+  isLoading: boolean;
+  fetchOrders: () => Promise<void>;
+  updateOrderStatus: (orderNumber: number, status: string) => Promise<void>;
 }
 
 export const useOrders = create<OrderStore>((set, get) => ({
   orders: [],
-  alerts: [],
-  addOrder: (newOrder) => {
-    const orderNumber =
-      get().orders.reduce((highest, order) => Math.max(highest, order.orderNumber), 0) + 1;
-    const order: Order = {
-      ...newOrder,
-      id: `order-${Date.now()}-${orderNumber}`,
-      orderNumber,
-      status: newOrder.status ?? "pending",
-      createdAt: new Date().toISOString(),
-    };
-
-    set((state) => ({
-      orders: [order, ...state.orders],
-      alerts: [createAlert(order, order.status), ...state.alerts],
-    }));
-    return order;
-  },
-  updateOrderStatus: (id, status) => {
-    const current = get().orders.find((order) => order.id === id);
-    if (!current || current.status === status) {
-      return;
+  isLoading: false,
+  fetchOrders: async () => {
+    set({ isLoading: true });
+    try {
+      const res = await fetch(
+        "https://tecmifood-team-syntax.onrender.com/api/orders",
+      );
+      const data = await res.json();
+      set({ orders: data, isLoading: false });
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      set({ isLoading: false });
     }
-
+  },
+  updateOrderStatus: async (orderNumber, status) => {
+    //Actualizamos en la UI localmente primero para que no parezca lenta la app y después se hace el proceso
     set((state) => ({
       orders: state.orders.map((order) =>
-        order.id === id ? { ...order, status } : order,
+        order.orderNumber === orderNumber ? { ...order, status } : order,
       ),
-      alerts: [createAlert(current, status), ...state.alerts],
     }));
+
+    try {
+      const res = await fetch(
+        `https://tecmifood-team-syntax.onrender.com/api/orders/${orderNumber}/status`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        },
+      );
+      if (!res.ok) {
+        throw new Error("No se pudo actualizar en la nube");
+      }
+    } catch (error) {
+      console.error(error);
+      //Si falla, se descarga todo de nuevo
+      get().fetchOrders();
+    }
   },
 }));

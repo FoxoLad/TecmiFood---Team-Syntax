@@ -147,12 +147,18 @@ export default function EmployeeOrderDetailsScreen() {
           </View>
         ))}
 
-        <Pressable
-          onPress={() => setShowDeliveryConfirmation(true)}
-          style={styles.deliverButton}
-        >
-          <Text style={styles.deliverButtonText}>ENTREGAR</Text>
-        </Pressable>
+        {action ? (
+          <Pressable
+            onPress={() => setShowDeliveryConfirmation(true)}
+            style={styles.deliverButton}
+          >
+            <Text style={styles.deliverButtonText}>{action.button.toUpperCase()}</Text>
+          </Pressable>
+        ) : (
+          <View style={[styles.deliverButton, { backgroundColor: colors.border, marginTop: 20 }]}>
+            <Text style={styles.deliverButtonText}>PEDIDO ENTREGADO</Text>
+          </View>
+        )}
       </ScrollView>
 
       <Modal
@@ -163,10 +169,9 @@ export default function EmployeeOrderDetailsScreen() {
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.confirmationModal}>
-            <Text style={styles.modalTitle}>Entregar producto</Text>
+            <Text style={styles.modalTitle}>{action?.title || "Confirmar"}</Text>
             <Text style={styles.modalMessage}>
-              Este producto pasará a estar en entregado. ¿Seguro que deseas
-              continuar?
+              {action?.confirm || "¿Deseas continuar?"}
             </Text>
             <View style={styles.modalActions}>
               <Pressable
@@ -175,7 +180,7 @@ export default function EmployeeOrderDetailsScreen() {
               >
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </Pressable>
-              <Pressable onPress={deliverOrder} style={styles.confirmButton}>
+              <Pressable onPress={confirmStatusChange} style={styles.confirmButton}>
                 <Text style={styles.confirmButtonText}>Continuar</Text>
               </Pressable>
             </View>
@@ -194,6 +199,16 @@ const styles = StyleSheet.create({
   content: {
     padding: 14,
     paddingBottom: 28,
+  },
+  customerName: {
+    fontSize: 18,
+    color: colors.textSecondary,
+    marginBottom: 4,
+  },
+  orderDate: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 16,
   },
   header: {
     alignItems: "center",

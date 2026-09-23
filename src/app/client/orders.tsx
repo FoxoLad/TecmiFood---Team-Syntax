@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../components/SafeView";
 import { ProductImage } from "../../components/ProductImage";
@@ -38,7 +38,12 @@ export default function ClientOrdersScreen() {
   const { view: viewParam } = useLocalSearchParams<{ view?: string }>();
   const [view, setView] = useState<OrdersView>(viewParam === "history" ? "history" : "active");
   const orders = useOrders((state) => state.orders);
+  const fetchOrders = useOrders((state) => state.fetchOrders);
   const clientId = useUserStore((state) => state.clientId);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const { active, history } = useMemo(() => {
     // Only show orders belonging to this user

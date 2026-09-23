@@ -46,7 +46,7 @@ export default function PreparingOrderScreen() {
                 <View key={step} style={styles.stepRow}>
                   <View style={[styles.stepDot, complete && styles.stepDotComplete]} />
                   <Text style={[styles.stepText, complete && styles.stepTextComplete]}>
-                    {ORDER_STATUS_LABELS[step]}
+                    {(ORDER_STATUS_LABELS as any)[step] || step}
                   </Text>
                 </View>
               );

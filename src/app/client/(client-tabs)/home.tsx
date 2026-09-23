@@ -88,8 +88,10 @@ export default function HomeScreen() {
   const activeOrder = useOrders((state) =>
     state.orders.find((order) => order.customerName === `Usuario ${clientId}` && order.status !== "Entregado"),
   );
+  const fetchOrders = useOrders((state) => state.fetchOrders);
 
   useEffect(() => {
+    fetchOrders(); // Fetch orders to get the active order
     const controller = new AbortController();
 
     fetch(API_URL, { signal: controller.signal })

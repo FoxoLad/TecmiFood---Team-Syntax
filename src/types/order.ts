@@ -19,18 +19,20 @@ export interface Order {
   createdAt: string;
 }
 
-export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  pending: "Nuevo pedido",
-  preparing: "En preparación",
-  ready: "Listo para recoger",
-  delivered: "Entregado",
+export const ORDER_STATUS_LABELS: Record<string, string> = {
+  "Pendiente": "Nuevo pedido",
+  "En preparación": "En preparación",
+  "Terminado": "Listo para recoger",
+  "Entregado": "Entregado",
+  "Cancelado": "Cancelado",
 };
 
-export const ORDER_STATUS_HINTS: Record<OrderStatus, string> = {
-  pending: "La cafetería acaba de recibir tu pedido.",
-  preparing: "Están preparando tu pedido.",
-  ready: "Ya puedes pasar a recogerlo.",
-  delivered: "Este pedido ya fue entregado.",
+export const ORDER_STATUS_HINTS: Record<string, string> = {
+  "Pendiente": "La cafetería acaba de recibir tu pedido.",
+  "En preparación": "Están preparando tu pedido.",
+  "Terminado": "Ya puedes pasar a recoger tu pedido.",
+  "Entregado": "Este pedido ya fue entregado.",
+  "Cancelado": "Este pedido ha sido cancelado.",
 };
 
 export interface OrderAlert {

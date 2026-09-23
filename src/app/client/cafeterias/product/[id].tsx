@@ -58,9 +58,30 @@ export default function BustersProductScreen() {
         () => products.find((currentProduct) => currentProduct.id === productId),
         [productId, products],
     );
+    const currentCartTotal = useCartStore((state) => 
+        state.items.reduce((acc, i) => acc + i.quantity, 0)
+    );
 
     const handleConfirmOrder = () => {
         if (!product) return;
+        if (currentCartTotal >= 8) {
+            setModalType(null);
+            alert("Tu carrito está lleno (límite de 8 productos).");
+            return;
+        }
+        
+        // Also check if this specific product is already maxed at 3 (if same mods/notes)
+        const cartItem = useCartStore.getState().items.find(
+            i => i.product.id === product.id && 
+            JSON.stringify(i.modifications) === JSON.stringify(selectedModifications) && 
+            i.notes === additionalNotes
+        );
+        if (cartItem && cartItem.quantity >= 3) {
+            setModalType(null);
+            alert("No puedes pedir más de 3 veces el mismo producto con las mismas modificaciones.");
+            return;
+        }
+
         addItemToCart(product, 1, selectedModifications, additionalNotes);
         setModalType("success");
     };

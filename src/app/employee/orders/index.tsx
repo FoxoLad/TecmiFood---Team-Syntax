@@ -136,7 +136,7 @@ export default function EmployeeOrdersScreen() {
           filteredOrders.map((order) => {
             const orderNumber = order.orderNumber;
             const total = order.totalAmount;
-            const isDeliveredView = selectedFilter === "Entregados";
+            const isDeliveredView = order.status === "Entregado";
             const displayStatus = order.status;
 
             return (
@@ -233,14 +233,20 @@ export default function EmployeeOrdersScreen() {
                       )}
                     </View>
                     <View style={style.productDetails}>
-                      <Text
-                        style={[
-                          style.productName,
-                          isDeliveredView && style.deliveredProductName,
-                        ]}
-                      >
-                        {product.quantity}x {product.name}
-                      </Text>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                        <Text
+                          style={[
+                            style.productName,
+                            isDeliveredView && style.deliveredProductName,
+                            { flex: 1 }
+                          ]}
+                        >
+                          {product.quantity}x {product.name}
+                        </Text>
+                        <Text style={[style.productName, isDeliveredView && style.deliveredProductName, { fontWeight: "bold" }]}>
+                          ${(product.price * product.quantity).toFixed(2)}
+                        </Text>
+                      </View>
                       {product.modifications &&
                         product.modifications.length > 0 && (
                           <Text style={style.productName} numberOfLines={1}>

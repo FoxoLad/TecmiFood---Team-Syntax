@@ -73,19 +73,19 @@ export default function EmployeeOrderDetailsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <Pressable
-            accessibilityLabel="Volver a la lista de pedidos"
-            accessibilityRole="button"
-            onPress={() => router.back()}
-            style={styles.backButton}
-          >
-            <Ionicons color={colors.text} name="chevron-back" size={28} />
-            <Text style={styles.backText}>Pedidos</Text>
-          </Pressable>
-        </View>
+      <View style={[styles.header, { paddingHorizontal: 14, paddingTop: 14 }]}>
+        <Pressable
+          accessibilityLabel="Volver a la lista de pedidos"
+          accessibilityRole="button"
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Ionicons color={colors.text} name="chevron-back" size={28} />
+          <Text style={styles.backText}>Pedidos</Text>
+        </Pressable>
+      </View>
 
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Pedido #{String(order.orderNumber).padStart(3, "0")}</Text>
         <Text style={styles.customerName}>{order.customerName}</Text>
         <Text style={styles.orderDate}>
@@ -146,7 +146,9 @@ export default function EmployeeOrderDetailsScreen() {
             </View>
           </View>
         ))}
+      </ScrollView>
 
+      <View style={styles.footerContainer}>
         {action ? (
           <Pressable
             onPress={() => setShowDeliveryConfirmation(true)}
@@ -155,11 +157,11 @@ export default function EmployeeOrderDetailsScreen() {
             <Text style={styles.deliverButtonText}>{action.button.toUpperCase()}</Text>
           </Pressable>
         ) : (
-          <View style={[styles.deliverButton, { backgroundColor: colors.border, marginTop: 20 }]}>
+          <View style={[styles.deliverButton, { backgroundColor: colors.border }]}>
             <Text style={styles.deliverButtonText}>PEDIDO ENTREGADO</Text>
           </View>
         )}
-      </ScrollView>
+      </View>
 
       <Modal
         animationType="fade"
@@ -310,17 +312,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 3,
   },
+  footerContainer: {
+    padding: 14,
+    paddingBottom: 24,
+    backgroundColor: colors.background,
+    borderTopWidth: 1,
+    borderColor: colors.border,
+  },
   deliverButton: {
     alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#15803d",
     borderRadius: 22,
     marginTop: 2,
-    paddingVertical: 7,
+    paddingVertical: 12, // slightly bigger padding for the bold button
   },
   deliverButtonText: {
     color: "#ffffff",
-    fontSize: 29,
+    fontSize: 22, // slightly smaller so MARCAR COMO TERMINADO fits on one line
     fontWeight: "900",
+    textAlign: "center",
   },
   modalBackdrop: {
     alignItems: "center",

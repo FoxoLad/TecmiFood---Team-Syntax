@@ -17,7 +17,7 @@ import { useCartStore } from "../../../stores/useCartStore";
 import { useUserStore } from "../../../stores/useUserStore";
 
 export default function CartScreen() {
-  const { items, removeItem, clearCart, getTotal } = useCartStore();
+  const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore();
   const clientId = useUserStore((state) => state.clientId) || "Cliente Anónimo";
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -143,12 +143,27 @@ export default function CartScreen() {
               ) : null}
             </View>
 
-            <Pressable
-              style={styles.deleteButton}
-              onPress={() => removeItem(item.cartItemId)}
-            >
-              <Ionicons name="trash-outline" size={22} color={colors.danger} />
-            </Pressable>
+            <View style={styles.quantityControl}>
+              <Pressable
+                onPress={() => updateQuantity(item.cartItemId, -1)}
+                style={styles.quantityBtn}
+              >
+                <Ionicons name="remove" size={18} color={colors.text} />
+              </Pressable>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+              <Pressable
+                onPress={() => updateQuantity(item.cartItemId, 1)}
+                style={styles.quantityBtn}
+              >
+                <Ionicons name="add" size={18} color={colors.text} />
+              </Pressable>
+              <Pressable
+                style={styles.deleteButton}
+                onPress={() => removeItem(item.cartItemId)}
+              >
+                <Ionicons name="trash-outline" size={20} color={colors.danger} />
+              </Pressable>
+            </View>
           </View>
         ))}
       </ScrollView>
@@ -287,8 +302,24 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontStyle: "italic",
   },
+  quantityControl: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  quantityBtn: {
+    padding: 6,
+    backgroundColor: colors.border,
+    borderRadius: radii.small,
+  },
+  quantityText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.text,
+    marginHorizontal: 10,
+  },
   deleteButton: {
     padding: 8,
+    marginLeft: 8,
   },
   footer: {
     padding: 20,

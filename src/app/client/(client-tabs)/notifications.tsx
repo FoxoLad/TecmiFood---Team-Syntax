@@ -32,8 +32,7 @@ export default function NotificationsScreen() {
       title: order.status === "Terminado" ? "¡Pedido Listo!" : `Pedido ${order.status}`,
       body: getStatusMessage(order.status, String(order.orderNumber).padStart(3, "0")),
       date: new Date(order.createdAt).toLocaleString("es-MX"),
-    }))
-    .reverse();
+    }));
 
   return (
     <SafeView style={styles.container}>

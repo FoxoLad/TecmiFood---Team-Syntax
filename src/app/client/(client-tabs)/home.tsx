@@ -226,15 +226,6 @@ export default function HomeScreen() {
             <Text style={styles.actionButtonText}>Favoritos</Text>
           </Pressable>
           <Pressable
-            accessibilityLabel="Abrir historial de pedidos"
-            accessibilityRole="button"
-            onPress={() => router.push("/client/orders?view=history")}
-            style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
-          >
-            <Ionicons name="time-outline" size={21} color="#8F651A" />
-            <Text style={styles.actionButtonText}>Historial</Text>
-          </Pressable>
-          <Pressable
             accessibilityLabel="Abrir pedidos activos"
             accessibilityRole="button"
             onPress={() => router.push("/client/orders")}
@@ -242,6 +233,15 @@ export default function HomeScreen() {
           >
             <Ionicons name="document-text-outline" size={21} color="#8F651A" />
             <Text style={styles.actionButtonText}>Pedidos</Text>
+          </Pressable>
+          <Pressable
+            accessibilityLabel="Abrir historial de pedidos"
+            accessibilityRole="button"
+            onPress={() => router.push("/client/orders?view=history")}
+            style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
+          >
+            <Ionicons name="time-outline" size={21} color="#8F651A" />
+            <Text style={styles.actionButtonText}>Historial</Text>
           </Pressable>
         </View>
 

@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../../components/SafeView";
 import { colors, radii, spacing } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
@@ -48,7 +48,16 @@ export default function NotificationsScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Limpiar avisos"
-            onPress={() => clearNotifications()}
+            onPress={() => {
+              Alert.alert(
+                "Borrar avisos",
+                "¿Estás seguro de que deseas borrar todos tus avisos?",
+                [
+                  { text: "Cancelar", style: "cancel" },
+                  { text: "Aceptar", style: "destructive", onPress: () => clearNotifications() }
+                ]
+              );
+            }}
             style={{ padding: 10, backgroundColor: colors.surface, borderRadius: radii.pill }}
           >
             <Ionicons name="trash-outline" size={24} color={colors.danger} />

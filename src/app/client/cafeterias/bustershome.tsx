@@ -19,24 +19,16 @@ import { Product } from "../../../types/product";
 
 const categoryDefinitions = [
     {
-        name: "Frío",
+        name: "Alimentos",
+        sourceCategories: ["Comidas"],
+    },
+    {
+        name: "Bebidas",
         sourceCategories: ["Bebidas"],
     },
     {
-        name: "Frappe",
-        sourceCategories: ["Frappe"],
-    },
-    {
-        name: "Caliente",
-        sourceCategories: ["Bebidas Calientes o Heladas"],
-    },
-    {
-        name: "Alimentos",
-        sourceCategories: ["Alimentos"],
-    },
-    {
-        name: "Otros",
-        sourceCategories: ["Stickers y Pines", "Extras y Desechables"],
+        name: "Otros y Extras",
+        sourceCategories: ["Otros", "Extras y Desechables"],
     },
 ];
 
@@ -45,8 +37,8 @@ type QuickFilter = "Todos" | "Alimentos" | "Bebidas" | "Otros";
 
 const quickFilterCategories: Record<Exclude<QuickFilter, "Todos">, string[]> = {
     Alimentos: ["Alimentos"],
-    Bebidas: ["Frío", "Frappe", "Caliente"],
-    Otros: ["Otros"],
+    Bebidas: ["Bebidas"],
+    Otros: ["Otros y Extras"],
 };
 
 const splitIntoGroups = (products: Product[], groupSize: number) => {

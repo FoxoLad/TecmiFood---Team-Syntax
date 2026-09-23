@@ -53,7 +53,7 @@ export default function EmployeeHistoryScreen() {
             name, ...data
         })).sort((a, b) => b.total - a.total);
 
-        return { products, grandTotal, count: periodOrders.length };
+        return { products, grandTotal, count: periodOrders.length, periodOrders };
     }, [orders, period]);
 
     return (
@@ -72,7 +72,7 @@ export default function EmployeeHistoryScreen() {
             </View>
 
             <View style={styles.tabsContainer}>
-                {('Hoy,Semana,Mes,Siempre').split(',').map((p) => (
+                {(['Hoy', 'Semana', 'Mes'] as Period[]).map((p) => (
                     <Pressable
                         key={p}
                         style={[styles.tab, period === p && styles.activeTab]}
@@ -86,7 +86,7 @@ export default function EmployeeHistoryScreen() {
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={styles.summaryCard}>
                     <Text style={styles.summaryLabel}>Total Vendido ({period})</Text>
-                    <Text style={styles.summaryTotal}></Text>
+                    <Text style={styles.summaryTotal}>${aggregatedData.grandTotal.toFixed(2)}</Text>
                     <Text style={styles.summaryOrders}>{aggregatedData.count} pedidos entregados</Text>
                 </View>
 
@@ -104,8 +104,31 @@ export default function EmployeeHistoryScreen() {
                             <View key={idx} style={styles.tableRow}>
                                 <Text style={[styles.td, { flex: 2 }]} numberOfLines={2}>{p.name}</Text>
                                 <Text style={[styles.td, { flex: 1, textAlign: 'center' }]}>{p.qty}</Text>
-                                <Text style={[styles.td, { flex: 1, textAlign: 'right', fontWeight: 'bold' }]}></Text>
+                                <Text style={[styles.td, { flex: 1, textAlign: 'right', fontWeight: 'bold' }]}>
+                                    ${p.total.toFixed(2)}
+                                </Text>
                             </View>
+                        ))
+                    )}
+                </View>
+
+                <View style={styles.recentOrdersContainer}>
+                    <Text style={styles.sectionTitle}>Pedidos de {period}</Text>
+                    {aggregatedData.periodOrders.length === 0 ? (
+                        <Text style={styles.emptyText}>Ningún pedido para mostrar.</Text>
+                    ) : (
+                        aggregatedData.periodOrders.map(order => (
+                            <Pressable 
+                                key={order._id} 
+                                style={styles.orderCard}
+                                onPress={() => router.push(`/employee/orders/${order.orderNumber}`)}
+                            >
+                                <View style={styles.orderCardHeader}>
+                                    <Text style={styles.orderNumber}>#{String(order.orderNumber).padStart(3, "0")}</Text>
+                                    <Text style={styles.orderTotal}>${order.totalAmount.toFixed(2)}</Text>
+                                </View>
+                                <Text style={styles.orderDate}>{new Date(order.createdAt).toLocaleString("es-MX")}</Text>
+                            </Pressable>
                         ))
                     )}
                 </View>
@@ -135,5 +158,12 @@ const styles = StyleSheet.create({
     th: { fontSize: 14, fontWeight: 'bold', color: colors.textSecondary },
     tableRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
     td: { fontSize: 15, color: colors.text },
-    emptyText: { textAlign: 'center', color: colors.textSecondary, marginTop: 20, marginBottom: 10 }
+    emptyText: { textAlign: 'center', color: colors.textSecondary, marginTop: 20, marginBottom: 10 },
+    recentOrdersContainer: { marginTop: 24 },
+    sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12, color: colors.text },
+    orderCard: { backgroundColor: colors.surface, padding: 16, borderRadius: radii.medium, marginBottom: 10, borderWidth: 1, borderColor: colors.border },
+    orderCardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
+    orderNumber: { fontSize: 16, fontWeight: 'bold' },
+    orderTotal: { fontSize: 16, fontWeight: 'bold', color: colors.accent },
+    orderDate: { fontSize: 13, color: colors.textSecondary }
 });

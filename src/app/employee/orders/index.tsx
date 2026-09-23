@@ -409,13 +409,18 @@ const style = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 13,
+    paddingVertical: 8,
+    flexWrap: "wrap",
+    gap: 4,
   },
   deliveredOrderHeader: {
     paddingVertical: 2,
   },
   orderNumber: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "800",
+    flex: 1,
+    minWidth: 150,
   },
   deliveredOrderNumber: {
     fontSize: 18,

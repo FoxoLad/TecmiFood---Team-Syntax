@@ -6,13 +6,13 @@ import { colors, radii, spacing } from "../../constants/theme";
 import { useOrders } from "../../stores/useOrders";
 import { ORDER_STATUS_HINTS, ORDER_STATUS_LABELS, type OrderStatus } from "../../types/order";
 
-const STEPS = ["Pendiente", "Preparando", "Listo"];
+const STEPS = ["Pendiente", "En preparación", "Terminado"];
 
 export default function PreparingOrderScreen() {
   const latestOrder = useOrders((state) => state.orders[0]);
   const status = latestOrder?.status ?? "Pendiente";
-  const isReady = status === "Listo" || status === "Entregado";
-  const stepStatus = status === "Entregado" ? "Listo" : status;
+  const isReady = status === "Terminado" || status === "Entregado";
+  const stepStatus = status === "Entregado" ? "Terminado" : status;
   const stepIndex = STEPS.indexOf(stepStatus);
   const currentIndex = stepIndex < 0 ? 0 : stepIndex;
 

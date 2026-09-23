@@ -40,17 +40,40 @@ export default function EmployeeOrderDetailsScreen() {
 
   const orderNumber = order.orderNumber;
 
-  const deliverOrder = () => {
-    updateOrderStatus(orderNumber, "Entregado");
+  let action: any = null;
+  if (order.status === "Pendiente") {
+    action = {
+      button: "Comenzar a preparar",
+      title: "Preparar pedido",
+      confirm: "¿Confirmas que vas a empezar a preparar este pedido?",
+      nextStatus: "En preparación"
+    };
+  } else if (order.status === "En preparación") {
+    action = {
+      button: "Marcar como terminado",
+      title: "Terminar pedido",
+      confirm: "Se le enviará un aviso al cliente de que su pedido está listo para recoger.",
+      nextStatus: "Terminado"
+    };
+  } else if (order.status === "Terminado") {
+    action = {
+      button: "Entregar pedido",
+      title: "Entregar al cliente",
+      confirm: "Asegúrate de haber cobrado o validado el pago antes de entregar.",
+      nextStatus: "Entregado"
+    };
+  }
+
+  const confirmStatusChange = () => {
+    if (action && action.nextStatus) {
+      updateOrderStatus(orderNumber, action.nextStatus);
+    }
     setShowDeliveryConfirmation(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Pressable
             accessibilityLabel="Volver a la lista de pedidos"
@@ -58,18 +81,16 @@ export default function EmployeeOrderDetailsScreen() {
             onPress={() => router.back()}
             style={styles.backButton}
           >
-            <Ionicons color="#111110" name="chevron-back" size={30} />
+            <Ionicons color={colors.text} name="chevron-back" size={28} />
             <Text style={styles.backText}>Pedidos</Text>
           </Pressable>
-          <Text style={styles.title}>
-            ORDEN #{String(orderNumber).padStart(3, "0")}
-          </Text>
         </View>
 
-        <View style={styles.statusRow}>
-          <Text style={styles.statusLabel}>Cliente</Text>
-          <Text style={styles.statusValue}>{order.customerName}</Text>
-        </View>
+        <Text style={styles.title}>Pedido #{String(order.orderNumber).padStart(3, "0")}</Text>
+        <Text style={styles.customerName}>{order.customerName}</Text>
+        <Text style={styles.orderDate}>
+          {new Date(order.createdAt).toLocaleString("es-MX")}
+        </Text>
 
         <View style={styles.statusRow}>
           <Text style={styles.statusLabel}>Estado</Text>

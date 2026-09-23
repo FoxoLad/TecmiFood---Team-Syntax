@@ -288,7 +288,10 @@ export default function BustersProductScreen() {
                             </View>
                         ) : (
                             <Pressable
-                                onPress={() => setModalType(null)}
+                                onPress={() => {
+                                    setModalType(null);
+                                    router.back();
+                                }}
                                 style={styles.closeButton}
                             >
                                 <Text style={styles.closeButtonText}>ACEPTAR</Text>

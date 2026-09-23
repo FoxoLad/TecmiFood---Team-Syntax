@@ -8,15 +8,15 @@ import type { OrderStatus } from "../../../types/order";
 
 const getStatusIcon = (status: string): keyof typeof Ionicons.glyphMap => {
   if (status === "Pendiente") return "receipt-outline";
-  if (status === "Preparando") return "restaurant-outline";
-  if (status === "Listo") return "checkmark-circle-outline";
+  if (status === "En preparación") return "restaurant-outline";
+  if (status === "Terminado") return "checkmark-circle-outline";
   return "checkmark-done-outline";
 };
 
 const getStatusMessage = (status: string, orderNumber: string) => {
   if (status === "Pendiente") return `Hemos recibido tu pedido #${orderNumber}.`;
-  if (status === "Preparando") return `Tu pedido #${orderNumber} ya se está preparando.`;
-  if (status === "Listo") return `¡Tu pedido #${orderNumber} está listo para recoger!`;
+  if (status === "En preparación") return `Tu pedido #${orderNumber} ya se está preparando.`;
+  if (status === "Terminado") return `¡Tu pedido #${orderNumber} está listo para recoger!`;
   return `Tu pedido #${orderNumber} ha sido entregado.`;
 };
 
@@ -29,7 +29,7 @@ export default function NotificationsScreen() {
     .map(order => ({
       id: order._id,
       status: order.status,
-      title: order.status === "Listo" ? "¡Pedido Listo!" : `Pedido ${order.status}`,
+      title: order.status === "Terminado" ? "¡Pedido Listo!" : `Pedido ${order.status}`,
       body: getStatusMessage(order.status, String(order.orderNumber).padStart(3, "0")),
       date: new Date(order.createdAt).toLocaleString("es-MX"),
     }))

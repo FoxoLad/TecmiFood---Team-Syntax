@@ -3,7 +3,7 @@ import { Tabs } from "expo-router";
 import { StyleSheet, Text, View, type ColorValue } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../../constants/theme";
-import { useCartStore } from "../../../stores/useCart";
+import { useCartStore } from "../../../stores/useCartStore";
 
 export default function ClientTabsLayout() {
   const insets = useSafeAreaInsets();

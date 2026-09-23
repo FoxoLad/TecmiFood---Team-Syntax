@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order");
+const Cafeteria = require("../models/Cafeteria");
 
 //Generar un número de orden único de 4 dígitos
 const generateOrderNumber = async () => {
@@ -21,6 +22,11 @@ router.post("/", async (req, res) => {
 
     if (!items || items.length === 0) {
       return res.status(400).json({ error: "El pedido no tiene productos" });
+    }
+
+    const cafeteria = await Cafeteria.findOne({ key: "busters" });
+    if (cafeteria && cafeteria.isOpen === false) {
+      return res.status(403).json({ error: "La cafetería está cerrada" });
     }
 
     const orderNumber = await generateOrderNumber();

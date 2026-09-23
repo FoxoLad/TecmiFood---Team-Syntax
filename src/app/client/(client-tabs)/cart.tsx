@@ -1,7 +1,7 @@
 /** Carrito del cliente. Confirma el pedido y lo envía al API de órdenes. */
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { useState, useEffect } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -16,6 +16,7 @@ import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { endpoints } from "../../../constants/api";
 import { colors, radii, shadows } from "../../../constants/theme";
+import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
 import { isRealOrder, useOrders } from "../../../stores/useOrders";
 import { useCartStore } from "../../../stores/useCartStore";
 import { useUserStore } from "../../../stores/useUserStore";
@@ -26,6 +27,16 @@ export default function CartScreen() {
   const clientId = useUserStore((state) => state.clientId);
   const rememberOrder = useOrders((state) => state.rememberOrder);
   const fetchOrders = useOrders((state) => state.fetchOrders);
+  const isOpen = useCafeteriaStatus((state) => state.isOpen);
+  const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchStatus();
+      const statusTimer = setInterval(fetchStatus, 15000);
+      return () => clearInterval(statusTimer);
+    }, [fetchStatus]),
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmCountdown, setConfirmCountdown] = useState(2);
@@ -39,7 +50,7 @@ export default function CartScreen() {
   }, [showConfirmModal, confirmCountdown]);
 
   const openConfirmModal = () => {
-    if (items.length === 0) return;
+    if (items.length === 0 || !isOpen) return;
     setConfirmCountdown(2);
     setShowConfirmModal(true);
   };
@@ -48,6 +59,11 @@ export default function CartScreen() {
     setShowConfirmModal(false);
     setIsSubmitting(true);
     try {
+      await fetchStatus();
+      if (!useCafeteriaStatus.getState().isOpen) {
+        Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
+        return;
+      }
       //Preparar los datos según el modelo Order.js en el backend
       const orderData = {
         customerName: clientLabel(clientId),
@@ -68,6 +84,11 @@ export default function CartScreen() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
+
+      if (response.status === 403) {
+        Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Error al enviar el pedido");
@@ -192,18 +213,23 @@ export default function CartScreen() {
           <Text style={styles.totalValue}>${getTotal().toFixed(2)}</Text>
         </View>
 
+        {!isOpen ? (
+          <Text style={styles.closedNote}>La cafetería está cerrada. No se pueden enviar pedidos.</Text>
+        ) : null}
         <Pressable
           style={[
             styles.checkoutButton,
-            isSubmitting && styles.checkoutButtonDisabled,
+            (isSubmitting || !isOpen) && styles.checkoutButtonDisabled,
           ]}
           onPress={openConfirmModal}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isOpen}
         >
           {isSubmitting ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.checkoutButtonText}>CONFIRMAR PEDIDO</Text>
+            <Text style={styles.checkoutButtonText}>
+              {isOpen ? "CONFIRMAR PEDIDO" : "CAFETERÍA CERRADA"}
+            </Text>
           )}
         </Pressable>
       </View>
@@ -395,6 +421,13 @@ const styles = StyleSheet.create({
   },
   checkoutButtonDisabled: {
     backgroundColor: colors.textSecondary,
+  },
+  closedNote: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "700",
+    marginBottom: 10,
+    textAlign: "center",
   },
   checkoutButtonText: {
     color: "#fff",

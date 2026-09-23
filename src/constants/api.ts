@@ -7,4 +7,5 @@ export const endpoints = {
   orderStatus: (orderNumber: number) =>
     `${API_BASE_URL}/api/orders/${orderNumber}/status`,
   initUser: `${API_BASE_URL}/api/users/init`,
+  cafeteria: `${API_BASE_URL}/api/cafeteria`,
 };

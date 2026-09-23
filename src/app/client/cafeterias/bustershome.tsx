@@ -11,10 +11,12 @@ import {
     View,
 } from "react-native";
 
+import { CafeteriaStatusBanner } from "../../../components/CafeteriaStatusBanner";
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { SearchMascot } from "../../../components/SearchMascot";
 import { colors, radii } from "../../../constants/theme";
+import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
 import { useProductStore } from "../../../stores/useProduct";
 import { isProductAvailable, Product } from "../../../types/product";
 
@@ -27,11 +29,15 @@ export default function HomeScreen() {
     const [selectedFilter, setSelectedFilter] = useState<QuickFilter>("Comidas");
     const products = useProductStore((state) => state.products);
     const fetchProducts = useProductStore((state) => state.fetchProducts);
+    const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
 
     useFocusEffect(
         useCallback(() => {
             fetchProducts();
-        }, [fetchProducts]),
+            fetchStatus();
+            const statusTimer = setInterval(fetchStatus, 15000);
+            return () => clearInterval(statusTimer);
+        }, [fetchProducts, fetchStatus]),
     );
 
     const bustersProducts = useMemo(
@@ -116,6 +122,8 @@ export default function HomeScreen() {
                 <Text style={styles.title}>{cafeteriaName}</Text>
                 <View style={styles.backButton} />
             </View>
+
+            <CafeteriaStatusBanner contained />
 
             <View style={styles.searchContainer}>
                 <Ionicons name="search-outline" size={22} color={colors.textSecondary} />

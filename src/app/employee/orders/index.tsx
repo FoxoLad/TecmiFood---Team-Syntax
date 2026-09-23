@@ -9,13 +9,19 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii } from "../../../constants/theme";
+import { colors, radii, shadows } from "../../../constants/theme";
+import {
+  isValidTime,
+  maskTime,
+  useCafeteriaStatus,
+} from "../../../stores/useCafeteriaStatus";
 import { useOrders } from "../../../stores/useOrders";
 import { formatOrderNumber } from "../../../types/order";
 
@@ -25,15 +31,50 @@ export default function EmployeeOrdersScreen() {
   const [selectedFilter, setSelectedFilter] = useState("Pendientes");
   const [showReturnConfirmation, setShowReturnConfirmation] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const isOpen = useCafeteriaStatus((state) => state.isOpen);
+  const opensAt = useCafeteriaStatus((state) => state.opensAt);
+  const closesAt = useCafeteriaStatus((state) => state.closesAt);
+  const setOpen = useCafeteriaStatus((state) => state.setOpen);
+  const setHours = useCafeteriaStatus((state) => state.setHours);
+  const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
+  const [hourDraft, setHourDraft] = useState({
+    opensAt,
+    closesAt,
+    sourceOpen: opensAt,
+    sourceClose: closesAt,
+  });
+  if (hourDraft.sourceOpen !== opensAt || hourDraft.sourceClose !== closesAt) {
+    setHourDraft({
+      opensAt,
+      closesAt,
+      sourceOpen: opensAt,
+      sourceClose: closesAt,
+    });
+  }
+
+  const saveHours = () => {
+    if (isValidTime(hourDraft.opensAt) && isValidTime(hourDraft.closesAt)) {
+      setHours(hourDraft.opensAt, hourDraft.closesAt);
+      return;
+    }
+    setHourDraft({
+      opensAt,
+      closesAt,
+      sourceOpen: opensAt,
+      sourceClose: closesAt,
+    });
+  };
 
   useEffect(() => {
     fetchOrders();
+    fetchStatus();
     //Auto-refresh cada 10 segundos
     const interval = setInterval(() => {
       fetchOrders();
+      fetchStatus();
     }, 10000);
     return () => clearInterval(interval);
-  }, [fetchOrders]);
+  }, [fetchOrders, fetchStatus]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -91,6 +132,70 @@ export default function EmployeeOrdersScreen() {
           >
             <Ionicons name="bar-chart-outline" size={24} color={colors.text} />
           </Pressable>
+        </View>
+
+        <View style={style.statusCard}>
+          <View style={style.statusTop}>
+            <View
+              accessibilityLabel={isOpen ? "Cafetería abierta" : "Cafetería cerrada"}
+              style={[style.statusHalo, isOpen ? style.statusHaloOpen : style.statusHaloClosed]}
+            >
+              <View style={[style.statusCore, isOpen ? style.statusCoreOpen : style.statusCoreClosed]} />
+            </View>
+            <View style={style.statusCopy}>
+              <Text style={style.statusTitle}>{isOpen ? "Abierta" : "Cerrada"}</Text>
+              <Text style={style.statusHint}>
+                {isOpen ? "Lista para recibir pedidos." : "No está recibiendo pedidos."}
+              </Text>
+            </View>
+            <Switch
+              accessibilityLabel={isOpen ? "Cerrar cafetería" : "Abrir cafetería"}
+              accessibilityRole="switch"
+              ios_backgroundColor="#E7D5D3"
+              onValueChange={setOpen}
+              thumbColor={isOpen ? colors.success : colors.danger}
+              trackColor={{ false: "#F3D6D4", true: "#D7F3E1" }}
+              value={isOpen}
+            />
+          </View>
+          <Text style={style.hoursLabel}>Horario</Text>
+          <View style={style.hoursRow}>
+            <TextInput
+              accessibilityLabel="Hora de apertura"
+              keyboardType="number-pad"
+              maxLength={5}
+              onBlur={saveHours}
+              onChangeText={(value) =>
+                setHourDraft((current) => ({ ...current, opensAt: maskTime(value) }))
+              }
+              placeholder="08:00"
+              placeholderTextColor={colors.textSecondary}
+              selectTextOnFocus
+              style={[
+                style.hourInput,
+                hourDraft.opensAt.length === 5 && !isValidTime(hourDraft.opensAt) && style.hourInputInvalid,
+              ]}
+              value={hourDraft.opensAt}
+            />
+            <Text style={style.hoursSeparator}>a</Text>
+            <TextInput
+              accessibilityLabel="Hora de cierre"
+              keyboardType="number-pad"
+              maxLength={5}
+              onBlur={saveHours}
+              onChangeText={(value) =>
+                setHourDraft((current) => ({ ...current, closesAt: maskTime(value) }))
+              }
+              placeholder="17:00"
+              placeholderTextColor={colors.textSecondary}
+              selectTextOnFocus
+              style={[
+                style.hourInput,
+                hourDraft.closesAt.length === 5 && !isValidTime(hourDraft.closesAt) && style.hourInputInvalid,
+              ]}
+              value={hourDraft.closesAt}
+            />
+          </View>
         </View>
 
         <View style={style.filters}>
@@ -328,6 +433,93 @@ const style = StyleSheet.create({
   screenTitle: {
     fontSize: 38,
     fontWeight: "bold",
+  },
+  statusCard: {
+    backgroundColor: colors.surface,
+    borderColor: "#E7E2D8",
+    borderRadius: radii.large,
+    borderWidth: 1,
+    marginBottom: 16,
+    marginHorizontal: 8,
+    marginTop: 8,
+    padding: 16,
+    ...shadows.card,
+  },
+  statusTop: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 12,
+  },
+  statusHalo: {
+    alignItems: "center",
+    borderRadius: 18,
+    height: 36,
+    justifyContent: "center",
+    width: 36,
+  },
+  statusHaloOpen: {
+    backgroundColor: "#E5F8EC",
+  },
+  statusHaloClosed: {
+    backgroundColor: "#FDECEC",
+  },
+  statusCore: {
+    borderRadius: 8,
+    height: 16,
+    width: 16,
+  },
+  statusCoreOpen: {
+    backgroundColor: colors.success,
+  },
+  statusCoreClosed: {
+    backgroundColor: colors.danger,
+  },
+  statusCopy: {
+    flex: 1,
+  },
+  statusTitle: {
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: "800",
+  },
+  statusHint: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginTop: 2,
+  },
+  hoursLabel: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 1,
+    marginTop: 16,
+    textTransform: "uppercase",
+  },
+  hoursRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 8,
+  },
+  hourInput: {
+    backgroundColor: colors.background,
+    borderColor: colors.border,
+    borderRadius: radii.small,
+    borderWidth: 1,
+    color: colors.text,
+    flex: 1,
+    fontSize: 18,
+    fontWeight: "700",
+    paddingVertical: 10,
+    textAlign: "center",
+  },
+  hourInputInvalid: {
+    borderColor: colors.danger,
+  },
+  hoursSeparator: {
+    color: colors.textSecondary,
+    fontSize: 15,
+    fontWeight: "700",
   },
   headerSpacer: {
     width: 34,

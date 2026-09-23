@@ -5,6 +5,7 @@ const cors = require("cors");
 const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
 const userRoutes = require("./routes/users");
+const cafeteriaRoutes = require("./routes/cafeteria");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.use(express.json()); //Allows parsing JSON bodies
 app.use("/api/productos", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/cafeteria", cafeteriaRoutes);
 
 //Ruta de prueba
 app.get("/", (req, res) => {

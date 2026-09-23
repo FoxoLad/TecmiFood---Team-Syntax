@@ -6,6 +6,7 @@ import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native
 import SafeView from "../../components/SafeView";
 import { ProductImage } from "../../components/ProductImage";
 import { colors, radii, spacing } from "../../constants/theme";
+import { useCafeteriaStatus } from "../../stores/useCafeteriaStatus";
 import { useOrders, type RealOrder } from "../../stores/useOrders";
 import { useUserStore } from "../../stores/useUserStore";
 import { useCartStore } from "../../stores/useCartStore";
@@ -52,6 +53,7 @@ export default function ClientOrdersScreen() {
   const setView = (nextView: OrdersView) => setViewState({ source: paramView, view: nextView });
   const orders = useOrders((state) => state.orders);
   const fetchOrders = useOrders((state) => state.fetchOrders);
+  const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
   const clientId = useUserStore((state) => state.clientId);
   const addItemToCart = useCartStore((state) => state.addItem);
   const products = useProductStore((state) => state.products);
@@ -59,7 +61,8 @@ export default function ClientOrdersScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchOrders();
-    }, [fetchOrders]),
+      fetchStatus();
+    }, [fetchOrders, fetchStatus]),
   );
 
   const { active, history } = useMemo(() => {
@@ -74,6 +77,11 @@ export default function ClientOrdersScreen() {
   const emptyState = emptyStates[view];
 
   const handleReorder = (order: RealOrder) => {
+    if (!useCafeteriaStatus.getState().isOpen) {
+      Alert.alert("Cafetería cerrada", "Solo puedes volver a pedir cuando la cafetería esté abierta.");
+      return;
+    }
+
     const before = useCartStore.getState().items.reduce((total, item) => total + item.quantity, 0);
     const requested = order.items.reduce((total, item) => total + item.quantity, 0);
 

@@ -1,7 +1,7 @@
 /** Detalle de un producto: foto, personalización y alta al carrito. */
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -18,6 +18,7 @@ import {
 import SafeView from "../../../../components/SafeView";
 import { ProductImage } from "../../../../components/ProductImage";
 import { colors, radii } from "../../../../constants/theme";
+import { useCafeteriaStatus } from "../../../../stores/useCafeteriaStatus";
 import { useCartStore } from "../../../../stores/useCartStore";
 import { useProductStore } from "../../../../stores/useProduct";
 import { useFavoritesStore } from "../../../../stores/useFavorites";
@@ -38,6 +39,16 @@ export default function BustersProductScreen() {
     const fetchProducts = useProductStore((state) => state.fetchProducts);
     const isLoading = useProductStore((state) => state.isLoading);
     const addItemToCart = useCartStore((state) => state.addItem);
+    const isOpen = useCafeteriaStatus((state) => state.isOpen);
+    const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchStatus();
+            const statusTimer = setInterval(fetchStatus, 15000);
+            return () => clearInterval(statusTimer);
+        }, [fetchStatus]),
+    );
 
     useEffect(() => {
         if (products.length === 0) {
@@ -56,6 +67,11 @@ export default function BustersProductScreen() {
 
     const handleConfirmOrder = () => {
         if (!product) return;
+        if (!useCafeteriaStatus.getState().isOpen) {
+            setModalType(null);
+            Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
+            return;
+        }
         if (currentCartTotal >= 8) {
             setModalType(null);
             Alert.alert("Carrito lleno", "Puedes pedir máximo 8 productos.");
@@ -82,7 +98,7 @@ export default function BustersProductScreen() {
     };
 
     const orderProduct = () => {
-        if (!product) {
+        if (!product || !isOpen) {
             return;
         }
 
@@ -234,11 +250,14 @@ export default function BustersProductScreen() {
 
                 <Pressable
                     accessibilityRole="button"
-                    accessibilityLabel={`Agregar ${product.name} al carrito`}
+                    accessibilityLabel={isOpen ? `Agregar ${product.name} al carrito` : "La cafetería está cerrada"}
+                    disabled={!isOpen}
                     onPress={orderProduct}
-                    style={styles.orderButton}
+                    style={[styles.orderButton, !isOpen && styles.orderButtonClosed]}
                 >
-                    <Text style={styles.orderButtonText}>AGREGAR AL CARRITO</Text>
+                    <Text style={styles.orderButtonText}>
+                        {isOpen ? "AGREGAR AL CARRITO" : "CAFETERÍA CERRADA"}
+                    </Text>
                 </Pressable>
             </ScrollView>
 
@@ -430,6 +449,9 @@ const styles = StyleSheet.create({
         borderRadius: radii.pill,
         marginTop: 24,
         paddingVertical: 15,
+    },
+    orderButtonClosed: {
+        backgroundColor: colors.textSecondary,
     },
     orderButtonText: {
         color: "#FFFFFF",

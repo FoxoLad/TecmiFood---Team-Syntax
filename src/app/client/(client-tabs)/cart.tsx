@@ -12,6 +12,7 @@ import {
     View,
     Modal,
 } from "react-native";
+import { FillingCartIcon } from "../../../components/FillingCartIcon";
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { endpoints } from "../../../constants/api";
@@ -122,7 +123,7 @@ export default function CartScreen() {
   if (items.length === 0) {
     return (
       <SafeView style={styles.emptyContainer}>
-        <Ionicons name="cart-outline" size={80} color={colors.textSecondary} />
+        <FillingCartIcon color={colors.accent} fill={colors.accentSoft} size={108} />
         <Text style={styles.emptyTitle}>Tu carrito está vacío</Text>
         <Text style={styles.emptySubtitle}>
           Agrega productos desde las cafeterías para empezar tu pedido.
@@ -140,7 +141,10 @@ export default function CartScreen() {
   return (
     <SafeView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Tu Carrito</Text>
+        <View style={styles.titleRow}>
+          <FillingCartIcon color={colors.accent} fill={colors.accentSoft} size={42} />
+          <Text style={styles.title}>Tu Carrito</Text>
+        </View>
         <Pressable
           onPress={() =>
             Alert.alert("Vaciar carrito", "Se quitarán todos los productos.", [
@@ -312,6 +316,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
+  },
+  titleRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
   },
   title: {
     fontSize: 24,

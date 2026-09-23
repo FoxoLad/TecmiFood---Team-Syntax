@@ -20,10 +20,7 @@ import { useCartStore } from "../../../../stores/useCartStore";
 import { useProductStore } from "../../../../stores/useProduct";
 import { useFavoritesStore } from "../../../../stores/useFavorites";
 
-const productsImages = {
-    "mazapan.png": require("../../../../assets/images/products/mazapan.png"),
-    "bonafont.png": require("../../../../assets/images/products/bonafont.png"),
-};
+
 
 const getModificationOptions = (category: string) => {
     if (category === "Alimentos") {

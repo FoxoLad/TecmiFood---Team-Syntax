@@ -145,9 +145,15 @@ export default function HomeScreen() {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuContainer}>
-                {selectedFilter === "Comidas" && renderDirectGrid(comidas)}
-                {selectedFilter === "Bebidas" && renderBebidasCategories()}
-                {selectedFilter === "Otros" && renderDirectGrid(otros)}
+                {search.trim() !== "" ? (
+                    renderDirectGrid(filteredProducts)
+                ) : (
+                    <>
+                        {selectedFilter === "Comidas" && renderDirectGrid(comidas)}
+                        {selectedFilter === "Bebidas" && renderBebidasCategories()}
+                        {selectedFilter === "Otros" && renderDirectGrid(otros)}
+                    </>
+                )}
                 
                 {filteredProducts.length === 0 && (
                     <Text style={styles.emptyText}>No se encontraron productos.</Text>

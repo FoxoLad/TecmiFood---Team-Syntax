@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -10,6 +10,7 @@ import {
     StyleSheet,
     Text,
     View,
+    Modal,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
 import { colors, radii } from "../../../constants/theme";
@@ -20,10 +21,25 @@ export default function CartScreen() {
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore();
   const clientId = useUserStore((state) => state.clientId) || "Cliente Anónimo";
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmCountdown, setConfirmCountdown] = useState(2);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (showConfirmModal && confirmCountdown > 0) {
+      timer = setTimeout(() => setConfirmCountdown(prev => prev - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [showConfirmModal, confirmCountdown]);
+
+  const openConfirmModal = () => {
+    if (items.length === 0) return;
+    setConfirmCountdown(2);
+    setShowConfirmModal(true);
+  };
 
   const handleCheckout = async () => {
-    if (items.length === 0) return;
-
+    setShowConfirmModal(false);
     setIsSubmitting(true);
     try {
       //Preparar los datos según el modelo Order.js en el backend
@@ -57,8 +73,8 @@ export default function CartScreen() {
       const result = await response.json();
 
       Alert.alert(
-        "¡Pedido Enviado!",
-        `Tu número de orden es: #${result.orderNumber}`,
+        "¡Pedido Confirmado!",
+        `Tu número de orden es: #${result.orderNumber}\n\nPuedes ver la información y estado de tu orden en la pestaña de Avisos o Pedidos.`,
         [
           {
             text: "Ver Menú",
@@ -179,16 +195,47 @@ export default function CartScreen() {
             styles.checkoutButton,
             isSubmitting && styles.checkoutButtonDisabled,
           ]}
-          onPress={handleCheckout}
+          onPress={openConfirmModal}
           disabled={isSubmitting}
         >
           {isSubmitting ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.checkoutButtonText}>HACER PEDIDO</Text>
+            <Text style={styles.checkoutButtonText}>CONFIRMAR PEDIDO</Text>
           )}
         </Pressable>
       </View>
+
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowConfirmModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>¿Enviar pedido?</Text>
+            <Text style={styles.modalMessage}>Por favor revisa que todo esté correcto antes de confirmar.</Text>
+            <View style={styles.modalActions}>
+              <Pressable
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => setShowConfirmModal(false)}
+              >
+                <Text style={styles.modalButtonCancelText}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.modalButton, styles.modalButtonConfirm, confirmCountdown > 0 && styles.modalButtonDisabled]}
+                onPress={handleCheckout}
+                disabled={confirmCountdown > 0}
+              >
+                <Text style={styles.modalButtonConfirmText}>
+                  {confirmCountdown > 0 ? `Confirmar (${confirmCountdown})` : "Confirmar"}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeView>
   );
 }
@@ -354,6 +401,60 @@ const styles = StyleSheet.create({
   checkoutButtonText: {
     color: "#fff",
     fontSize: 18,
+    fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: colors.surface,
+    padding: 24,
+    borderRadius: radii.large,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: colors.text,
+    marginBottom: 8,
+  },
+  modalMessage: {
+    fontSize: 15,
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  modalActions: {
+    flexDirection: "row",
+    gap: 12,
+    width: "100%",
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: radii.pill,
+    alignItems: "center",
+  },
+  modalButtonCancel: {
+    backgroundColor: colors.surfaceMuted,
+  },
+  modalButtonConfirm: {
+    backgroundColor: colors.accent,
+  },
+  modalButtonDisabled: {
+    backgroundColor: colors.textSecondary,
+    opacity: 0.7,
+  },
+  modalButtonCancelText: {
+    color: colors.text,
+    fontWeight: "600",
+  },
+  modalButtonConfirmText: {
+    color: "#fff",
     fontWeight: "bold",
   },
 });

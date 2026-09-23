@@ -179,9 +179,21 @@ export default function ClientOrdersScreen() {
                         style={styles.itemImage}
                       />
                       <Text style={styles.itemQuantity}>{item.quantity}×</Text>
-                      <Text numberOfLines={2} style={styles.itemName}>
-                        {item.name}
-                      </Text>
+                      <View style={{ flex: 1, paddingRight: 8 }}>
+                        <Text numberOfLines={2} style={styles.itemName}>
+                          {item.name}
+                        </Text>
+                        {item.modifications && item.modifications.length > 0 && (
+                          <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
+                            Mods: {item.modifications.join(", ")}
+                          </Text>
+                        )}
+                        {item.notes ? (
+                          <Text style={{ fontSize: 12, color: colors.textSecondary, fontStyle: "italic", marginTop: 2 }}>
+                            Nota: {item.notes}
+                          </Text>
+                        ) : null}
+                      </View>
                       <Text style={styles.itemPrice}>
                         ${(item.price * item.quantity).toFixed(2)}
                       </Text>
@@ -341,7 +353,6 @@ const styles = StyleSheet.create({
   },
   itemName: {
     color: colors.text,
-    flex: 1,
     fontSize: 14,
     fontWeight: "600",
   },

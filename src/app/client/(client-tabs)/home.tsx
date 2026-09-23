@@ -219,7 +219,7 @@ export default function HomeScreen() {
           <Pressable
             accessibilityLabel="Abrir favoritos"
             accessibilityRole="button"
-            onPress={() => router.push("/client/(client-tabs)/favorites")}
+            onPress={() => router.push("/client/favorites")}
             style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
           >
             <Ionicons name="heart-outline" size={21} color="#8F651A" />

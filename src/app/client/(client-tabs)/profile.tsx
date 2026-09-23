@@ -32,7 +32,7 @@ export default function ProfileScreen() {
 
   const openOrderHistory = () => router.push("/client/orders?view=history" as Href);
 
-  const openFavorites = () => router.push("/client/(client-tabs)/favorites");
+  const openFavorites = () => router.push("/client/favorites");
 
   const accessEmployeeOrders = () => {
     if (employeeCode.trim() === EMPLOYEE_CODE) {

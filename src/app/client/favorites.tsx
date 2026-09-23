@@ -7,10 +7,10 @@ import {
     Text,
     View,
 } from "react-native";
-import SafeView from "../../../components/SafeView";
-import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii, spacing } from "../../../constants/theme";
-import { useFavoritesStore } from "../../../stores/useFavorites";
+import SafeView from "../../components/SafeView";
+import { ProductImage } from "../../components/ProductImage";
+import { colors, radii, spacing } from "../../constants/theme";
+import { useFavoritesStore } from "../../stores/useFavorites";
 
 export default function FavoritesScreen() {
   const favorites = useFavoritesStore((state) => state.items);

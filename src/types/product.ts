@@ -9,4 +9,5 @@ export type Product = {
   image: string;
   status?: string;
   category: string;
+  subcategory?: string;
 };

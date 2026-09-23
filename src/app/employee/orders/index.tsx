@@ -44,11 +44,14 @@ export default function EmployeeOrdersScreen() {
     const query = searchQuery.toLowerCase().trim();
     const matchesName = order.customerName.toLowerCase().includes(query);
     const matchesOrder = String(order.orderNumber).includes(query);
+    const matchesProduct = order.items.some(item => 
+      item.name.toLowerCase().includes(query)
+    );
     const isDelivered = order.status === "Entregado";
     const matchesStatus =
       selectedFilter === "Todos" ||
       (selectedFilter === "Entregados" ? isDelivered : !isDelivered);
-    return (matchesName || matchesOrder) && matchesStatus;
+    return (matchesName || matchesOrder || matchesProduct) && matchesStatus;
   });
 
   const confirmReturnToClient = () => {

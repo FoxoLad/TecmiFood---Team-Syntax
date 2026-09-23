@@ -46,7 +46,6 @@ export default function ClientTabsLayout() {
     >
       <Tabs.Screen name="home" options={{ title: "Inicio", tabBarIcon: ({ color }) => <Ionicons color={color} name="home" size={28} /> }} />
       <Tabs.Screen name="explore" options={{ href: null }} />
-      <Tabs.Screen name="favorites" options={{ href: null }} />
       <Tabs.Screen name="cart" options={{ title: "Carrito", tabBarIcon: renderCartIcon }} />
       <Tabs.Screen name="notifications" options={{ title: "Avisos", tabBarIcon: ({ color }) => <Ionicons color={color} name="notifications-outline" size={28} /> }} />
       <Tabs.Screen name="profile" options={{ title: "Perfil", tabBarIcon: ({ color }) => <Ionicons color={color} name="person-outline" size={28} /> }} />

@@ -1,8 +1,8 @@
+/** Detalle de una orden. El empleado avanza el estado hasta entregarla. */
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
-	Image,
 	Modal,
 	Pressable,
 	ScrollView,
@@ -11,9 +11,17 @@ import {
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../constants/images";
+import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
+import { formatOrderNumber } from "../../../types/order";
+
+type OrderAction = {
+  button: string;
+  title: string;
+  confirm: string;
+  nextStatus: string;
+};
 
 export default function EmployeeOrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -40,7 +48,7 @@ export default function EmployeeOrderDetailsScreen() {
 
   const orderNumber = order.orderNumber;
 
-  let action: any = null;
+  let action: OrderAction | null = null;
   if (order.status === "Pendiente") {
     action = {
       button: "Comenzar a preparar",
@@ -86,7 +94,7 @@ export default function EmployeeOrderDetailsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Pedido #{String(order.orderNumber).padStart(3, "0")}</Text>
+        <Text style={styles.title}>Pedido #{formatOrderNumber(order.orderNumber)}</Text>
         <Text style={styles.customerName}>{order.customerName}</Text>
         <Text style={styles.orderDate}>
           {new Date(order.createdAt).toLocaleString("es-MX")}
@@ -106,27 +114,12 @@ export default function EmployeeOrderDetailsScreen() {
 
         {order.items.map((product, idx) => (
           <View key={`${product.productId}-${idx}`} style={styles.productCard}>
-            {product.image?.startsWith("http") ? (
-              <Image
-                source={{ uri: product.image }}
-                style={styles.productImage}
-              />
-            ) : product.image &&
-              productsImages[product.image as keyof typeof productsImages] ? (
-              <Image
-                source={
-                  productsImages[product.image as keyof typeof productsImages]
-                }
-                style={styles.productImage}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.productImage,
-                  { backgroundColor: "#f0f0f0", borderRadius: 8 },
-                ]}
-              />
-            )}
+            <ProductImage
+              contentFit="contain"
+              image={product.image}
+              name={product.name}
+              style={styles.productImage}
+            />
             <View style={styles.productDetails}>
               <Text style={styles.productName}>{product.quantity}x {product.name}</Text>
               <Text style={styles.price}>${(product.price * product.quantity).toFixed(2)}</Text>
@@ -268,8 +261,9 @@ const styles = StyleSheet.create({
   },
   productImage: {
     alignSelf: "center",
-    height: 130,
-    resizeMode: "contain",
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radii.medium,
+    height: 160,
     width: "100%",
   },
   productDetails: {

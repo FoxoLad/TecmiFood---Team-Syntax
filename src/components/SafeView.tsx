@@ -1,3 +1,4 @@
+/** Safe area con bordes completos para que el contenido no quede bajo la barra del sistema. */
 import {
     SafeAreaView as ContextSafeAreaView,
     type SafeAreaViewProps,

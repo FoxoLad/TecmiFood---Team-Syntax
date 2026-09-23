@@ -1,6 +1,9 @@
+/**
+ * Inicio del cliente: promociones, accesos rápidos y los menús de cada cafetería.
+ */
 import { useProductStore } from "../../../stores/useProduct";
 import { Ionicons } from "@expo/vector-icons";
-import { router, type Href } from "expo-router";
+import { router, useFocusEffect, type Href } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
@@ -18,27 +21,9 @@ import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { useOrders } from "../../../stores/useOrders";
 import { useUserStore } from "../../../stores/useUserStore";
-import { ORDER_STATUS_LABELS } from "../../../types/order";
-
-//Definición de productos y secciones
-type Modification = {
-  name: string;
-  price: number;
-};
-
-type Product = {
-  _id?: string;
-  id: string;
-  businessId: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  inStock: boolean;
-  category: string;
-  subcategory?: string;
-  modifications?: Modification[];
-};
+import { formatOrderNumber, getOrderStatusLabel } from "../../../types/order";
+import { isProductAvailable, type Product } from "../../../types/product";
+import { isClientOrder } from "../../../utils/client";
 
 type CafeteriaSection = {
   businessId: string;
@@ -49,7 +34,6 @@ type CafeteriaSection = {
   data: Product[];
 };
 
-const API_URL = "https://tecmifood-team-syntax.onrender.com/api/productos";
 const BATCH_SIZE = 4;
 const BANNERS = [
   require("../../../../assets/images/promotionBanner/PromocionalPrueba.jpg"),
@@ -88,14 +72,21 @@ export default function HomeScreen() {
   const [visibleProducts, setVisibleProducts] = useState<Record<string, number>>({});
   const clientId = useUserStore((state) => state.clientId);
   const activeOrder = useOrders((state) =>
-    state.orders.find((order) => order.customerName === `Usuario ${clientId}` && order.status !== "Entregado"),
+    state.orders.find(
+      (order) =>
+        isClientOrder(order.customerName, clientId) &&
+        order.status !== "Entregado" &&
+        order.status !== "Cancelado",
+    ),
   );
   const fetchOrders = useOrders((state) => state.fetchOrders);
 
-  useEffect(() => {
-    fetchOrders(); // Fetch orders to get the active order
-    fetchProducts();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+      fetchProducts();
+    }, [fetchOrders, fetchProducts]),
+  );
 
   useEffect(() => {
     const bannerTimer = setInterval(() => {
@@ -152,7 +143,7 @@ export default function HomeScreen() {
       cardBgColor: "#8F651A",
       route: "/client/cafeterias/bustershome",
       data: allProducts.filter(
-        (product) => product.businessId === "BT" && product.inStock === true,
+        (product) => product.businessId === "BT" && isProductAvailable(product),
       ),
     },
     {
@@ -255,16 +246,16 @@ export default function HomeScreen() {
             <View style={styles.activeOrderIcon}>
               <Ionicons
                 color="#FFFFFF"
-                name={activeOrder.status === "ready" ? "checkmark-circle" : "restaurant-outline"}
+                name={activeOrder.status === "Terminado" ? "checkmark-circle" : "restaurant-outline"}
                 size={22}
               />
             </View>
             <View style={styles.activeOrderCopy}>
               <Text style={styles.activeOrderTitle}>
-                Pedido #{String(activeOrder.orderNumber).padStart(3, "0")}
+                Pedido #{formatOrderNumber(activeOrder.orderNumber)}
               </Text>
               <Text style={styles.activeOrderStatus}>
-                {(ORDER_STATUS_LABELS as any)[activeOrder.status] || activeOrder.status}
+                {getOrderStatusLabel(activeOrder.status)}
               </Text>
             </View>
             <Ionicons color="#FFFFFF" name="chevron-forward" size={20} />
@@ -304,6 +295,10 @@ export default function HomeScreen() {
               </Pressable>
               <View style={styles.headerDivider} />
               <Text style={styles.subHeaderTitle}>Más vendidos:</Text>
+
+              {section.data.length === 0 ? (
+                <Text style={styles.emptySection}>El menú se está actualizando.</Text>
+              ) : null}
 
               {/*Scroll horizontal de productos*/}
               <ScrollView
@@ -594,6 +589,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginHorizontal: 16,
     marginVertical: 8,
+  },
+  emptySection: {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 13,
+    marginHorizontal: 16,
+    marginBottom: 8,
   },
   horizontalScrollContainer: {
     paddingLeft: 10,

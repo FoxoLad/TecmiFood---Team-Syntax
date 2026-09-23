@@ -1,3 +1,4 @@
+/** Paleta cálida de la cafetería. Las pantallas deben tomar estos valores en lugar de colores sueltos. */
 export const colors = {
     background: "#F7F5F0",
     surface: "#FFFFFF",
@@ -22,4 +23,14 @@ export const radii = {
 export const spacing = {
     screen: 16,
     section: 20,
+};
+
+export const shadows = {
+    card: {
+        shadowColor: "#302512",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        elevation: 3,
+    },
 };

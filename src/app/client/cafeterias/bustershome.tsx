@@ -1,6 +1,7 @@
+/** Menú de Busters con búsqueda y filtros de comida, bebida y otros. */
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
     Pressable,
     ScrollView,
@@ -12,11 +13,11 @@ import {
 
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
+import { SearchMascot } from "../../../components/SearchMascot";
 import { colors, radii } from "../../../constants/theme";
-import productsData from "../../../data/products.json";
-import { Product } from "../../../types/product";
+import { useProductStore } from "../../../stores/useProduct";
+import { isProductAvailable, Product } from "../../../types/product";
 
-const bustersProducts = productsData as Product[];
 type QuickFilter = "Comidas" | "Bebidas" | "Otros";
 
 export default function HomeScreen() {
@@ -24,15 +25,26 @@ export default function HomeScreen() {
     const cafeteriaName = name || "Busters";
     const [search, setSearch] = useState("");
     const [selectedFilter, setSelectedFilter] = useState<QuickFilter>("Comidas");
+    const products = useProductStore((state) => state.products);
+    const fetchProducts = useProductStore((state) => state.fetchProducts);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchProducts();
+        }, [fetchProducts]),
+    );
+
+    const bustersProducts = useMemo(
+        () => products.filter((product) => product.businessId === "BT" && isProductAvailable(product)),
+        [products],
+    );
 
     const filteredProducts = useMemo(() => {
         const query = search.trim().toLowerCase();
         return bustersProducts.filter(
-            (product) =>
-                product.businessId === "BT" &&
-                (!query || product.name.toLowerCase().includes(query))
+            (product) => !query || product.name.toLowerCase().includes(query),
         );
-    }, [search]);
+    }, [bustersProducts, search]);
 
     const comidas = filteredProducts.filter(p => p.category === "Comidas");
     const bebidas = filteredProducts.filter(p => p.category === "Bebidas");
@@ -92,29 +104,34 @@ export default function HomeScreen() {
 
     return (
         <SafeView style={styles.container}>
-            <Pressable
-                accessibilityLabel="Volver a cafeterías"
-                accessibilityRole="button"
-                onPress={() => router.back()}
-                style={styles.backButton}
-            >
-                <Ionicons name="arrow-back" size={32} color="#000000" />
-            </Pressable>
-
-            <Text style={styles.title}>{cafeteriaName}</Text>
+            <View style={styles.topBar}>
+                <Pressable
+                    accessibilityLabel="Volver a cafeterías"
+                    accessibilityRole="button"
+                    onPress={() => router.back()}
+                    style={styles.backButton}
+                >
+                    <Ionicons name="chevron-back" size={26} color={colors.text} />
+                </Pressable>
+                <Text style={styles.title}>{cafeteriaName}</Text>
+                <View style={styles.backButton} />
+            </View>
 
             <View style={styles.searchContainer}>
-                <Ionicons name="search-outline" size={24} color="#333333" />
+                <Ionicons name="search-outline" size={22} color={colors.textSecondary} />
                 <TextInput
                     value={search}
                     onChangeText={setSearch}
                     placeholder="Buscar en el menú"
-                    placeholderTextColor="#777777"
+                    placeholderTextColor={colors.textSecondary}
                     style={styles.searchInput}
                 />
-                <Text accessibilityLabel="Perrito" style={styles.searchEmoji}>
-                    🐶🐶🐶
-                </Text>
+                {search.length > 0 ? <SearchMascot query={search} /> : null}
+                {search.length > 0 ? (
+                    <Pressable accessibilityLabel="Limpiar búsqueda" onPress={() => setSearch("")}>
+                        <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
+                    </Pressable>
+                ) : null}
             </View>
 
             <View style={styles.buttonRow}>
@@ -164,13 +181,12 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background, padding: 16 },
-    backButton: { left: 16, position: "absolute", top: 58, zIndex: 1 },
-    title: { borderBottomColor: "rgba(0, 0, 0, 0.65)", borderBottomWidth: 1, color: "#000000", fontSize: 36, fontWeight: "bold", marginBottom: 20, paddingBottom: 8, textAlign: "center" },
-    
-    searchContainer: { alignItems: "center", backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radii.pill, borderWidth: 1, flexDirection: "row", marginBottom: 20, paddingHorizontal: 12 },
-    searchInput: { flex: 1, fontSize: 16, paddingLeft: 8, paddingVertical: 10 },
-    searchEmoji: { fontSize: 24, marginLeft: 8 },
+    container: { flex: 1, backgroundColor: colors.background, paddingHorizontal: 16 },
+    topBar: { alignItems: "center", flexDirection: "row", marginBottom: 16, marginTop: 4 },
+    backButton: { alignItems: "center", height: 44, justifyContent: "center", width: 44 },
+    title: { color: colors.text, flex: 1, fontSize: 28, fontWeight: "800", textAlign: "center" },
+    searchContainer: { alignItems: "center", backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radii.pill, borderWidth: 1, flexDirection: "row", marginBottom: 20, paddingHorizontal: 14 },
+    searchInput: { color: colors.text, flex: 1, fontSize: 16, paddingLeft: 8, paddingVertical: 12 },
 
     buttonRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
     menuButton: { alignItems: "center", backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radii.pill, borderWidth: 1, flex: 1, marginHorizontal: 4, paddingVertical: 12 },

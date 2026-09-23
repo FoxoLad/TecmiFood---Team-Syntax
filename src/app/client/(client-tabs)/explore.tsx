@@ -1,3 +1,4 @@
+/** Pestaña oculta. Se conserva para no romper la ruta explore. */
 import { View } from "react-native";
 import { colors } from "../../../constants/theme";
 

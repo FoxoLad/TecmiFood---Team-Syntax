@@ -36,6 +36,18 @@ export const ORDER_STATUS_HINTS: Record<string, string> = {
   "Cancelado": "Este pedido ha sido cancelado.",
 };
 
+export function getOrderStatusLabel(status: string) {
+  return ORDER_STATUS_LABELS[status] ?? status;
+}
+
+export function getOrderStatusHint(status: string) {
+  return ORDER_STATUS_HINTS[status] ?? "Te avisaremos cuando el pedido cambie de estado.";
+}
+
+export function formatOrderNumber(orderNumber: number | string) {
+  return String(orderNumber).padStart(3, "0");
+}
+
 export interface OrderAlert {
   id: string;
   orderId: string;

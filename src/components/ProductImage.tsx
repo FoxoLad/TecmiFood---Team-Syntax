@@ -1,3 +1,4 @@
+/** Imagen de producto. Acepta URL, clave local o nombre y usa un respaldo si no hay foto. */
 import { Image, type ImageContentFit, type ImageStyle } from "expo-image";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { resolveProductImageSource } from "../constants/images";

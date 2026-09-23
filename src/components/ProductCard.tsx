@@ -1,3 +1,4 @@
+/** Tarjeta usada por la vista antigua de productos con número de orden. */
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";

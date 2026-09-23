@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
+import { endpoints } from "../constants/api";
 
 type UserStore = {
   clientId: string | null;
@@ -9,14 +10,22 @@ type UserStore = {
   clearNotifications: () => Promise<void>;
 };
 
-export const useUserStore = create<UserStore>((set, get) => ({
+const CLIENT_ID_KEY = "clientId";
+const CLEARED_AT_KEY = "notificationsClearedAt";
+
+function createFallbackId() {
+  return `#${Math.floor(100000 + Math.random() * 900000)}`;
+}
+
+/** Identidad local del cliente. El id se guarda para que sus pedidos sobrevivan al cerrar la app. */
+export const useUserStore = create<UserStore>((set) => ({
   clientId: null,
   isInitialized: false,
   notificationsClearedAt: null,
   initializeUser: async () => {
     try {
-      const storedId = await AsyncStorage.getItem("clientId");
-      const clearedAtStr = await AsyncStorage.getItem("notificationsClearedAt");
+      const storedId = await AsyncStorage.getItem(CLIENT_ID_KEY);
+      const clearedAtStr = await AsyncStorage.getItem(CLEARED_AT_KEY);
       const notificationsClearedAt = clearedAtStr ? parseInt(clearedAtStr, 10) : null;
 
       if (storedId) {
@@ -24,29 +33,29 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return;
       }
 
-      const res = await fetch(
-        "https://tecmifood-team-syntax.onrender.com/api/users/init",
-        {
-          method: "POST",
-        },
-      );
-      const data = await res.json();
-
-      if (data.clientId) {
-        await AsyncStorage.setItem("clientId", data.clientId);
-        set({ clientId: data.clientId, isInitialized: true, notificationsClearedAt });
+      const res = await fetch(endpoints.initUser, { method: "POST" });
+      if (!res.ok) {
+        throw new Error(`Error HTTP ${res.status}`);
       }
+
+      const data: { clientId?: string } = await res.json();
+      const clientId = data.clientId || createFallbackId();
+      await AsyncStorage.setItem(CLIENT_ID_KEY, clientId);
+      set({ clientId, isInitialized: true, notificationsClearedAt });
     } catch (error) {
       console.error("Error al inicializar el usuario:", error);
-      set({
-        clientId: "#" + Math.floor(100000 + Math.random() * 900000),
-        isInitialized: true,
-      });
+      const clientId = createFallbackId();
+      try {
+        await AsyncStorage.setItem(CLIENT_ID_KEY, clientId);
+      } catch {
+        // Sin almacenamiento el id solo vive en esta sesión.
+      }
+      set({ clientId, isInitialized: true });
     }
   },
   clearNotifications: async () => {
     const now = Date.now();
-    await AsyncStorage.setItem("notificationsClearedAt", now.toString());
+    await AsyncStorage.setItem(CLEARED_AT_KEY, now.toString());
     set({ notificationsClearedAt: now });
-  }
+  },
 }));

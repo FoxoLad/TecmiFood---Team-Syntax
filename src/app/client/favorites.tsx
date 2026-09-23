@@ -1,3 +1,4 @@
+/** Lista de productos que el cliente marcó con el corazón. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import {

@@ -1,3 +1,4 @@
+/** Perfil del cliente y acceso del empleado con un código local. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter, type Href } from "expo-router";
 import { useState } from "react";
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
   },
   accessButton: {
     alignItems: "center",
-    backgroundColor: "#000000",
+    backgroundColor: colors.accent,
     borderRadius: 7,
     height: 36,
     justifyContent: "center",

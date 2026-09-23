@@ -1,6 +1,7 @@
+/** Productos de una categoría del menú, con búsqueda local. */
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
     Pressable,
     ScrollView,
@@ -13,8 +14,8 @@ import {
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii } from "../../../constants/theme";
-import productsData from "../../../data/products.json";
-import { Product } from "../../../types/product";
+import { useProductStore } from "../../../stores/useProduct";
+import { isProductAvailable } from "../../../types/product";
 
 const categorySources: Record<string, string[]> = {
     Frío: ["Bebidas"],
@@ -24,37 +25,50 @@ const categorySources: Record<string, string[]> = {
     Otros: ["Stickers y Pines", "Extras y Desechables"],
 };
 
-const bustersProducts = productsData as Product[];
-
 export default function CategoryScreen() {
     const { category } = useLocalSearchParams<{ category?: string | string[] }>();
     const [search, setSearch] = useState("");
     const categoryName = Array.isArray(category) ? category[0] : category;
+    const catalog = useProductStore((state) => state.products);
+    const fetchProducts = useProductStore((state) => state.fetchProducts);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchProducts();
+        }, [fetchProducts]),
+    );
 
     const products = useMemo(() => {
         const query = search.trim().toLowerCase();
         const sourceCategories = categorySources[categoryName ?? ""] ?? [];
 
-        return bustersProducts.filter(
-            (product) =>
+        return catalog.filter((product) => {
+            const matchesNamedCategory =
+                sourceCategories.includes(product.category) || product.category === categoryName;
+
+            return (
                 product.businessId === "BT" &&
-                sourceCategories.includes(product.category) &&
-                (!query || product.name.toLowerCase().includes(query)),
-        );
-    }, [categoryName, search]);
+                isProductAvailable(product) &&
+                matchesNamedCategory &&
+                (!query || product.name.toLowerCase().includes(query))
+            );
+        });
+    }, [catalog, categoryName, search]);
 
     return (
         <SafeView style={styles.container}>
-            <Pressable
-                accessibilityLabel="Volver al menú de la cafetería"
-                accessibilityRole="button"
-                onPress={() => router.back()}
-                style={styles.backButton}
-            >
-                <Ionicons name="arrow-back" size={32} color="#000000" />
-            </Pressable>
-
-            <Text style={styles.title}>{categoryName ?? "Productos"}</Text>
+            <View style={styles.topBar}>
+                <Pressable
+                    accessibilityLabel="Volver al menú de la cafetería"
+                    accessibilityRole="button"
+                    onPress={() => router.back()}
+                    style={styles.backButton}
+                >
+                    <Ionicons name="chevron-back" size={26} color={colors.text} />
+                </Pressable>
+                <Text style={styles.title}>{categoryName ?? "Productos"}</Text>
+                <View style={styles.backButton} />
+            </View>
 
             <View style={styles.searchContainer}>
                 <Ionicons name="search-outline" size={24} color="#333333" />
@@ -114,20 +128,22 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
     },
+    topBar: {
+        alignItems: "center",
+        flexDirection: "row",
+        marginBottom: 16,
+    },
     backButton: {
-        left: 16,
-        position: "absolute",
-        top: 58,
-        zIndex: 1,
+        alignItems: "center",
+        height: 44,
+        justifyContent: "center",
+        width: 44,
     },
     title: {
-        borderBottomColor: colors.border,
-        borderBottomWidth: 1,
         color: colors.text,
-        fontSize: 36,
-        fontWeight: "bold",
-        marginBottom: 20,
-        paddingBottom: 8,
+        flex: 1,
+        fontSize: 28,
+        fontWeight: "800",
         textAlign: "center",
     },
     searchContainer: {

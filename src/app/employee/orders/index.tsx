@@ -1,9 +1,9 @@
+/** Lista de órdenes para el empleado, con búsqueda, filtros y actualización automática. */
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   Modal,
   Pressable,
   RefreshControl,
@@ -14,9 +14,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { productsImages } from "../../../constants/images";
+import { ProductImage } from "../../../components/ProductImage";
 import { colors, radii } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
+import { formatOrderNumber } from "../../../types/order";
 
 export default function EmployeeOrdersScreen() {
   const { orders, isLoading, fetchOrders } = useOrders();
@@ -48,9 +49,10 @@ export default function EmployeeOrdersScreen() {
       item.name.toLowerCase().includes(query)
     );
     const isDelivered = order.status === "Entregado";
+    const isClosed = isDelivered || order.status === "Cancelado";
     const matchesStatus =
       selectedFilter === "Todos" ||
-      (selectedFilter === "Entregados" ? isDelivered : !isDelivered);
+      (selectedFilter === "Entregados" ? isDelivered : !isClosed);
     return (matchesName || matchesOrder || matchesProduct) && matchesStatus;
   });
 
@@ -85,7 +87,7 @@ export default function EmployeeOrdersScreen() {
           <Text style={style.screenTitle}>ORDENES</Text>
           <Pressable
             style={style.historyButton}
-            onPress={() => router.push("/employee/history" as any)}
+            onPress={() => router.push("/employee/history")}
           >
             <Ionicons name="bar-chart-outline" size={24} color={colors.text} />
           </Pressable>
@@ -129,10 +131,18 @@ export default function EmployeeOrdersScreen() {
         </View>
 
         {isLoading && orders.length === 0 ? (
-          <View style={{ marginTop: 50 }}>
-            <ActivityIndicator size="large" color="#000000" />
-            <Text style={{ textAlign: "center", marginTop: 10 }}>
-              Cargando órdenes...
+          <View style={style.emptyState}>
+            <ActivityIndicator size="large" color={colors.accent} />
+            <Text style={style.emptyMessage}>Cargando órdenes...</Text>
+          </View>
+        ) : filteredOrders.length === 0 ? (
+          <View style={style.emptyState}>
+            <Ionicons color={colors.accent} name="receipt-outline" size={42} />
+            <Text style={style.emptyTitle}>No hay órdenes</Text>
+            <Text style={style.emptyMessage}>
+              {searchQuery.trim()
+                ? "Prueba con otro nombre, número o producto."
+                : "Cuando llegue un pedido nuevo, aparecerá aquí."}
             </Text>
           </View>
         ) : (
@@ -164,7 +174,7 @@ export default function EmployeeOrdersScreen() {
                       isDeliveredView && style.deliveredOrderNumber,
                     ]}
                   >
-                    #{String(orderNumber).padStart(3, "0")} -{" "}
+                    #{formatOrderNumber(orderNumber)} -{" "}
                     {order.customerName}
                   </Text>
                   <Text
@@ -198,45 +208,15 @@ export default function EmployeeOrdersScreen() {
                       isDeliveredView && style.deliveredProductRow,
                     ]}
                   >
-                    <View
+                    <ProductImage
+                      contentFit="cover"
+                      image={product.image}
+                      name={product.name}
                       style={[
                         style.productActions,
                         isDeliveredView && style.deliveredProductActions,
                       ]}
-                    >
-                      {product.image?.startsWith("http") ? (
-                        <Image
-                          source={{ uri: product.image }}
-                          style={[
-                            style.productImage,
-                            isDeliveredView && style.deliveredProductImage,
-                          ]}
-                        />
-                      ) : product.image &&
-                        productsImages[
-                          product.image as keyof typeof productsImages
-                        ] ? (
-                        <Image
-                          source={
-                            productsImages[
-                              product.image as keyof typeof productsImages
-                            ]
-                          }
-                          style={[
-                            style.productImage,
-                            isDeliveredView && style.deliveredProductImage,
-                          ]}
-                        />
-                      ) : (
-                        <View
-                          style={[
-                            style.productImage,
-                            isDeliveredView && style.deliveredProductImage,
-                            { backgroundColor: "#f0f0f0", borderRadius: 8 },
-                          ]}
-                        />
-                      )}
-                    </View>
+                    />
                     <View style={style.productDetails}>
                       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <Text
@@ -362,20 +342,40 @@ const style = StyleSheet.create({
     paddingHorizontal: 7,
   },
   filterText: {
-    fontSize: 23,
+    color: colors.textSecondary,
+    fontSize: 16,
     fontWeight: "700",
   },
   activeFilterText: {
-    color: "#111110",
+    color: colors.accent,
   },
   filterLine: {
     backgroundColor: "transparent",
-    height: 2,
-    marginTop: 5,
+    height: 3,
+    marginTop: 6,
     width: "100%",
   },
   activeFilterLine: {
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.accent,
+    borderRadius: 2,
+  },
+  emptyState: {
+    alignItems: "center",
+    marginTop: 48,
+    paddingHorizontal: 28,
+  },
+  emptyTitle: {
+    color: colors.text,
+    fontSize: 20,
+    fontWeight: "800",
+    marginTop: 12,
+  },
+  emptyMessage: {
+    color: colors.textSecondary,
+    fontSize: 15,
+    lineHeight: 21,
+    marginTop: 6,
+    textAlign: "center",
   },
   searchContainer: {
     alignItems: "center",

@@ -1,3 +1,4 @@
+/** Textos de aviso para los estados en inglés. La app en producción usa los estados en español de `types/order`. */
 import type { OrderStatus } from "../types/order";
 
 export const ORDER_NOTIFICATIONS: Record<OrderStatus, { title: string; body: (orderNumber: number) => string }> = {

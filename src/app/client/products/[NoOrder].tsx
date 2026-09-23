@@ -1,3 +1,4 @@
+/** Detalle de la vista antigua que identifica un producto por su número de orden. */
 import { router, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

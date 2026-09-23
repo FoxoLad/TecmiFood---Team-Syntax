@@ -1,3 +1,7 @@
+/**
+ * Carrito anterior, conservado por compatibilidad.
+ * Las pantallas usan `useCartStore` de `useCartStore.ts`.
+ */
 import { create } from "zustand";
 import { Product } from "../types/product";
 

@@ -1,10 +1,14 @@
+/** Avisos del cliente. Cada cambio de estado del pedido aparece aquí. */
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../../components/SafeView";
 import { colors, radii, spacing } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
 import { useUserStore } from "../../../stores/useUserStore";
+import { formatOrderNumber } from "../../../types/order";
+import { isAlertVisible, isClientOrder } from "../../../utils/client";
 
 const getStatusIcon = (status: string): keyof typeof Ionicons.glyphMap => {
   if (status === "Pendiente") return "receipt-outline";
@@ -25,14 +29,25 @@ export default function NotificationsScreen() {
   const notificationsClearedAt = useUserStore((state) => state.notificationsClearedAt);
   const clearNotifications = useUserStore((state) => state.clearNotifications);
   const orders = useOrders((state) => state.orders);
-  
+  const fetchOrders = useOrders((state) => state.fetchOrders);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+    }, [fetchOrders]),
+  );
+
   const alerts = orders
-    .filter(o => o.customerName === `Usuario ${clientId}` && (!notificationsClearedAt || new Date(o.updatedAt).getTime() > notificationsClearedAt))
-    .map(order => ({
+    .filter(
+      (order) =>
+        isClientOrder(order.customerName, clientId) &&
+        isAlertVisible(order.updatedAt, notificationsClearedAt),
+    )
+    .map((order) => ({
       id: order._id,
       status: order.status,
-      title: order.status === "Terminado" ? "¡Pedido Listo!" : `Pedido ${order.status}`,
-      body: getStatusMessage(order.status, String(order.orderNumber).padStart(3, "0")),
+      title: order.status === "Terminado" ? "¡Pedido listo!" : `Pedido ${order.status}`,
+      body: getStatusMessage(order.status, formatOrderNumber(order.orderNumber)),
       date: new Date(order.updatedAt).toLocaleString("es-MX"),
     }));
 

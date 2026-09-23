@@ -1,8 +1,10 @@
+/** Detalle de un producto: foto, personalización y alta al carrito. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-    Image,
+    ActivityIndicator,
+    Alert,
     Modal,
     Pressable,
     ScrollView,
@@ -11,32 +13,15 @@ import {
     Text,
     TextInput,
     View,
-    ActivityIndicator,
 } from "react-native";
 
 import SafeView from "../../../../components/SafeView";
+import { ProductImage } from "../../../../components/ProductImage";
 import { colors, radii } from "../../../../constants/theme";
 import { useCartStore } from "../../../../stores/useCartStore";
 import { useProductStore } from "../../../../stores/useProduct";
 import { useFavoritesStore } from "../../../../stores/useFavorites";
-
-
-
-const getModificationOptions = (category: string) => {
-    if (category === "Alimentos") {
-        return ["Sin salsa", "Sin ingredientes picantes", "Extra servilletas"];
-    }
-
-    if (
-        category === "Bebidas" ||
-        category === "Frappe" ||
-        category === "Bebidas Calientes o Heladas"
-    ) {
-        return ["Sin hielo", "Poco hielo", "Sin azúcar"];
-    }
-
-    return ["Sin bolsa", "Empaque separado", "Extra servilletas"];
-};
+import { modificationLabels } from "../../../../types/product";
 
 export default function BustersProductScreen() {
     const { id } = useLocalSearchParams<{ id?: string | string[] }>();
@@ -58,7 +43,7 @@ export default function BustersProductScreen() {
         if (products.length === 0) {
             fetchProducts();
         }
-    }, [fetchProducts]);
+    }, [fetchProducts, products.length]);
 
 
     const product = useMemo(
@@ -73,7 +58,7 @@ export default function BustersProductScreen() {
         if (!product) return;
         if (currentCartTotal >= 8) {
             setModalType(null);
-            alert("Tu carrito está lleno (límite de 8 productos).");
+            Alert.alert("Carrito lleno", "Puedes pedir máximo 8 productos.");
             return;
         }
         
@@ -85,7 +70,10 @@ export default function BustersProductScreen() {
         );
         if (cartItem && cartItem.quantity >= 3) {
             setModalType(null);
-            alert("No puedes pedir más de 3 veces el mismo producto con las mismas modificaciones.");
+            Alert.alert(
+                "Límite del producto",
+                "No puedes pedir más de 3 veces el mismo producto con las mismas modificaciones.",
+            );
             return;
         }
 
@@ -185,15 +173,12 @@ export default function BustersProductScreen() {
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={styles.imageBox}>
-                    {product.image.startsWith("http") ? (
-                        <Image
-                            source={{ uri: product.image }}
-                            style={styles.image}
-                            resizeMode="contain"
-                        />
-                    ) : null}
-                </View>
+                <ProductImage
+                    contentFit="contain"
+                    image={product.image}
+                    name={product.name}
+                    style={styles.imageBox}
+                />
 
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.category}>{product.category}</Text>
@@ -209,7 +194,7 @@ export default function BustersProductScreen() {
                 </Text>
 
                 <View style={styles.modificationsList}>
-                    {getModificationOptions(product.category).map((modification) => {
+                    {modificationLabels(product).map((modification) => {
                         const isSelected = selectedModifications.includes(modification);
 
                         return (
@@ -359,17 +344,12 @@ const styles = StyleSheet.create({
         paddingBottom: 24,
     },
     imageBox: {
-        alignItems: "center",
         backgroundColor: colors.surface,
         borderColor: colors.border,
+        borderRadius: radii.large,
         borderWidth: 1,
-        height: 220,
-        justifyContent: "center",
+        height: 240,
         marginBottom: 20,
-        width: "100%",
-    },
-    image: {
-        height: "100%",
         width: "100%",
     },
     name: {

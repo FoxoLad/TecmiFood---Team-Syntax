@@ -1,17 +1,20 @@
+/** Seguimiento visual del pedido que el cliente acaba de enviar o abrió desde avisos. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../components/SafeView";
 import { colors, radii, spacing } from "../../constants/theme";
 import { useOrders } from "../../stores/useOrders";
-import { ORDER_STATUS_HINTS, ORDER_STATUS_LABELS, type OrderStatus } from "../../types/order";
+import { formatOrderNumber, getOrderStatusHint, getOrderStatusLabel } from "../../types/order";
 
 const STEPS = ["Pendiente", "En preparación", "Terminado"];
 
 export default function PreparingOrderScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const orders = useOrders((state) => state.orders);
-  const latestOrder = id ? orders.find(o => o._id === id || String(o.orderNumber) === id) : orders[0];
+  const latestOrder = id
+    ? orders.find((order) => order._id === id || String(order.orderNumber) === id)
+    : undefined;
   const status = latestOrder?.status ?? "Pendiente";
   const isReady = status === "Terminado" || status === "Entregado";
   const stepStatus = status === "Entregado" ? "Terminado" : status;
@@ -31,12 +34,12 @@ export default function PreparingOrderScreen() {
         </View>
         <Text style={styles.title}>
           {latestOrder
-            ? `Pedido #${String(latestOrder.orderNumber).padStart(3, "0")}`
+            ? `Pedido #${formatOrderNumber(latestOrder.orderNumber)}`
             : "Pedido enviado"}
         </Text>
-        <Text style={styles.statusLabel}>{(ORDER_STATUS_LABELS as any)[status] || status}</Text>
+        <Text style={styles.statusLabel}>{getOrderStatusLabel(status)}</Text>
         <Text style={styles.message}>
-          {latestOrder ? (ORDER_STATUS_HINTS as any)[status] : "Recibimos tu pedido. Te avisaremos cuando esté listo."}
+          {latestOrder ? getOrderStatusHint(status) : "Recibimos tu pedido. Te avisaremos cuando esté listo."}
         </Text>
 
         {latestOrder ? (
@@ -48,7 +51,7 @@ export default function PreparingOrderScreen() {
                 <View key={step} style={styles.stepRow}>
                   <View style={[styles.stepDot, complete && styles.stepDotComplete]} />
                   <Text style={[styles.stepText, complete && styles.stepTextComplete]}>
-                    {(ORDER_STATUS_LABELS as any)[step] || step}
+                    {getOrderStatusLabel(step)}
                   </Text>
                 </View>
               );

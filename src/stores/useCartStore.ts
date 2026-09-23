@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { Product } from "../types/product";
 
+/** Límites del pedido: 3 unidades iguales y 8 productos en total. */
+
 export type CartItem = {
   cartItemId: string;
   product: Product;
@@ -27,10 +29,14 @@ export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
   addItem: (product, quantity, modifications, notes) => {
     set((state) => {
-      // Check total items constraint (max 8)
-      const currentTotal = state.items.reduce((acc, i) => acc + i.quantity, 0);
-      if (currentTotal + quantity > 8) {
-        return state; // Do not add if it exceeds 8
+      const safeQuantity = Math.min(3, quantity);
+      if (safeQuantity < 1) {
+        return state;
+      }
+
+      const currentTotal = state.items.reduce((acc, item) => acc + item.quantity, 0);
+      if (currentTotal + safeQuantity > 8) {
+        return state;
       }
 
       // Find if an identical item exists (same product, same mods, same notes)
@@ -42,26 +48,23 @@ export const useCartStore = create<CartStore>((set, get) => ({
       );
 
       if (existingItemIndex >= 0) {
-        // Group them
-        const newItems = [...state.items];
-        const existingItem = newItems[existingItemIndex];
-        
-        // Enforce max 3 limit per distinct item
-        if (existingItem.quantity + quantity <= 3) {
-          existingItem.quantity += quantity;
-        } else {
-          existingItem.quantity = 3;
+        const existingItem = state.items[existingItemIndex];
+        const nextQuantity = Math.min(3, existingItem.quantity + safeQuantity);
+        if (nextQuantity === existingItem.quantity) {
+          return state;
         }
-        
+
+        const newItems = state.items.map((item, index) =>
+          index === existingItemIndex ? { ...item, quantity: nextQuantity } : item,
+        );
         return { items: newItems };
       }
 
-      // Add new item if not grouped
-      const cartItemId = Math.random().toString(36).substring(7);
+      const cartItemId = `${product.id}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
       return {
         items: [
           ...state.items,
-          { cartItemId, product, quantity, modifications, notes },
+          { cartItemId, product, quantity: safeQuantity, modifications, notes },
         ],
       };
     });

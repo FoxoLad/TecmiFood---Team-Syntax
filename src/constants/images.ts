@@ -1,3 +1,4 @@
+/** Fotos locales del menú y la función que elige cuál mostrar. */
 export const productsImages = {
     "CJQ": require("../../assets/images/product-icons/CJQ.png"),
     "Latte": require("../../assets/images/product-icons/Latte.png"),

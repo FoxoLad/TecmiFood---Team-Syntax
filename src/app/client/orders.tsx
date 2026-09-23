@@ -1,15 +1,18 @@
+/** Pedidos activos e historial del cliente, con opción de volver a pedir. */
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../components/SafeView";
 import { ProductImage } from "../../components/ProductImage";
 import { colors, radii, spacing } from "../../constants/theme";
-import { useOrders } from "../../stores/useOrders";
+import { useOrders, type RealOrder } from "../../stores/useOrders";
 import { useUserStore } from "../../stores/useUserStore";
 import { useCartStore } from "../../stores/useCartStore";
 import { useProductStore } from "../../stores/useProduct";
-import { ORDER_STATUS_LABELS } from "../../types/order";
+import { formatOrderNumber, ORDER_STATUS_LABELS } from "../../types/order";
+import { Product } from "../../types/product";
+import { isClientOrder } from "../../utils/client";
 
 type OrdersView = "active" | "history";
 
@@ -36,19 +39,31 @@ const emptyStates: Record<OrdersView, { title: string; message: string; icon: "c
 
 export default function ClientOrdersScreen() {
   const { view: viewParam } = useLocalSearchParams<{ view?: string }>();
-  const [view, setView] = useState<OrdersView>(viewParam === "history" ? "history" : "active");
+  const paramView: OrdersView = viewParam === "history" ? "history" : "active";
+  const [viewState, setViewState] = useState<{ source: string; view: OrdersView }>({
+    source: paramView,
+    view: paramView,
+  });
+  // Ajusta la pestaña cuando la ruta cambia, sin un efecto que dispare otro render.
+  if (viewState.source !== paramView) {
+    setViewState({ source: paramView, view: paramView });
+  }
+  const view = viewState.view;
+  const setView = (nextView: OrdersView) => setViewState({ source: paramView, view: nextView });
   const orders = useOrders((state) => state.orders);
   const fetchOrders = useOrders((state) => state.fetchOrders);
   const clientId = useUserStore((state) => state.clientId);
   const addItemToCart = useCartStore((state) => state.addItem);
   const products = useProductStore((state) => state.products);
 
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+    }, [fetchOrders]),
+  );
 
   const { active, history } = useMemo(() => {
-    const myOrders = orders.filter((order) => order.customerName === `Usuario ${clientId}`);
+    const myOrders = orders.filter((order) => isClientOrder(order.customerName, clientId));
     return {
       active: myOrders.filter((order) => order.status !== "Entregado" && order.status !== "Cancelado"),
       history: myOrders.filter((order) => order.status === "Entregado" || order.status === "Cancelado"),
@@ -58,21 +73,33 @@ export default function ClientOrdersScreen() {
   const displayOrders = view === "active" ? active : history;
   const emptyState = emptyStates[view];
 
-  const handleReorder = (order: any) => {
-    order.items.forEach((item: any) => {
-      const p = products.find(prod => prod.id === item.productId) || {
+  const handleReorder = (order: RealOrder) => {
+    const before = useCartStore.getState().items.reduce((total, item) => total + item.quantity, 0);
+    const requested = order.items.reduce((total, item) => total + item.quantity, 0);
+
+    order.items.forEach((item) => {
+      const stored = products.find((product) => product.id === item.productId);
+      const product: Product = stored ?? {
         id: item.productId,
         businessId: "BT",
         name: item.name,
         description: "",
         price: item.price,
-        image: item.image,
+        image: item.image ?? "",
         category: "Reorder",
-        inStock: true
+        inStock: true,
       };
-      addItemToCart(p as any, item.quantity, item.modifications || [], item.notes || "");
+      addItemToCart(product, item.quantity, item.modifications || [], item.notes || "");
     });
-    router.push("/client/(client-tabs)/cart");
+
+    const after = useCartStore.getState().items.reduce((total, item) => total + item.quantity, 0);
+    if (after - before < requested) {
+      Alert.alert(
+        "Carrito con límite",
+        "Se agregó lo que cabía. El máximo es 8 productos y 3 del mismo artículo.",
+      );
+    }
+    router.push("/client/cart");
   };
 
   const goBack = () => {
@@ -148,7 +175,7 @@ export default function ClientOrdersScreen() {
               <View style={styles.orderCard}>
                 <View style={styles.orderHeader}>
                   <Text style={styles.orderNumber}>
-                    Pedido #{String(order.orderNumber).padStart(3, "0")}
+                    Pedido #{formatOrderNumber(order.orderNumber)}
                   </Text>
                   
                   {view === "history" ? (

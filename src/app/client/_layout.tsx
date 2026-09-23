@@ -1,3 +1,4 @@
+/** Stack del cliente. Las pestañas y las pantallas internas comparten el fondo de la app. */
 import { Stack } from "expo-router";
 import { colors } from "../../constants/theme";
 

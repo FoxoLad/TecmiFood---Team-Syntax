@@ -1,10 +1,10 @@
+/** Carrito del cliente. Confirma el pedido y lo envía al API de órdenes. */
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Alert,
-    Image,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -13,13 +13,19 @@ import {
     Modal,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
-import { colors, radii } from "../../../constants/theme";
+import { ProductImage } from "../../../components/ProductImage";
+import { endpoints } from "../../../constants/api";
+import { colors, radii, shadows } from "../../../constants/theme";
+import { isRealOrder, useOrders } from "../../../stores/useOrders";
 import { useCartStore } from "../../../stores/useCartStore";
 import { useUserStore } from "../../../stores/useUserStore";
+import { clientLabel } from "../../../utils/client";
 
 export default function CartScreen() {
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore();
-  const clientId = useUserStore((state) => state.clientId) || "Cliente Anónimo";
+  const clientId = useUserStore((state) => state.clientId);
+  const rememberOrder = useOrders((state) => state.rememberOrder);
+  const fetchOrders = useOrders((state) => state.fetchOrders);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmCountdown, setConfirmCountdown] = useState(2);
@@ -44,7 +50,7 @@ export default function CartScreen() {
     try {
       //Preparar los datos según el modelo Order.js en el backend
       const orderData = {
-        customerName: `Usuario ${clientId}`, //Identificador único
+        customerName: clientLabel(clientId),
         totalAmount: getTotal(),
         items: items.map((item) => ({
           productId: item.product.id,
@@ -57,34 +63,30 @@ export default function CartScreen() {
         })),
       };
 
-      const response = await fetch(
-        "https://tecmifood-team-syntax.onrender.com/api/orders",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderData),
-        },
-      );
+      const response = await fetch(endpoints.orders, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
 
       if (!response.ok) {
         throw new Error("Error al enviar el pedido");
       }
 
-      const result = await response.json();
-
-      Alert.alert(
-        "¡Pedido Confirmado!",
-        `Tu número de orden es: #${result.orderNumber}\n\nPuedes ver la información y estado de tu orden en la pestaña de Avisos o Pedidos.`,
-        [
-          {
-            text: "Ver Menú",
-            onPress: () => {
-              clearCart();
-              router.push("/client/home");
-            },
-          },
-        ],
-      );
+      const result: unknown = await response.json();
+      if (isRealOrder(result)) {
+        rememberOrder(result);
+      }
+      clearCart();
+      fetchOrders();
+      if (isRealOrder(result)) {
+        router.replace({
+          pathname: "/client/preparing",
+          params: { id: result._id || String(result.orderNumber) },
+        });
+        return;
+      }
+      router.replace("/client/preparing");
     } catch (error) {
       console.error("Error al enviar orden:", error);
       Alert.alert(
@@ -118,7 +120,15 @@ export default function CartScreen() {
     <SafeView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Tu Carrito</Text>
-        <Pressable onPress={clearCart} style={styles.clearButton}>
+        <Pressable
+          onPress={() =>
+            Alert.alert("Vaciar carrito", "Se quitarán todos los productos.", [
+              { text: "Cancelar", style: "cancel" },
+              { text: "Vaciar", style: "destructive", onPress: clearCart },
+            ])
+          }
+          style={styles.clearButton}
+        >
           <Text style={styles.clearButtonText}>Vaciar</Text>
         </Pressable>
       </View>
@@ -129,20 +139,12 @@ export default function CartScreen() {
       >
         {items.map((item) => (
           <View key={item.cartItemId} style={styles.cartItem}>
-            <View style={styles.itemImageContainer}>
-              {item.product.image ? (
-                <Image
-                  source={{ uri: item.product.image }}
-                  style={styles.itemImage}
-                />
-              ) : (
-                <Ionicons
-                  name="fast-food-outline"
-                  size={24}
-                  color={colors.textSecondary}
-                />
-              )}
-            </View>
+            <ProductImage
+              contentFit="cover"
+              image={item.product.image}
+              name={item.product.name}
+              style={styles.itemImageContainer}
+            />
             <View style={styles.itemInfo}>
               <Text style={styles.itemName}>{item.product.name}</Text>
               <Text style={styles.itemPrice}>
@@ -310,6 +312,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: colors.border,
+    ...shadows.card,
   },
   itemImageContainer: {
     width: 60,
@@ -319,11 +322,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
-  },
-  itemImage: {
-    width: 40,
-    height: 40,
-    resizeMode: "contain",
   },
   itemInfo: {
     flex: 1,

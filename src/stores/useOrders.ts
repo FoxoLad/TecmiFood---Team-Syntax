@@ -18,6 +18,7 @@ export type RealOrder = {
   totalAmount: number;
   status: string;
   createdAt: string;
+  updatedAt: string;
 };
 
 interface OrderStore {

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { Product } from "../types/product";
+import productsData from "../data/products.json";
 
 type ApiProduct = Product & { _id?: string };
 
@@ -12,10 +13,11 @@ type ProductStore = {
 };
 
 export const useProductStore = create<ProductStore>()((set) => ({
-  products: [],
+  products: productsData as Product[],
   isLoading: false,
   fetchProducts: async () => {
-    set({ isLoading: true });
+    // Avoid blocking on initial load, background refresh
+
     try {
       const res = await fetch(
         "https://tecmifood-team-syntax.onrender.com/api/productos",

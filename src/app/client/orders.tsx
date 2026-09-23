@@ -7,18 +7,18 @@ import { ProductImage } from "../../components/ProductImage";
 import { colors, radii, spacing } from "../../constants/theme";
 import { useOrders } from "../../stores/useOrders";
 import { useUserStore } from "../../stores/useUserStore";
-import { ORDER_STATUS_LABELS, type OrderStatus } from "../../types/order";
+import { useCartStore } from "../../stores/useCartStore";
+import { useProductStore } from "../../stores/useProduct";
+import { ORDER_STATUS_LABELS } from "../../types/order";
 
 type OrdersView = "active" | "history";
 
-const statusStyles: Record<
-  OrderStatus,
-  { backgroundColor: string; color: string; label: string }
-> = {
-  pending: { backgroundColor: colors.accentSoft, color: colors.accent, label: ORDER_STATUS_LABELS.pending },
-  preparing: { backgroundColor: "#E5F1FF", color: "#0A5FCC", label: ORDER_STATUS_LABELS.preparing },
-  ready: { backgroundColor: "#E3F6E8", color: "#15803d", label: ORDER_STATUS_LABELS.ready },
-  delivered: { backgroundColor: colors.surfaceMuted, color: colors.textSecondary, label: ORDER_STATUS_LABELS.delivered },
+const statusStyles: Record<string, { backgroundColor: string; color: string; label: string }> = {
+  "Pendiente": { backgroundColor: colors.accentSoft, color: colors.accent, label: ORDER_STATUS_LABELS["Pendiente"] },
+  "En preparación": { backgroundColor: "#E5F1FF", color: "#0A5FCC", label: ORDER_STATUS_LABELS["En preparación"] },
+  "Terminado": { backgroundColor: "#E3F6E8", color: "#15803d", label: ORDER_STATUS_LABELS["Terminado"] },
+  "Entregado": { backgroundColor: colors.surfaceMuted, color: colors.textSecondary, label: ORDER_STATUS_LABELS["Entregado"] },
+  "Cancelado": { backgroundColor: "#FFE5E5", color: "#CC0A0A", label: ORDER_STATUS_LABELS["Cancelado"] },
 };
 
 const emptyStates: Record<OrdersView, { title: string; message: string; icon: "cart-outline" | "time-outline" }> = {
@@ -28,7 +28,7 @@ const emptyStates: Record<OrdersView, { title: string; message: string; icon: "c
     icon: "cart-outline",
   },
   history: {
-    title: "Aún no tienes historial",
+    title: "No tienes historial de pedidos",
     message: "Tus pedidos entregados aparecerán aquí.",
     icon: "time-outline",
   },
@@ -40,22 +40,40 @@ export default function ClientOrdersScreen() {
   const orders = useOrders((state) => state.orders);
   const fetchOrders = useOrders((state) => state.fetchOrders);
   const clientId = useUserStore((state) => state.clientId);
+  const addItemToCart = useCartStore((state) => state.addItem);
+  const products = useProductStore((state) => state.products);
 
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
 
   const { active, history } = useMemo(() => {
-    // Only show orders belonging to this user
     const myOrders = orders.filter((order) => order.customerName === `Usuario ${clientId}`);
     return {
-      active: myOrders.filter((order) => order.status !== "Entregado"),
-      history: myOrders.filter((order) => order.status === "Entregado"),
+      active: myOrders.filter((order) => order.status !== "Entregado" && order.status !== "Cancelado"),
+      history: myOrders.filter((order) => order.status === "Entregado" || order.status === "Cancelado"),
     };
   }, [orders, clientId]);
 
-  const visibleOrders = view === "active" ? active : history;
+  const displayOrders = view === "active" ? active : history;
   const emptyState = emptyStates[view];
+
+  const handleReorder = (order: any) => {
+    order.items.forEach((item: any) => {
+      const p = products.find(prod => prod.id === item.productId) || {
+        id: item.productId,
+        businessId: "BT",
+        name: item.name,
+        description: "",
+        price: item.price,
+        image: item.image,
+        category: "Reorder",
+        inStock: true
+      };
+      addItemToCart(p as any, item.quantity, item.modifications || [], item.notes || "");
+    });
+    router.push("/client/(client-tabs)/cart");
+  };
 
   const goBack = () => {
     if (router.canGoBack()) {
@@ -109,7 +127,7 @@ export default function ClientOrdersScreen() {
         })}
       </View>
 
-      {visibleOrders.length === 0 ? (
+      {displayOrders.length === 0 ? (
         <View style={styles.emptyState}>
           <View style={styles.emptyIcon}>
             <Ionicons color={colors.accent} name={emptyState.icon} size={42} />
@@ -120,11 +138,11 @@ export default function ClientOrdersScreen() {
       ) : (
         <FlatList
           contentContainerStyle={styles.listContent}
-          data={visibleOrders}
+          data={displayOrders}
           keyExtractor={(order) => order._id}
           showsVerticalScrollIndicator={false}
           renderItem={({ item: order }) => {
-            const status = (statusStyles as any)[order.status] || { backgroundColor: "#ccc", color: "#000", label: order.status };
+            const status = statusStyles[order.status] || { backgroundColor: "#ccc", color: "#000", label: order.status };
 
             return (
               <View style={styles.orderCard}>
@@ -132,9 +150,20 @@ export default function ClientOrdersScreen() {
                   <Text style={styles.orderNumber}>
                     Pedido #{String(order.orderNumber).padStart(3, "0")}
                   </Text>
-                  <View style={[styles.statusPill, { backgroundColor: status.backgroundColor }]}>
-                    <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
-                  </View>
+                  
+                  {view === "history" ? (
+                    <Pressable
+                      style={styles.reorderButton}
+                      onPress={() => handleReorder(order)}
+                    >
+                      <Ionicons name="refresh" size={14} color="#ffffff" style={{ marginRight: 4 }} />
+                      <Text style={styles.reorderText}>Volver a pedir</Text>
+                    </Pressable>
+                  ) : (
+                    <View style={[styles.statusPill, { backgroundColor: status.backgroundColor }]}>
+                      <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+                    </View>
+                  )}
                 </View>
                 <Text style={styles.orderDate}>
                   {new Date(order.createdAt).toLocaleString("es-MX")}
@@ -268,6 +297,19 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: "800",
+  },
+  reorderButton: {
+    backgroundColor: colors.accent,
+    borderRadius: radii.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  reorderText: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "700"
   },
   orderDate: {
     color: colors.textSecondary,

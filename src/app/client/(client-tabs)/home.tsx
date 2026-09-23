@@ -1,3 +1,4 @@
+import { useProductStore } from "../../../stores/useProduct";
 import { Ionicons } from "@expo/vector-icons";
 import { router, type Href } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -80,8 +81,9 @@ const BEE_SWEET_PRODUCTS: Product[] = [
 ];
 
 export default function HomeScreen() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const allProducts = useProductStore((state) => state.products as Product[]);
+  const isLoading = useProductStore((state) => state.isLoading);
+  const fetchProducts = useProductStore((state) => state.fetchProducts);
   const [activeBanner, setActiveBanner] = useState(0);
   const [visibleProducts, setVisibleProducts] = useState<Record<string, number>>({});
   const clientId = useUserStore((state) => state.clientId);
@@ -92,37 +94,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetchOrders(); // Fetch orders to get the active order
-    const controller = new AbortController();
-
-    fetch(API_URL, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error HTTP ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data: unknown) => {
-        const list = Array.isArray(data) ? data : [];
-        setAllProducts(
-          list.map((raw, index) => {
-            const product = raw as Product;
-            return {
-              ...product,
-              id: product.id || product._id || `product-${index}`,
-              inStock: product.inStock !== false,
-            };
-          }),
-        );
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        if (error.name !== "AbortError") {
-          console.error("Error cargando productos desde", API_URL, ":", error);
-        }
-        setIsLoading(false);
-      });
-
-    return () => controller.abort();
+    fetchProducts();
   }, []);
 
   useEffect(() => {

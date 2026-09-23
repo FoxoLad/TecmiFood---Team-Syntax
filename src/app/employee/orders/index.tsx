@@ -154,6 +154,8 @@ export default function EmployeeOrdersScreen() {
                   ]}
                 >
                   <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
                     style={[
                       style.orderNumber,
                       isDeliveredView && style.deliveredOrderNumber,
@@ -410,17 +412,15 @@ const style = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 13,
     paddingVertical: 8,
-    flexWrap: "wrap",
-    gap: 4,
+    gap: 8,
   },
   deliveredOrderHeader: {
     paddingVertical: 2,
   },
   orderNumber: {
-    fontSize: 20,
+    fontSize: 18, // slightly smaller to ensure fit
     fontWeight: "800",
-    flex: 1,
-    minWidth: 150,
+    flex: 1, // take available space
   },
   deliveredOrderNumber: {
     fontSize: 18,

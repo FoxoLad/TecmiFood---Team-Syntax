@@ -18,8 +18,16 @@ export default function FavoritesScreen() {
 
   return (
     <SafeView style={styles.container}>
-      <View style={styles.header}>
-        <View>
+      <View style={[styles.header, { flexDirection: 'row', alignItems: 'center' }]}>
+        <Pressable
+            accessibilityLabel="Volver"
+            accessibilityRole="button"
+            onPress={() => router.back()}
+            style={{ marginRight: 16, backgroundColor: colors.surface, padding: 8, borderRadius: 20 }}
+        >
+            <Ionicons name="chevron-back" size={24} color={colors.text} />
+        </Pressable>
+        <View style={{ flex: 1 }}>
           <Text style={styles.eyebrow}>TU COLECCIÓN</Text>
           <Text style={styles.title}>Mis favoritos</Text>
         </View>

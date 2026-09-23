@@ -16,8 +16,14 @@ import {
 
 import SafeView from "../../../../components/SafeView";
 import { colors, radii } from "../../../../constants/theme";
-import { useProductStore } from "../../../../stores/useProduct";
 import { useCartStore } from "../../../../stores/useCartStore";
+import { useProductStore } from "../../../../stores/useProduct";
+import { useFavoritesStore } from "../../../../stores/useFavorites";
+
+const productsImages = {
+    "mazapan.png": require("../../../../assets/images/products/mazapan.png"),
+    "bonafont.png": require("../../../../assets/images/products/bonafont.png"),
+};
 
 const getModificationOptions = (category: string) => {
     if (category === "Alimentos") {
@@ -38,10 +44,14 @@ const getModificationOptions = (category: string) => {
 export default function BustersProductScreen() {
     const { id } = useLocalSearchParams<{ id?: string | string[] }>();
     const [modalType, setModalType] = useState<"confirm" | "success" | null>(null);
-    const [isFavorite, setIsFavorite] = useState(false);
     const [selectedModifications, setSelectedModifications] = useState<string[]>([]);
     const [additionalNotes, setAdditionalNotes] = useState("");
     
+    const productId = Array.isArray(id) ? id[0] : id;
+    
+    const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+    const isFavorite = useFavoritesStore((state) => state.isFavorite(productId as string));
+
     const products = useProductStore((state) => state.products);
     const fetchProducts = useProductStore((state) => state.fetchProducts);
     const isLoading = useProductStore((state) => state.isLoading);
@@ -53,7 +63,7 @@ export default function BustersProductScreen() {
         }
     }, [fetchProducts]);
 
-    const productId = Array.isArray(id) ? id[0] : id;
+
     const product = useMemo(
         () => products.find((currentProduct) => currentProduct.id === productId),
         [productId, products],
@@ -162,7 +172,7 @@ export default function BustersProductScreen() {
                     <Pressable
                         accessibilityLabel={isFavorite ? "Quitar de favoritos" : "Guardar como favorito"}
                         accessibilityRole="button"
-                        onPress={() => setIsFavorite((current) => !current)}
+                        onPress={() => { if (product) toggleFavorite(product); }}
                         style={styles.iconButton}
                     >
                         <Ionicons

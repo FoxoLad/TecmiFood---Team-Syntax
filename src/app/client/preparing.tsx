@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../components/SafeView";
 import { colors, radii, spacing } from "../../constants/theme";
@@ -9,7 +9,9 @@ import { ORDER_STATUS_HINTS, ORDER_STATUS_LABELS, type OrderStatus } from "../..
 const STEPS = ["Pendiente", "En preparación", "Terminado"];
 
 export default function PreparingOrderScreen() {
-  const latestOrder = useOrders((state) => state.orders[0]);
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const orders = useOrders((state) => state.orders);
+  const latestOrder = id ? orders.find(o => o._id === id || String(o.orderNumber) === id) : orders[0];
   const status = latestOrder?.status ?? "Pendiente";
   const isReady = status === "Terminado" || status === "Entregado";
   const stepStatus = status === "Entregado" ? "Terminado" : status;

@@ -17,6 +17,7 @@ export interface Order {
   total: number;
   status: OrderStatus;
   createdAt: string;
+  updatedAt: string;
 }
 
 export const ORDER_STATUS_LABELS: Record<string, string> = {

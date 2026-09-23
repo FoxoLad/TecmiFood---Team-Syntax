@@ -1,10 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../../components/SafeView";
 import { colors, radii, spacing } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
 import { useUserStore } from "../../../stores/useUserStore";
-import type { OrderStatus } from "../../../types/order";
 
 const getStatusIcon = (status: string): keyof typeof Ionicons.glyphMap => {
   if (status === "Pendiente") return "receipt-outline";
@@ -22,24 +22,38 @@ const getStatusMessage = (status: string, orderNumber: string) => {
 
 export default function NotificationsScreen() {
   const clientId = useUserStore((state) => state.clientId);
+  const notificationsClearedAt = useUserStore((state) => state.notificationsClearedAt);
+  const clearNotifications = useUserStore((state) => state.clearNotifications);
   const orders = useOrders((state) => state.orders);
   
   const alerts = orders
-    .filter(o => o.customerName === `Usuario ${clientId}`)
+    .filter(o => o.customerName === `Usuario ${clientId}` && (!notificationsClearedAt || new Date(o.updatedAt).getTime() > notificationsClearedAt))
     .map(order => ({
       id: order._id,
       status: order.status,
       title: order.status === "Terminado" ? "¡Pedido Listo!" : `Pedido ${order.status}`,
       body: getStatusMessage(order.status, String(order.orderNumber).padStart(3, "0")),
-      date: new Date(order.createdAt).toLocaleString("es-MX"),
+      date: new Date(order.updatedAt).toLocaleString("es-MX"),
     }));
 
   return (
     <SafeView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.eyebrow}>ACTUALIZACIONES</Text>
-        <Text style={styles.title}>Avisos</Text>
-        <Text style={styles.subtitle}>Te avisamos cada vez que tu pedido cambie de estado.</Text>
+      <View style={[styles.header, { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }]}>
+        <View style={{ flex: 1, paddingRight: 10 }}>
+          <Text style={styles.eyebrow}>ACTUALIZACIONES</Text>
+          <Text style={styles.title}>Avisos</Text>
+          <Text style={styles.subtitle}>Te avisamos cada vez que tu pedido cambie de estado.</Text>
+        </View>
+        {alerts.length > 0 && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Limpiar avisos"
+            onPress={() => clearNotifications()}
+            style={{ padding: 10, backgroundColor: colors.surface, borderRadius: radii.pill }}
+          >
+            <Ionicons name="trash-outline" size={24} color={colors.danger} />
+          </Pressable>
+        )}
       </View>
 
       {alerts.length === 0 ? (
@@ -59,18 +73,19 @@ export default function NotificationsScreen() {
           keyExtractor={(alert) => alert.id}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View style={styles.notificationCard}>
+            <Pressable 
+              style={styles.notificationCard}
+              onPress={() => router.push(`/client/preparing?id=${item.id}`)}
+            >
               <View style={styles.notificationIcon}>
                 <Ionicons color={colors.accent} name={getStatusIcon(item.status)} size={24} />
               </View>
               <View style={styles.notificationContent}>
                 <Text style={styles.notificationTitle}>{item.title}</Text>
-                <Text style={styles.notificationMessage}>{item.body}</Text>
-                <Text style={styles.notificationDate}>
-                  {item.date}
-                </Text>
+                <Text style={styles.notificationBody}>{item.body}</Text>
+                <Text style={styles.notificationDate}>{item.date}</Text>
               </View>
-            </View>
+            </Pressable>
           )}
         />
       )}
@@ -140,7 +155,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "800",
   },
-  notificationMessage: {
+  notificationBody: {
     color: colors.textSecondary,
     fontSize: 13,
     lineHeight: 18,

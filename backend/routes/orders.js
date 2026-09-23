@@ -69,8 +69,8 @@ router.patch("/:id/status", async (req, res) => {
     const { status } = req.body;
     const validStatuses = [
       "Pendiente",
-      "Preparando",
-      "Listo",
+      "En preparación",
+      "Terminado",
       "Entregado",
       "Cancelado",
     ];

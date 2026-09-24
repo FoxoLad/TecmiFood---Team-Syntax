@@ -110,7 +110,7 @@ export default function EmployeeOrderDetailsScreen() {
         {order.items.filter(item => {
     const isBusters = item.productId.startsWith('BT');
     const isBeeSweet = item.productId.startsWith('BS');
-    const isEmployeeBusters = useUserStore.getState().user?.employeeCafeteria === 'Busters';
+    const isEmployeeBusters = useUserStore.getState().employeeCafeteria === 'Busters';
     return (isBusters && isEmployeeBusters) || (isBeeSweet && !isEmployeeBusters);
   }).map((product, idx) => (
           <View key={`${product.productId}-${idx}`} style={styles.productCard}>

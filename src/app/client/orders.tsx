@@ -215,7 +215,7 @@ export default function ClientOrdersScreen() {
                     const bustersItems = order.items.filter(item => item.productId.startsWith('BT'));
                     const beeSweetItems = order.items.filter(item => item.productId.startsWith('BS'));
                     
-                    const renderItem = (item, index) => (
+                    const renderItem = (item: any, index: number) => (
                       <View key={`${item.productId}-${index}`} style={styles.itemRow}>
                         <ProductImage
                           contentFit="cover"
@@ -230,7 +230,7 @@ export default function ClientOrdersScreen() {
                           </Text>
                           {item.modifications && item.modifications.length > 0 && (
                             <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                              Mods: {item.modifications.map(m => typeof m === 'string' ? m : m.name).join(", ")}
+                              Mods: {item.modifications.map((m: any) => typeof m === 'string' ? m : m.name).join(", ")}
                             </Text>
                           )}
                           {item.notes ? (
@@ -266,12 +266,6 @@ export default function ClientOrdersScreen() {
                       </>
                     );
                   })()}
-                </View>
-                      <Text style={styles.itemPrice}>
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </Text>
-                    </View>
-                  ))}
                 </View>
 
                 <View style={styles.totalRow}>

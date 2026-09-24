@@ -312,7 +312,7 @@ export default function EmployeeOrdersScreen() {
                           </Text>
                           {item.modifications && item.modifications.length > 0 && (
                             <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                              Mods: {item.modifications.map(m => typeof m === 'string' ? m : m.name).join(", ")}
+                              Mods: {item.modifications.map((m: any) => typeof m === 'string' ? m : m.name).join(", ")}
                             </Text>
                           )}
                           {item.notes ? (

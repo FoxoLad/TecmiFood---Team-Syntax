@@ -1489,5 +1489,33 @@
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": []
+  },
+  {
+    "id": "BS-001",
+    "businessId": "BS",
+    "name": "Muffin de Chocolate",
+    "description": "Rico muffin casero",
+    "price": 25,
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103457/ate.png",
+    "status": "active",
+    "category": "Comidas",
+    "modifications": [
+      "Sin azúcar",
+      "Extra chispas"
+    ]
+  },
+  {
+    "id": "BS-002",
+    "businessId": "BS",
+    "name": "Té Helado",
+    "description": "Té negro frío",
+    "price": 30,
+    "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106316/mazapan.png",
+    "status": "active",
+    "category": "Bebidas",
+    "subcategory": "Frio",
+    "modifications": [
+      "Sin hielo"
+    ]
   }
 ]

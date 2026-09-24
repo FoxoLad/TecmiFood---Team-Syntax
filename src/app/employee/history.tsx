@@ -8,10 +8,13 @@ import { colors, employee, radii } from '../../constants/theme';
 import { useOrders } from '../../stores/useOrders';
 import { formatOrderNumber } from '../../types/order';
 
+import { useUserStore } from '../../stores/useUserStore';
+
 type Period = 'Hoy' | 'Semana' | 'Mes' | 'Siempre';
 
 export default function EmployeeHistoryScreen() {
     const orders = useOrders((state) => state.orders);
+    const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
     const [period, setPeriod] = useState<Period>('Hoy');
 
     const aggregatedData = useMemo(() => {
@@ -23,7 +26,14 @@ export default function EmployeeHistoryScreen() {
         startOfWeek.setDate(startOfDay.getDate() - diff);
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-        const deliveredOrders = orders.filter(o => o.status === 'Entregado');
+        const deliveredOrders = orders.filter(o => o.status === 'Entregado').filter((order) => {
+            if (employeeCafeteria === "Busters") {
+              return order.items.some(item => item.productId.startsWith("BT"));
+            } else if (employeeCafeteria === "Bee Sweet") {
+              return order.items.some(item => item.productId.startsWith("BS"));
+            }
+            return true;
+        });
 
         const periodOrders = deliveredOrders.filter(order => {
             const orderDate = new Date(order.createdAt);
@@ -61,7 +71,7 @@ export default function EmployeeHistoryScreen() {
     return (
         <View style={styles.shell}>
             <SafeAreaView edges={['top']} style={styles.shellTop}>
-                <EmployeeHeader backLabel="Órdenes" onBack={() => router.back()} title="Ventas" />
+                <EmployeeHeader backLabel="Órdenes" onBack={() => router.back()} title={`Ventas - ${employeeCafeteria || "General"}`} />
             </SafeAreaView>
             <SafeAreaView edges={['bottom']} style={styles.container}>
 

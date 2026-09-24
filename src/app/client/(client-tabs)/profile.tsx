@@ -15,12 +15,7 @@ import {
 import SafeView from "../../../components/SafeView";
 import { employee, employeeOnDark, radii, type Palette } from "../../../constants/theme";
 import { useColors, useThemeStore } from "../../../stores/useTheme";
-
 import { useUserStore } from "../../../stores/useUserStore";
-
-// NOTE: this value ships inside the app bundle, so it is only a soft gate.
-// Real protection needs the code to be validated by the backend.
-const EMPLOYEE_CODE = "12345";
 
 export default function ProfileScreen() {
   const colors = useColors();
@@ -32,21 +27,31 @@ export default function ProfileScreen() {
   const router = useRouter();
   const clientId = useUserStore((state) => state.clientId);
 
-  // Cast to Href so these compile even if .expo/types/router.d.ts is stale.
-  // Once the route types regenerate you can drop the casts.
   const openActiveOrders = () => router.push("/client/orders?view=active" as Href);
-
   const openOrderHistory = () => router.push("/client/orders?view=history" as Href);
-
   const openFavorites = () => router.push("/client/favorites");
-
   const openSettings = () => router.push("/client/settings" as Href);
 
+  // Hardcoded for now.
+  const BUSTERS_CODE = "BUSTERS123";
+  const BEESWEET_CODE = "BEESWEET123";
+  // Fallback for previous code if needed, mapped to Busters
+  const LEGACY_CODE = "12345";
+
   const accessEmployeeOrders = () => {
-    if (employeeCode.trim() === EMPLOYEE_CODE) {
+    const code = employeeCode.trim().toUpperCase();
+    
+    let cafeteriaId = null;
+    if (code === BUSTERS_CODE || code === LEGACY_CODE) {
+      cafeteriaId = "Busters";
+    } else if (code === BEESWEET_CODE) {
+      cafeteriaId = "Bee Sweet";
+    }
+
+    if (cafeteriaId) {
       setCodeError(false);
-      // Clear the field: this tab stays mounted, so the code would otherwise
-      // still be sitting in the input when the employee returns to the client view.
+      useUserStore.getState().setEmployeeCafeteria(cafeteriaId);
+      // Clear the field
       setEmployeeCode("");
       Keyboard.dismiss();
       router.push("/employee/orders");

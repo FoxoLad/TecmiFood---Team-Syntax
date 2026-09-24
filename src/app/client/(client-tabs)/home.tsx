@@ -101,10 +101,6 @@ export default function HomeScreen() {
   }, []);
 
   const openProduct = useCallback((product: Product) => {
-    if (product.businessId !== "BT") {
-      return;
-    }
-
     router.push({
       pathname: "/client/cafeterias/product/[id]",
       params: { id: product.id },
@@ -157,7 +153,10 @@ export default function HomeScreen() {
         title: "BEE SWEET",
         headerColor: tone.beeSweetHeader,
         cardBgColor: tone.beeSweetCard,
-        data: BEE_SWEET_PRODUCTS,
+        route: "/client/cafeterias/beesweethome",
+        data: allProducts.filter(
+          (product) => product.businessId === "BS" && isProductAvailable(product),
+        ),
       },
     ];
   }, [allProducts, mode]);

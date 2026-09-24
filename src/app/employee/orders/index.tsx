@@ -24,6 +24,7 @@ import {
   useCafeteriaStatus,
 } from "../../../stores/useCafeteriaStatus";
 import { useOrders } from "../../../stores/useOrders";
+import { useUserStore } from "../../../stores/useUserStore";
 import { formatOrderNumber, ORDER_STATUS_LABELS } from "../../../types/order";
 
 const statusStyles: Record<string, { backgroundColor: string; color: string; label: string }> = {
@@ -91,7 +92,18 @@ export default function EmployeeOrdersScreen() {
     setRefreshing(false);
   }, [fetchOrders]);
 
+  const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
+
   const filteredOrders = orders.filter((order) => {
+    // If the employee is logged in to a specific cafeteria, only show orders containing items from that cafeteria.
+    if (employeeCafeteria === "Busters") {
+      const hasBusters = order.items.some(item => item.productId.startsWith("BT"));
+      if (!hasBusters) return false;
+    } else if (employeeCafeteria === "Bee Sweet") {
+      const hasBeeSweet = order.items.some(item => item.productId.startsWith("BS"));
+      if (!hasBeeSweet) return false;
+    }
+
     const query = searchQuery.toLowerCase().trim();
     const matchesName = order.customerName.toLowerCase().includes(query);
     const matchesOrder = String(order.orderNumber).includes(query);
@@ -131,7 +143,7 @@ export default function EmployeeOrdersScreen() {
               <Ionicons color={employee.accent} name="bar-chart-outline" size={24} />
             </Pressable>
           }
-          title="Órdenes"
+          title={employeeCafeteria || "Órdenes"}
         />
       </SafeAreaView>
       <SafeAreaView edges={["bottom"]} style={style.sheet}>

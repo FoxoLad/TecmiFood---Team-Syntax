@@ -7,10 +7,16 @@
     "icon": "./assets/images/icon.png",
     "scheme": "productsapp",
     "userInterfaceStyle": "automatic",
+    "backgroundColor": "#F7F5F0",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.tecmifood.teamsyntax",
+      "supportsTablet": true,
+      "backgroundColor": "#F7F5F0"
     },
     "android": {
+      "package": "com.tecmifood.teamsyntax",
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

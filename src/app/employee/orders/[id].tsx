@@ -1,5 +1,4 @@
 /** Detalle de una orden. El empleado avanza el estado hasta entregarla. */
-import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
@@ -11,8 +10,9 @@ import {
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { EmployeeHeader } from "../../../components/EmployeeHeader";
 import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii } from "../../../constants/theme";
+import { colors, employee, radii } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
 import { formatOrderNumber } from "../../../types/order";
 
@@ -32,17 +32,14 @@ export default function EmployeeOrderDetailsScreen() {
 
   if (!order) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <Ionicons color="#111110" name="chevron-back" size={30} />
-          <Text style={styles.backText}>Volver</Text>
-        </Pressable>
-        <Text style={styles.notFound}>Pedido no encontrado</Text>
-      </SafeAreaView>
+      <View style={styles.shell}>
+        <SafeAreaView edges={["top"]} style={styles.shellTop}>
+          <EmployeeHeader backLabel="Órdenes" onBack={() => router.back()} title="Pedido" />
+        </SafeAreaView>
+        <SafeAreaView edges={["bottom"]} style={styles.container}>
+          <Text style={styles.notFound}>Pedido no encontrado</Text>
+        </SafeAreaView>
+      </View>
     );
   }
 
@@ -80,18 +77,15 @@ export default function EmployeeOrderDetailsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { paddingHorizontal: 14, paddingTop: 14 }]}>
-        <Pressable
-          accessibilityLabel="Volver a la lista de pedidos"
-          accessibilityRole="button"
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <Ionicons color={colors.text} name="chevron-back" size={28} />
-          <Text style={styles.backText}>Pedidos</Text>
-        </Pressable>
-      </View>
+    <View style={styles.shell}>
+      <SafeAreaView edges={["top"]} style={styles.shellTop}>
+        <EmployeeHeader
+          backLabel="Órdenes"
+          onBack={() => router.back()}
+          title={`#${formatOrderNumber(order.orderNumber)}`}
+        />
+      </SafeAreaView>
+      <SafeAreaView edges={["bottom"]} style={styles.container}>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Pedido #{formatOrderNumber(order.orderNumber)}</Text>
@@ -182,14 +176,25 @@ export default function EmployeeOrderDetailsScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  shell: {
+    backgroundColor: employee.background,
+    flex: 1,
+  },
+  shellTop: {
+    backgroundColor: employee.background,
+  },
   container: {
     backgroundColor: colors.background,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     flex: 1,
+    overflow: "hidden",
   },
   content: {
     padding: 14,

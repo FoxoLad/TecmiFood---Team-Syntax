@@ -1,12 +1,16 @@
 /** Detalle de la vista antigua que identifica un producto por su número de orden. */
+import { useMemo } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii } from "../../../constants/theme";
+import { radii, type Palette } from "../../../constants/theme";
+import { useColors } from "../../../stores/useTheme";
 import { useProductStore } from "../../../stores/useProduct";
 
 export default function ProductDetailsScreen() {
+  const colors = useColors();
+  const style = useMemo(() => createStyles(colors), [colors]);
     const { NoOrder } = useLocalSearchParams<{ NoOrder?: string | string[] }>();
     const orderKey = Array.isArray(NoOrder) ? NoOrder[0] : NoOrder;
     const product = useProductStore((state) =>
@@ -63,7 +67,8 @@ export default function ProductDetailsScreen() {
     );
 }
 
-const style = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
@@ -132,4 +137,5 @@ const style = StyleSheet.create({
         textAlign: "center",
         marginTop: 20,
     },
-});
+  });
+}

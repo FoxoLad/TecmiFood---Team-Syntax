@@ -15,8 +15,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { EmployeeHeader } from "../../../components/EmployeeHeader";
 import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii, shadows } from "../../../constants/theme";
+import { colors, employee, radii, shadows } from "../../../constants/theme";
 import {
   isValidTime,
   maskTime,
@@ -115,7 +116,25 @@ export default function EmployeeOrdersScreen() {
   };
 
   return (
-    <SafeAreaView style={style.container}>
+    <View style={style.shell}>
+      <SafeAreaView edges={["top"]} style={style.shellTop}>
+        <EmployeeHeader
+          backLabel="Cliente"
+          onBack={confirmReturnToClient}
+          right={
+            <Pressable
+              accessibilityLabel="Ver ventas"
+              accessibilityRole="button"
+              onPress={() => router.push("/employee/history")}
+              style={style.historyButton}
+            >
+              <Ionicons color={employee.accent} name="bar-chart-outline" size={24} />
+            </Pressable>
+          }
+          title="Órdenes"
+        />
+      </SafeAreaView>
+      <SafeAreaView edges={["bottom"]} style={style.sheet}>
       <ScrollView
         contentContainerStyle={style.listContent}
         showsVerticalScrollIndicator={false}
@@ -123,25 +142,6 @@ export default function EmployeeOrdersScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View style={style.header}>
-          <Pressable
-            accessibilityLabel="Volver al menú del cliente"
-            accessibilityRole="button"
-            hitSlop={12}
-            onPress={confirmReturnToClient}
-            style={style.backButton}
-          >
-            <Ionicons color="#111110" name="chevron-back" size={34} />
-          </Pressable>
-          <Text style={style.screenTitle}>ORDENES</Text>
-          <Pressable
-            style={style.historyButton}
-            onPress={() => router.push("/employee/history")}
-          >
-            <Ionicons name="bar-chart-outline" size={24} color={colors.text} />
-          </Pressable>
-        </View>
-
         <View style={style.statusCard}>
           <View style={style.statusTop}>
             <View
@@ -322,6 +322,7 @@ export default function EmployeeOrdersScreen() {
           })
         )}
       </ScrollView>
+      </SafeAreaView>
 
       <Modal
         animationType="fade"
@@ -349,11 +350,25 @@ export default function EmployeeOrdersScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const style = StyleSheet.create({
+  shell: {
+    backgroundColor: employee.background,
+    flex: 1,
+  },
+  shellTop: {
+    backgroundColor: employee.background,
+  },
+  sheet: {
+    backgroundColor: colors.background,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    flex: 1,
+    overflow: "hidden",
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,

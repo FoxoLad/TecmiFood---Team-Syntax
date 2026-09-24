@@ -1,7 +1,7 @@
 /** Carrito del cliente. Confirma el pedido y lo envía al API de órdenes. */
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -17,7 +17,8 @@ import { FillingCartIcon } from "../../../components/FillingCartIcon";
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { endpoints } from "../../../constants/api";
-import { colors, radii, shadows } from "../../../constants/theme";
+import { radii, shadows, type Palette } from "../../../constants/theme";
+import { useColors } from "../../../stores/useTheme";
 import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
 import { isRealOrder, useOrders } from "../../../stores/useOrders";
 import { useCartStore } from "../../../stores/useCartStore";
@@ -25,6 +26,8 @@ import { useUserStore } from "../../../stores/useUserStore";
 import { clientLabel } from "../../../utils/client";
 
 export default function CartScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore();
   const clientId = useUserStore((state) => state.clientId);
   const rememberOrder = useOrders((state) => state.rememberOrder);
@@ -142,7 +145,7 @@ export default function CartScreen() {
 
   if (items.length === 0) {
     return (
-      <SafeView style={styles.emptyContainer}>
+      <SafeView edges={["top", "left", "right"]} style={styles.emptyContainer}>
         <FillingCartIcon color={colors.accent} fill={colors.accentSoft} size={108} />
         <Text style={styles.emptyTitle}>Tu carrito está vacío</Text>
         <Text style={styles.emptySubtitle}>
@@ -159,7 +162,7 @@ export default function CartScreen() {
   }
 
   return (
-    <SafeView style={styles.container}>
+    <SafeView edges={["top", "left", "right"]} style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <FillingCartIcon color={colors.accent} fill={colors.accentSoft} size={42} />
@@ -298,7 +301,8 @@ export default function CartScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   emptyContainer: {
     flex: 1,
     backgroundColor: colors.background,
@@ -542,4 +546,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
   },
-});
+  });
+}

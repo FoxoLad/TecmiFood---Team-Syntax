@@ -3,8 +3,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import {
+    FlatList,
     Pressable,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -15,14 +15,35 @@ import { CafeteriaStatusBanner } from "../../../components/CafeteriaStatusBanner
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
 import { SearchMascot } from "../../../components/SearchMascot";
-import { colors, radii } from "../../../constants/theme";
+import { radii, type Palette } from "../../../constants/theme";
+import { useColors } from "../../../stores/useTheme";
 import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
 import { useProductStore } from "../../../stores/useProduct";
 import { isProductAvailable, Product } from "../../../types/product";
 
 type QuickFilter = "Comidas" | "Bebidas" | "Otros";
 
+type MenuRow =
+    | { id: string; type: "title"; title: string }
+    | { id: string; type: "pair"; products: Product[] };
+
+function pairProducts(products: Product[], prefix: string): MenuRow[] {
+    const rows: MenuRow[] = [];
+    for (let index = 0; index < products.length; index += 2) {
+        const left = products[index];
+        const right = products[index + 1];
+        rows.push({
+            id: `${prefix}-${left.id}-${right?.id ?? "solo"}`,
+            type: "pair",
+            products: right ? [left, right] : [left],
+        });
+    }
+    return rows;
+}
+
 export default function HomeScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
     const { name } = useLocalSearchParams<{ name: string }>();
     const cafeteriaName = name || "Busters";
     const [search, setSearch] = useState("");
@@ -52,61 +73,51 @@ export default function HomeScreen() {
         );
     }, [bustersProducts, search]);
 
-    const comidas = filteredProducts.filter(p => p.category === "Comidas");
-    const bebidas = filteredProducts.filter(p => p.category === "Bebidas");
-    const otros = filteredProducts.filter(p => p.category === "Otros" || p.category === "Extras y Desechables");
-
-    const renderDirectGrid = (products: Product[]) => {
-        if (products.length === 0) return null;
-        return (
-            <View style={styles.gridContainer}>
-                {products.map(product => (
-                    <Pressable 
-                        key={product.id}
-                        style={styles.gridItem}
-                        onPress={() => router.push({
-                            pathname: "/client/cafeterias/product/[id]",
-                            params: { id: product.id },
-                        })}
-                    >
-                        <ProductImage
-                            contentFit="contain"
-                            image={product.image}
-                            name={product.name}
-                            style={styles.gridImage}
-                        />
-                        <View style={styles.gridContent}>
-                            <Text numberOfLines={2} style={styles.gridName}>{product.name}</Text>
-                            <Text style={styles.gridPrice}>${product.price.toFixed(2)}</Text>
-                        </View>
-                        <View style={styles.plusIcon}>
-                            <Ionicons name="add" size={20} color={colors.text} />
-                        </View>
-                    </Pressable>
-                ))}
-            </View>
+    const menuRows = useMemo(() => {
+        if (search.trim() !== "") {
+            return pairProducts(filteredProducts, "search");
+        }
+        if (selectedFilter === "Bebidas") {
+            const drinks = filteredProducts.filter((product) => product.category === "Bebidas");
+            const subcategories = Array.from(new Set(drinks.map((product) => product.subcategory || "Otros")));
+            return subcategories.flatMap((subcategory) => {
+                const group = drinks.filter((product) => (product.subcategory || "Otros") === subcategory);
+                const title: MenuRow = { id: `title-${subcategory}`, type: "title", title: subcategory };
+                return [title, ...pairProducts(group, subcategory)];
+            });
+        }
+        const source = filteredProducts.filter((product) =>
+            selectedFilter === "Comidas"
+                ? product.category === "Comidas"
+                : product.category === "Otros" || product.category === "Extras y Desechables",
         );
-    };
+        return pairProducts(source, selectedFilter);
+    }, [filteredProducts, search, selectedFilter]);
 
-    const renderBebidasCategories = () => {
-        if (bebidas.length === 0) return null;
-        const subcategories = Array.from(new Set(bebidas.map(p => p.subcategory || "Otros")));
-        
-        return (
-            <View>
-                {subcategories.map(sub => {
-                    const subProducts = bebidas.filter(p => (p.subcategory || "Otros") === sub);
-                    if (subProducts.length === 0) return null;
-                    return (
-                        <View key={sub}>
-                            <Text style={styles.subcategoryTitle}>{sub}</Text>
-                            {renderDirectGrid(subProducts)}
-                        </View>
-                    );
-                })}
+    const renderProduct = (product: Product) => (
+        <Pressable
+            key={product.id}
+            onPress={() => router.push({
+                pathname: "/client/cafeterias/product/[id]",
+                params: { id: product.id },
+            })}
+            style={styles.gridItem}
+        >
+            <ProductImage
+                contentFit="contain"
+                image={product.image}
+                name={product.name}
+                style={styles.gridImage}
+            />
+            <View style={styles.gridContent}>
+                <Text numberOfLines={2} style={styles.gridName}>{product.name}</Text>
+                <Text style={styles.gridPrice}>${product.price.toFixed(2)}</Text>
             </View>
-        );
-    };
+            <View style={styles.plusIcon}>
+                <Ionicons color={colors.text} name="add" size={20} />
+            </View>
+        </Pressable>
+    );
 
     return (
         <SafeView style={styles.container}>
@@ -120,10 +131,8 @@ export default function HomeScreen() {
                     <Ionicons name="chevron-back" size={26} color={colors.text} />
                 </Pressable>
                 <Text style={styles.title}>{cafeteriaName}</Text>
-                <View style={styles.backButton} />
+                <CafeteriaStatusBanner />
             </View>
-
-            <CafeteriaStatusBanner contained />
 
             <View style={styles.searchContainer}>
                 <Ionicons name="search-outline" size={22} color={colors.textSecondary} />
@@ -169,26 +178,31 @@ export default function HomeScreen() {
                 </Pressable>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuContainer}>
-                {search.trim() !== "" ? (
-                    renderDirectGrid(filteredProducts)
-                ) : (
-                    <>
-                        {selectedFilter === "Comidas" && renderDirectGrid(comidas)}
-                        {selectedFilter === "Bebidas" && renderBebidasCategories()}
-                        {selectedFilter === "Otros" && renderDirectGrid(otros)}
-                    </>
-                )}
-                
-                {filteredProducts.length === 0 && (
-                    <Text style={styles.emptyText}>No se encontraron productos.</Text>
-                )}
-            </ScrollView>
+            <FlatList
+                contentContainerStyle={styles.menuContainer}
+                data={menuRows}
+                initialNumToRender={8}
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="handled"
+                keyExtractor={(item) => item.id}
+                ListEmptyComponent={<Text style={styles.emptyText}>No se encontraron productos.</Text>}
+                maxToRenderPerBatch={8}
+                renderItem={({ item }) =>
+                    item.type === "title" ? (
+                        <Text style={styles.subcategoryTitle}>{item.title}</Text>
+                    ) : (
+                        <View style={styles.gridContainer}>{item.products.map(renderProduct)}</View>
+                    )
+                }
+                showsVerticalScrollIndicator={false}
+                windowSize={7}
+            />
         </SafeView>
     );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, paddingHorizontal: 16 },
     topBar: { alignItems: "center", flexDirection: "row", marginBottom: 16, marginTop: 4 },
     backButton: { alignItems: "center", height: 44, justifyContent: "center", width: 44 },
@@ -205,7 +219,7 @@ const styles = StyleSheet.create({
     menuContainer: { paddingBottom: 24 },
     
     // Grid Styles (Uber Eats style)
-    gridContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 4, marginBottom: 20 },
+    gridContainer: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 4 },
     gridItem: { 
         width: "48%", 
         backgroundColor: colors.surface, 
@@ -241,4 +255,5 @@ const styles = StyleSheet.create({
     subcategoryTitle: { fontSize: 22, fontWeight: "bold", color: colors.text, marginVertical: 16, marginLeft: 4 },
     
     emptyText: { color: "#555555", fontSize: 18, textAlign: "center", marginTop: 20 },
-});
+  });
+}

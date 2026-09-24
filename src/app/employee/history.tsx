@@ -1,10 +1,10 @@
 /** Resumen de ventas del empleado a partir de los pedidos ya entregados. */
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors, radii } from '../../constants/theme';
+import { EmployeeHeader } from '../../components/EmployeeHeader';
+import { colors, employee, radii } from '../../constants/theme';
 import { useOrders } from '../../stores/useOrders';
 import { formatOrderNumber } from '../../types/order';
 
@@ -59,19 +59,11 @@ export default function EmployeeHistoryScreen() {
     }, [orders, period]);
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Pressable
-                    accessibilityLabel='Volver'
-                    accessibilityRole='button'
-                    onPress={() => router.back()}
-                    style={styles.backButton}
-                >
-                    <Ionicons color='#111110' name='chevron-back' size={30} />
-                    <Text style={styles.backText}>Volver</Text>
-                </Pressable>
-                <Text style={styles.title}>Ventas</Text>
-            </View>
+        <View style={styles.shell}>
+            <SafeAreaView edges={['top']} style={styles.shellTop}>
+                <EmployeeHeader backLabel="Órdenes" onBack={() => router.back()} title="Ventas" />
+            </SafeAreaView>
+            <SafeAreaView edges={['bottom']} style={styles.container}>
 
             <View style={styles.tabsContainer}>
                 {(['Hoy', 'Semana', 'Mes', 'Siempre'] as Period[]).map((p) => (
@@ -135,12 +127,15 @@ export default function EmployeeHistoryScreen() {
                     )}
                 </View>
             </ScrollView>
-        </SafeAreaView>
+            </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
+    shell: { backgroundColor: employee.background, flex: 1 },
+    shellTop: { backgroundColor: employee.background },
+    container: { backgroundColor: colors.background, borderTopLeftRadius: 28, borderTopRightRadius: 28, flex: 1, overflow: 'hidden' },
     header: { alignItems: 'center', borderBottomColor: colors.border, borderBottomWidth: 1, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 15 },
     backButton: { alignItems: 'center', flexDirection: 'row', zIndex: 2 },
     backText: { fontSize: 18, fontWeight: '600', marginLeft: 5 },

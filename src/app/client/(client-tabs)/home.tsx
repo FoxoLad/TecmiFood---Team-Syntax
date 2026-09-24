@@ -3,21 +3,22 @@
  */
 import { useProductStore } from "../../../stores/useProduct";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { router, useFocusEffect, type Href } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
-    Image,
     NativeScrollEvent,
     NativeSyntheticEvent,
     Pressable,
     ScrollView,
-    StatusBar,
     StyleSheet,
     Text,
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
+import { cafeteriaOptionColors, type Palette } from "../../../constants/theme";
+import { useColors, useThemeStore } from "../../../stores/useTheme";
 import { ProductImage } from "../../../components/ProductImage";
 import { useOrders } from "../../../stores/useOrders";
 import { useUserStore } from "../../../stores/useUserStore";
@@ -65,6 +66,9 @@ const BEE_SWEET_PRODUCTS: Product[] = [
 ];
 
 export default function HomeScreen() {
+  const colors = useColors();
+  const mode = useThemeStore((state) => state.mode);
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const allProducts = useProductStore((state) => state.products as Product[]);
   const isLoading = useProductStore((state) => state.isLoading);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
@@ -135,35 +139,31 @@ export default function HomeScreen() {
     }
   }, [visibleProducts]);
 
-  const cafeteriaSections = useMemo<CafeteriaSection[]>(() => [
-    {
-      businessId: "BT",
-      title: "BUSTERS",
-      headerColor: "#8F651A",
-      cardBgColor: "#8F651A",
-      route: "/client/cafeterias/bustershome",
-      data: allProducts.filter(
-        (product) => product.businessId === "BT" && isProductAvailable(product),
-      ),
-    },
-    {
-      businessId: "BS",
-      title: "BEE SWEET",
-      headerColor: "#d4af37",
-      cardBgColor: "#e2bf43",
-      data: BEE_SWEET_PRODUCTS,
-    },
-  ], [allProducts]);
+  const cafeteriaSections = useMemo<CafeteriaSection[]>(() => {
+    const tone = cafeteriaOptionColors[mode];
+    return [
+      {
+        businessId: "BT",
+        title: "BUSTERS",
+        headerColor: tone.bustersHeader,
+        cardBgColor: tone.bustersCard,
+        route: "/client/cafeterias/bustershome",
+        data: allProducts.filter(
+          (product) => product.businessId === "BT" && isProductAvailable(product),
+        ),
+      },
+      {
+        businessId: "BS",
+        title: "BEE SWEET",
+        headerColor: tone.beeSweetHeader,
+        cardBgColor: tone.beeSweetCard,
+        data: BEE_SWEET_PRODUCTS,
+      },
+    ];
+  }, [allProducts, mode]);
 
   return (
-    <SafeView style={styles.safeArea}>
-      {/*Barra de notificaciones*/}
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="transparent"
-        translucent={true}
-      />
-
+    <SafeView edges={["top", "left", "right"]} style={styles.safeArea}>
       {/*Contenedor Principal*/}
       <ScrollView
         contentContainerStyle={styles.content}
@@ -171,6 +171,7 @@ export default function HomeScreen() {
       >
         <View style={styles.heroHeader}>
           <View>
+            <Text style={styles.modeLabel}>VISTA CLIENTE</Text>
             <Text style={styles.kicker}>ORDENA A TU MANERA</Text>
             <Text style={styles.mainTitle}>Cafeterías</Text>
             <Text style={styles.subtitle}>Tu antojo, a un toque de distancia.</Text>
@@ -183,9 +184,10 @@ export default function HomeScreen() {
         {/*Banner Promocional*/}
         <View style={styles.bannerContainer}>
           <Image
+            cachePolicy="memory-disk"
+            contentFit="cover"
             source={BANNERS[activeBanner]}
             style={styles.bannerImage}
-            resizeMode="cover"
           />
           <View style={styles.bannerShade} />
           <View style={styles.bannerCaption}>
@@ -213,7 +215,7 @@ export default function HomeScreen() {
             onPress={() => router.push("/client/favorites")}
             style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
           >
-            <Ionicons name="heart-outline" size={21} color="#8F651A" />
+            <Ionicons name="heart-outline" size={21} color={colors.accent} />
             <Text style={styles.actionButtonText}>Favoritos</Text>
           </Pressable>
           <Pressable
@@ -222,7 +224,7 @@ export default function HomeScreen() {
             onPress={() => router.push("/client/orders")}
             style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
           >
-            <Ionicons name="document-text-outline" size={21} color="#8F651A" />
+            <Ionicons name="document-text-outline" size={21} color={colors.accent} />
             <Text style={styles.actionButtonText}>Pedidos</Text>
           </Pressable>
           <Pressable
@@ -231,7 +233,7 @@ export default function HomeScreen() {
             onPress={() => router.push("/client/orders?view=history")}
             style={({ pressed }) => [styles.actionButton, pressed && styles.actionButtonPressed]}
           >
-            <Ionicons name="time-outline" size={21} color="#8F651A" />
+            <Ionicons name="time-outline" size={21} color={colors.accent} />
             <Text style={styles.actionButtonText}>Historial</Text>
           </Pressable>
         </View>
@@ -265,7 +267,7 @@ export default function HomeScreen() {
         {/*Mensaje de cargando mientras conecta con MongoDB*/}
         {isLoading ? (
           <View style={styles.loadingState}>
-            <ActivityIndicator size="large" color="#8F651A" />
+            <ActivityIndicator size="large" color={colors.accent} />
             <Text style={styles.loadingText}>Cargando menú...</Text>
           </View>
         ) : (
@@ -366,9 +368,10 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   safeArea: {
-    backgroundColor: "#F7F5F0",
+    backgroundColor: colors.background,
     flex: 1,
   },
   content: {
@@ -381,26 +384,32 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     paddingTop: 12,
   },
+  modeLabel: {
+    color: colors.accent,
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 1.4,
+  },
   kicker: {
-    color: "#8F651A",
+    color: colors.accent,
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.4,
   },
   mainTitle: {
-    color: "#000000",
+    color: colors.text,
     fontSize: 36,
     fontWeight: "900",
     marginTop: 2,
   },
   subtitle: {
-    color: "#6A6965",
+    color: colors.textSecondary,
     fontSize: 14,
     marginTop: 2,
   },
   headerIcon: {
     alignItems: "center",
-    backgroundColor: "#8F651A",
+    backgroundColor: colors.accent,
     borderRadius: 18,
     height: 48,
     justifyContent: "center",
@@ -412,7 +421,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 20,
     overflow: "hidden",
-    backgroundColor: "#DDD5C5",
+    backgroundColor: colors.surfaceMuted,
   },
   bannerImage: {
     height: "100%",
@@ -466,8 +475,8 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderColor: "#E7E2D8",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderRadius: 16,
     borderWidth: 1,
     elevation: 2,
@@ -483,17 +492,17 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   actionButtonPressed: {
-    backgroundColor: "#EEE9DE",
+    backgroundColor: colors.surfaceMuted,
     transform: [{ scale: 0.97 }],
   },
   actionButtonText: {
-    color: "#000000",
+    color: colors.text,
     fontSize: 13,
     fontWeight: "600",
   },
   activeOrderBanner: {
     alignItems: "center",
-    backgroundColor: "#8F651A",
+    backgroundColor: colors.accent,
     borderRadius: 16,
     flexDirection: "row",
     gap: 12,
@@ -659,4 +668,5 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
   },
-});
+  });
+}

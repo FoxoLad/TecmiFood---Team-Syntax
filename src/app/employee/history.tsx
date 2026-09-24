@@ -10,14 +10,15 @@ import { formatOrderNumber } from '../../types/order';
 
 import { useUserStore } from '../../stores/useUserStore';
 
-type Period = 'Hoy' | 'Semana' | 'Mes' | 'Siempre';
+type Period = 'Hoy' | 'Semana' | 'Mes' | 'Meses';
 
 export default function EmployeeHistoryScreen() {
     const orders = useOrders((state) => state.orders);
     const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
     const [period, setPeriod] = useState<Period>('Hoy');
+    const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
-    const aggregatedData = useMemo(() => {
+    const { products, grandTotal, count, periodOrders, availableMonths } = useMemo(() => {
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const startOfWeek = new Date(startOfDay);
@@ -35,13 +36,23 @@ export default function EmployeeHistoryScreen() {
             return true;
         });
 
+        const monthsSet = new Set<string>();
+        deliveredOrders.forEach(o => {
+           monthsSet.add(new Date(o.createdAt).toISOString().substring(0, 7));
+        });
+        const availableMonths = Array.from(monthsSet).sort().reverse();
+
         const periodOrders = deliveredOrders.filter(order => {
             const orderDate = new Date(order.createdAt);
             switch (period) {
                 case 'Hoy': return orderDate >= startOfDay;
                 case 'Semana': return orderDate >= startOfWeek;
                 case 'Mes': return orderDate >= startOfMonth;
-                case 'Siempre': return true;
+                case 'Meses': 
+                    if (selectedMonth) {
+                        return orderDate.toISOString().substring(0, 7) === selectedMonth;
+                    }
+                    return false;
                 default: return true;
             }
         });
@@ -67,22 +78,34 @@ export default function EmployeeHistoryScreen() {
             name, ...data
         })).sort((a, b) => b.total - a.total);
 
-        return { products, grandTotal, count: periodOrders.length, periodOrders };
-    }, [orders, period]);
+        return { products, grandTotal, count: periodOrders.length, periodOrders, availableMonths };
+    }, [orders, period, selectedMonth, employeeCafeteria]);
+
+    const formatMonth = (m: string) => {
+        const [y, mth] = m.split('-');
+        const date = new Date(parseInt(y), parseInt(mth) - 1, 1);
+        return date.toLocaleString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+    };
 
     return (
         <View style={styles.shell}>
             <SafeAreaView edges={['top']} style={styles.shellTop}>
-                <EmployeeHeader backLabel="Órdenes" onBack={() => router.back()} title={`Ventas - ${employeeCafeteria || "General"}`} />
+                <EmployeeHeader backLabel="Órdenes" onBack={() => {
+                    if (period === 'Meses' && selectedMonth) {
+                        setSelectedMonth(null);
+                    } else {
+                        router.back();
+                    }
+                }} title={period === 'Meses' && selectedMonth ? `Ventas - ${formatMonth(selectedMonth)}` : `Ventas - ${employeeCafeteria || "General"}`} />
             </SafeAreaView>
             <SafeAreaView edges={['bottom']} style={styles.container}>
 
             <View style={styles.tabsContainer}>
-                {(['Hoy', 'Semana', 'Mes', 'Siempre'] as Period[]).map((p) => (
+                {(['Hoy', 'Semana', 'Mes', 'Meses'] as Period[]).map((p) => (
                     <Pressable
                         key={p}
                         style={[styles.tab, period === p && styles.activeTab]}
-                        onPress={() => setPeriod(p as Period)}
+                        onPress={() => { setPeriod(p as Period); if (p !== 'Meses') setSelectedMonth(null); }}
                     >
                         <Text style={[styles.tabText, period === p && styles.activeTabText]}>{p}</Text>
                     </Pressable>
@@ -90,10 +113,25 @@ export default function EmployeeHistoryScreen() {
             </View>
 
             <ScrollView contentContainerStyle={styles.content}>
+                {period === 'Meses' && !selectedMonth ? (
+                    <View style={styles.monthsList}>
+                        <Text style={styles.monthsTitle}>Selecciona un mes</Text>
+                        {availableMonths.length === 0 ? (
+                            <Text style={styles.emptyText}>No hay historial de ventas anterior.</Text>
+                        ) : (
+                            availableMonths.map(m => (
+                                <Pressable key={m} style={styles.monthCard} onPress={() => setSelectedMonth(m)}>
+                                    <Text style={styles.monthText}>{formatMonth(m)}</Text>
+                                </Pressable>
+                            ))
+                        )}
+                    </View>
+                ) : (
+                <>
                 <View style={styles.summaryCard}>
-                    <Text style={styles.summaryLabel}>Total Vendido ({period})</Text>
-                    <Text style={styles.summaryTotal}>${aggregatedData.grandTotal.toFixed(2)}</Text>
-                    <Text style={styles.summaryOrders}>{aggregatedData.count} pedidos entregados</Text>
+                    <Text style={styles.summaryLabel}>Total Vendido ({period === 'Meses' ? formatMonth(selectedMonth!) : period})</Text>
+                    <Text style={styles.summaryTotal}>${grandTotal.toFixed(2)}</Text>
+                    <Text style={styles.summaryOrders}>{count} pedidos entregados</Text>
                 </View>
 
                 <View style={styles.table}>
@@ -103,10 +141,10 @@ export default function EmployeeHistoryScreen() {
                         <Text style={[styles.th, { flex: 1, textAlign: 'right' }]}>Total</Text>
                     </View>
                     
-                    {aggregatedData.products.length === 0 ? (
+                    {products.length === 0 ? (
                         <Text style={styles.emptyText}>No hay ventas en este periodo.</Text>
                     ) : (
-                        aggregatedData.products.map((p, idx) => (
+                        products.map((p, idx) => (
                             <View key={idx} style={styles.tableRow}>
                                 <Text style={[styles.td, { flex: 2 }]} numberOfLines={2}>{p.name}</Text>
                                 <Text style={[styles.td, { flex: 1, textAlign: 'center' }]}>{p.qty}</Text>
@@ -119,29 +157,32 @@ export default function EmployeeHistoryScreen() {
                 </View>
 
                 <View style={styles.recentOrdersContainer}>
-                    <Text style={styles.sectionTitle}>Pedidos de {period}</Text>
-                    {aggregatedData.periodOrders.length === 0 ? (
-                        <Text style={styles.emptyText}>Ningún pedido para mostrar.</Text>
+                    <Text style={styles.recentOrdersTitle}>Pedidos de {period === 'Meses' ? formatMonth(selectedMonth!) : period}</Text>
+                    {periodOrders.length === 0 ? (
+                        <Text style={styles.emptyOrdersText}>Ningún pedido para mostrar.</Text>
                     ) : (
-                        aggregatedData.periodOrders.map(order => (
+                        periodOrders.map(order => (
                             <Pressable 
-                                key={order._id} 
-                                style={styles.orderCard}
-                                onPress={() => router.push(`/employee/orders/${order.orderNumber}`)}
+                                key={order.orderNumber} 
+                                style={styles.recentOrderCard}
+                                onPress={() => router.push({
+                                    pathname: '/employee/orders/[id]',
+                                    params: { id: order.orderNumber }
+                                })}
                             >
-                                <View style={styles.orderCardHeader}>
-                                    <Text style={styles.orderNumber}>#{formatOrderNumber(order.orderNumber)}</Text>
-                                    {(() => {
-  const prefix = employeeCafeteria === 'Busters' ? 'BT' : 'BS';
-  const cafeteriaTotal = order.items.filter(item => item.productId?.startsWith(prefix)).reduce((acc, i) => acc + i.price * i.quantity, 0);
-  return <Text style={styles.orderTotal}>${cafeteriaTotal.toFixed(2)}</Text>;
-})()}
+                                <View style={styles.recentOrderHeader}>
+                                    <Text style={styles.recentOrderNumber}>#{formatOrderNumber(order.orderNumber)}</Text>
+                                    <Text style={styles.recentOrderDate}>
+                                        {new Date(order.createdAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+                                    </Text>
                                 </View>
-                                <Text style={styles.orderDate}>{new Date(order.createdAt).toLocaleString("es-MX")}</Text>
+                                <Text style={styles.recentOrderCustomer}>{order.customerName}</Text>
                             </Pressable>
                         ))
                     )}
                 </View>
+                </>
+                )}
             </ScrollView>
             </SafeAreaView>
         </View>
@@ -151,32 +192,161 @@ export default function EmployeeHistoryScreen() {
 const styles = StyleSheet.create({
     shell: { backgroundColor: employee.background, flex: 1 },
     shellTop: { backgroundColor: employee.background },
-    container: { backgroundColor: colors.background, borderTopLeftRadius: 28, borderTopRightRadius: 28, flex: 1, overflow: 'hidden' },
-    header: { alignItems: 'center', borderBottomColor: colors.border, borderBottomWidth: 1, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 15 },
-    backButton: { alignItems: 'center', flexDirection: 'row', zIndex: 2 },
-    backText: { fontSize: 18, fontWeight: '600', marginLeft: 5 },
-    title: { fontSize: 22, fontWeight: 'bold', position: 'absolute', left: 0, right: 0, textAlign: 'center', zIndex: 1 },
-    tabsContainer: { flexDirection: 'row', backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.border },
-    tab: { flex: 1, paddingVertical: 14, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: 'transparent' },
-    activeTab: { borderBottomColor: colors.accent },
-    tabText: { fontSize: 14, color: colors.textSecondary, fontWeight: '600' },
-    activeTabText: { color: colors.accent, fontWeight: 'bold' },
-    content: { padding: 16 },
-    summaryCard: { backgroundColor: colors.accent, borderRadius: radii.large, padding: 24, alignItems: 'center', marginBottom: 20 },
-    summaryLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 16, marginBottom: 8 },
-    summaryTotal: { color: '#ffffff', fontSize: 36, fontWeight: 'bold', marginBottom: 4 },
-    summaryOrders: { color: 'rgba(255,255,255,0.9)', fontSize: 14 },
-    table: { backgroundColor: colors.surface, borderRadius: radii.large, padding: 16, borderWidth: 1, borderColor: colors.border },
-    tableHeader: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: 10, marginBottom: 10 },
-    th: { fontSize: 14, fontWeight: 'bold', color: colors.textSecondary },
-    tableRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-    td: { fontSize: 15, color: colors.text },
-    emptyText: { textAlign: 'center', color: colors.textSecondary, marginTop: 20, marginBottom: 10 },
-    recentOrdersContainer: { marginTop: 24 },
-    sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12, color: colors.text },
-    orderCard: { backgroundColor: colors.surface, padding: 16, borderRadius: radii.medium, marginBottom: 10, borderWidth: 1, borderColor: colors.border },
-    orderCardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
-    orderNumber: { fontSize: 16, fontWeight: 'bold' },
-    orderTotal: { fontSize: 16, fontWeight: 'bold', color: colors.accent },
-    orderDate: { fontSize: 13, color: colors.textSecondary }
+    container: {
+        backgroundColor: '#FAFAFA',
+        borderTopLeftRadius: radii.large,
+        borderTopRightRadius: radii.large,
+        flex: 1,
+    },
+    tabsContainer: {
+        flexDirection: 'row',
+        paddingHorizontal: 16,
+        paddingTop: 16,
+        paddingBottom: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
+    },
+    tab: {
+        flex: 1,
+        paddingVertical: 10,
+        alignItems: 'center',
+        borderBottomWidth: 2,
+        borderBottomColor: 'transparent',
+    },
+    activeTab: {
+        borderBottomColor: employee.accent,
+    },
+    tabText: {
+        fontSize: 14,
+        color: colors.textSecondary,
+        fontWeight: '500',
+    },
+    activeTabText: {
+        color: employee.accent,
+        fontWeight: 'bold',
+    },
+    content: {
+        padding: 16,
+    },
+    summaryCard: {
+        backgroundColor: employee.accent,
+        borderRadius: radii.medium,
+        padding: 24,
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+    summaryLabel: {
+        color: 'rgba(255,255,255,0.8)',
+        fontSize: 14,
+        marginBottom: 8,
+    },
+    summaryTotal: {
+        color: '#FFFFFF',
+        fontSize: 36,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    summaryOrders: {
+        color: '#FFFFFF',
+        fontSize: 14,
+    },
+    table: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: radii.medium,
+        padding: 16,
+        marginBottom: 24,
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    tableHeader: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
+        paddingBottom: 12,
+        marginBottom: 12,
+    },
+    th: {
+        fontSize: 12,
+        color: colors.textSecondary,
+        fontWeight: 'bold',
+    },
+    tableRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 8,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: colors.border,
+    },
+    td: {
+        fontSize: 14,
+        color: colors.text,
+    },
+    emptyText: {
+        textAlign: 'center',
+        color: colors.textSecondary,
+        paddingVertical: 24,
+    },
+    recentOrdersContainer: {
+        marginTop: 8,
+    },
+    recentOrdersTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: colors.text,
+        marginBottom: 16,
+    },
+    recentOrderCard: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: radii.medium,
+        padding: 16,
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    recentOrderHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 8,
+    },
+    recentOrderNumber: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: colors.text,
+    },
+    recentOrderDate: {
+        fontSize: 14,
+        color: colors.textSecondary,
+    },
+    recentOrderCustomer: {
+        fontSize: 14,
+        color: colors.textSecondary,
+    },
+    emptyOrdersText: {
+        textAlign: 'center',
+        color: colors.textSecondary,
+        marginTop: 16,
+    },
+    monthsList: {
+        marginTop: 16,
+    },
+    monthsTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16,
+        color: colors.text,
+    },
+    monthCard: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        borderRadius: 12,
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: colors.border,
+        alignItems: 'center',
+    },
+    monthText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: employee.accent,
+    },
 });

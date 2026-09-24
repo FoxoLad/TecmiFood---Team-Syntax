@@ -165,14 +165,7 @@ export default function BustersProductScreen() {
                 </Pressable>
 
                 <View style={styles.headerActions}>
-                    <Pressable
-                        accessibilityLabel="Compartir producto"
-                        accessibilityRole="button"
-                        onPress={shareProduct}
-                        style={styles.iconButton}
-                    >
-                        <Ionicons name="share-outline" size={25} color={colors.text} />
-                    </Pressable>
+                    
                     <Pressable
                         accessibilityLabel={isFavorite ? "Quitar de favoritos" : "Guardar como favorito"}
                         accessibilityRole="button"

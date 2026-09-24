@@ -25,6 +25,7 @@ export default function InventoryScreen() {
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   
   const [localProducts, setLocalProducts] = useState<Product[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -67,15 +68,25 @@ export default function InventoryScreen() {
         />
       </SafeAreaView>
       <SafeAreaView edges={["bottom"]} style={styles.container}>
+        
         <View style={styles.headerRow}>
            <Text style={styles.subtitle}>Gestión de Existencias</Text>
         </View>
+        <View style={{ paddingHorizontal: 24, paddingBottom: 12 }}>
+           <TextInput
+              style={{ backgroundColor: '#F0F0F0', borderRadius: 12, padding: 12, fontSize: 16 }}
+              placeholder="Buscar producto..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+           />
+        </View>
+
         
         {localProducts.length === 0 ? (
            <ActivityIndicator style={{ marginTop: 40 }} color={employee.accent} size="large" />
         ) : (
            <FlatList
-             data={localProducts}
+             data={localProducts.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name))}
              keyExtractor={p => p.id}
              contentContainerStyle={styles.list}
              renderItem={({ item }) => (

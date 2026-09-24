@@ -55,7 +55,7 @@ export default function ProductFormScreen() {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
@@ -160,6 +160,11 @@ export default function ProductFormScreen() {
             </View>
 
             <View style={styles.field}>
+              <Text style={styles.label}>URL de la Imagen (opcional)</Text>
+              <TextInput style={styles.input} value={image} onChangeText={setImage} placeholder="https://..." />
+            </View>
+
+            <View style={styles.field}>
               <Text style={styles.label}>Nombre</Text>
               <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Ej. Hamburguesa doble" />
             </View>
@@ -171,19 +176,31 @@ export default function ProductFormScreen() {
 
             <View style={styles.field}>
               <Text style={styles.label}>Precio</Text>
-              <TextInput style={styles.input} value={price} onChangeText={setPrice} placeholder="0.00" keyboardType="numeric" />
+              <TextInput style={styles.input} value={price} onChangeText={setPrice} onBlur={() => { if (price && !price.includes('.')) setPrice(price + '.00'); }} placeholder="0.00" keyboardType="numeric" />
             </View>
 
-            <View style={styles.row}>
-              <View style={[styles.field, { flex: 1, marginRight: 8 }]}>
-                <Text style={styles.label}>Categoría</Text>
-                <TextInput style={styles.input} value={category} onChangeText={setCategory} placeholder="Ej. Comidas" />
-              </View>
-              <View style={[styles.field, { flex: 1, marginLeft: 8 }]}>
-                <Text style={styles.label}>Subcategoría</Text>
-                <TextInput style={styles.input} value={subcategory} onChangeText={setSubcategory} placeholder="Ej. Frías" />
+            
+            <View style={styles.field}>
+              <Text style={styles.label}>Categoría</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {["Comidas", "Bebidas", "Postres", "Snacks", "Promociones"].map(cat => (
+                  <Pressable 
+                    key={cat} 
+                    onPress={() => setCategory(cat)}
+                    style={[styles.categoryChip, category === cat && styles.categoryChipActive]}
+                  >
+                    <Text style={[styles.categoryChipText, category === cat && styles.categoryChipTextActive]}>{cat}</Text>
+                  </Pressable>
+                ))}
               </View>
             </View>
+
+            {category === "Bebidas" && (
+              <View style={styles.field}>
+                <Text style={styles.label}>Subcategoría (ej: Frías, Calientes)</Text>
+                <TextInput style={styles.input} value={subcategory} onChangeText={setSubcategory} placeholder="Ej. Frías" />
+              </View>
+            )}
 
             <Pressable 
               style={[styles.saveButton, isSaving && { opacity: 0.7 }]} 
@@ -206,6 +223,27 @@ export default function ProductFormScreen() {
 }
 
 const styles = StyleSheet.create({
+
+  categoryChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: '#EEEEEE',
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  categoryChipActive: {
+    backgroundColor: employee.accent + '20',
+    borderColor: employee.accent,
+  },
+  categoryChipText: {
+    color: colors.textSecondary,
+    fontWeight: '600',
+  },
+  categoryChipTextActive: {
+    color: employee.accent,
+  },
+
   shell: { backgroundColor: employee.background, flex: 1 },
   shellTop: { backgroundColor: employee.background },
   container: {

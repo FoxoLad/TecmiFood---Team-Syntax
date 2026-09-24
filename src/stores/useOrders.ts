@@ -63,6 +63,20 @@ export const useOrders = create<OrderStore>((set, get) => ({
       orders: [order, ...state.orders.filter((current) => current._id !== order._id)],
     }));
   },
+  
+  deleteOrder: async (orderNumber) => {
+    const previous = get().orders;
+    set({ orders: previous.filter(o => o.orderNumber !== orderNumber) });
+    try {
+      const res = await fetch(`${endpoints.orders}/${orderNumber}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("No se pudo eliminar en la nube");
+    } catch (error) {
+      console.error(error);
+      set({ orders: previous });
+    }
+  },
   updateOrderStatus: async (orderNumber, status) => {
     const previous = get().orders;
     // El cambio se ve de inmediato; si el servidor lo rechaza, se restaura la lista.

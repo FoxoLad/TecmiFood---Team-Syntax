@@ -128,6 +128,7 @@ export default function EmployeeOrdersScreen() {
   });
 
   const updateOrderStatus = useOrders((state) => state.updateOrderStatus);
+  const deleteOrder = useOrders((state) => state.deleteOrder);
   const confirmReturnToClient = () => {
     setShowReturnConfirmation(true);
   };
@@ -307,8 +308,8 @@ export default function EmployeeOrdersScreen() {
                   {order.status === "Cancelado" && (
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.7)', zIndex: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 24 }}>
                        <Text style={{ color: '#CC0A0A', fontSize: 24, fontWeight: 'bold', backgroundColor: '#FFE5E5', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12, overflow: 'hidden' }}>CANCELADO</Text>
-                       <Pressable onPress={(e) => { e.stopPropagation(); updateOrderStatus(order.orderNumber, "Cancelado_Oculto"); }} style={{ marginTop: 16, backgroundColor: '#333', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20 }}>
-                          <Text style={{ color: '#FFF', fontWeight: '600' }}>Ocultar</Text>
+                       <Pressable onPress={(e) => { e.stopPropagation(); deleteOrder(order.orderNumber); }} style={{ marginTop: 16, backgroundColor: '#333', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20 }}>
+                          <Text style={{ color: "#FFF", fontWeight: "600" }}>Eliminar</Text>
                        </Pressable>
                     </View>
                   )}

@@ -10,7 +10,7 @@ import { formatOrderNumber } from '../../types/order';
 
 import { useUserStore } from '../../stores/useUserStore';
 
-type Period = 'Hoy' | 'Semana' | 'Mes' | 'Meses';
+type Period = 'Hoy' | 'Semana' | 'Mes' | 'Histórico';
 
 export default function EmployeeHistoryScreen() {
     const orders = useOrders((state) => state.orders);
@@ -48,7 +48,7 @@ export default function EmployeeHistoryScreen() {
                 case 'Hoy': return orderDate >= startOfDay;
                 case 'Semana': return orderDate >= startOfWeek;
                 case 'Mes': return orderDate >= startOfMonth;
-                case 'Meses': 
+                case 'Histórico': 
                     if (selectedMonth) {
                         return orderDate.toISOString().substring(0, 7) === selectedMonth;
                     }
@@ -90,22 +90,22 @@ export default function EmployeeHistoryScreen() {
     return (
         <View style={styles.shell}>
             <SafeAreaView edges={['top']} style={styles.shellTop}>
-                <EmployeeHeader backLabel="Órdenes" onBack={() => {
-                    if (period === 'Meses' && selectedMonth) {
+                <EmployeeHeader backLabel={period === "Histórico" && selectedMonth ? "Histórico" : "Órdenes"} onBack={() => {
+                    if (period === 'Histórico' && selectedMonth) {
                         setSelectedMonth(null);
                     } else {
                         router.back();
                     }
-                }} title={period === 'Meses' && selectedMonth ? `Ventas - ${formatMonth(selectedMonth)}` : `Ventas - ${employeeCafeteria || "General"}`} />
+                }} title={period === 'Histórico' && selectedMonth ? `Ventas - ${formatMonth(selectedMonth)}` : `Ventas - ${employeeCafeteria || "General"}`} />
             </SafeAreaView>
             <SafeAreaView edges={['bottom']} style={styles.container}>
 
             <View style={styles.tabsContainer}>
-                {(['Hoy', 'Semana', 'Mes', 'Meses'] as Period[]).map((p) => (
+                {(['Hoy', 'Semana', 'Mes', 'Histórico'] as Period[]).map((p) => (
                     <Pressable
                         key={p}
                         style={[styles.tab, period === p && styles.activeTab]}
-                        onPress={() => { setPeriod(p as Period); if (p !== 'Meses') setSelectedMonth(null); }}
+                        onPress={() => { setPeriod(p as Period); if (p !== 'Histórico') setSelectedMonth(null); }}
                     >
                         <Text style={[styles.tabText, period === p && styles.activeTabText]}>{p}</Text>
                     </Pressable>
@@ -113,7 +113,7 @@ export default function EmployeeHistoryScreen() {
             </View>
 
             <ScrollView contentContainerStyle={styles.content}>
-                {period === 'Meses' && !selectedMonth ? (
+                {period === 'Histórico' && !selectedMonth ? (
                     <View style={styles.monthsList}>
                         <Text style={styles.monthsTitle}>Selecciona un mes</Text>
                         {availableMonths.length === 0 ? (
@@ -129,7 +129,7 @@ export default function EmployeeHistoryScreen() {
                 ) : (
                 <>
                 <View style={styles.summaryCard}>
-                    <Text style={styles.summaryLabel}>Total Vendido ({period === 'Meses' ? formatMonth(selectedMonth!) : period})</Text>
+                    <Text style={styles.summaryLabel}>Total Vendido ({period === 'Histórico' ? formatMonth(selectedMonth!) : period})</Text>
                     <Text style={styles.summaryTotal}>${grandTotal.toFixed(2)}</Text>
                     <Text style={styles.summaryOrders}>{count} pedidos entregados</Text>
                 </View>
@@ -157,7 +157,7 @@ export default function EmployeeHistoryScreen() {
                 </View>
 
                 <View style={styles.recentOrdersContainer}>
-                    <Text style={styles.recentOrdersTitle}>Pedidos de {period === 'Meses' ? formatMonth(selectedMonth!) : period}</Text>
+                    <Text style={styles.recentOrdersTitle}>Pedidos de {period === 'Histórico' ? formatMonth(selectedMonth!) : period}</Text>
                     {periodOrders.length === 0 ? (
                         <Text style={styles.emptyOrdersText}>Ningún pedido para mostrar.</Text>
                     ) : (

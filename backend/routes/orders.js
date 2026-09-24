@@ -139,4 +139,16 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
+
+// Eliminar un pedido
+router.delete("/:orderNumber", async (req, res) => {
+  try {
+    const order = await Order.findOneAndDelete({ orderNumber: req.params.orderNumber });
+    if (!order) return res.status(404).json({ error: "Pedido no encontrado" });
+    res.json({ message: "Pedido eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al eliminar el pedido" });
+  }
+});
+
 module.exports = router;

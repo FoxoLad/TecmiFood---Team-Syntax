@@ -28,6 +28,7 @@ interface OrderStore {
   fetchOrders: () => Promise<void>;
   rememberOrder: (order: RealOrder) => void;
   updateOrderStatus: (orderNumber: number, status: string) => Promise<void>;
+  deleteOrder: (orderNumber: number) => Promise<void>;
 }
 
 export function isRealOrder(value: unknown): value is RealOrder {
@@ -64,7 +65,7 @@ export const useOrders = create<OrderStore>((set, get) => ({
     }));
   },
   
-  deleteOrder: async (orderNumber) => {
+  deleteOrder: async (orderNumber: number) => {
     const previous = get().orders;
     set({ orders: previous.filter(o => o.orderNumber !== orderNumber) });
     try {

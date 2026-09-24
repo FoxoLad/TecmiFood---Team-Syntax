@@ -32,7 +32,7 @@ export default function PreparingOrderScreen() {
           <Pressable
             accessibilityLabel="Cerrar ventana"
             accessibilityRole="button"
-            onPress={() => router.back()}
+            onPress={() => router.replace("/client/(client-tabs)/home")}
             style={styles.closeButton}
           >
             <Ionicons color={colors.textSecondary} name="close" size={24} />

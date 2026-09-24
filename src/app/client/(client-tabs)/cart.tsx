@@ -146,13 +146,13 @@ export default function CartScreen() {
       
       fetchOrders();
       if (isRealOrder(result)) {
-        router.replace({
+        router.push({
           pathname: "/client/preparing",
           params: { id: result._id || String(result.orderNumber) },
         });
         return;
       }
-      router.replace("/client/preparing");
+      router.push("/client/preparing");
     } catch (error) {
       console.error("Error al enviar orden:", error);
       Alert.alert(

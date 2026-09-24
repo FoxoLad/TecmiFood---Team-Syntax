@@ -27,7 +27,7 @@ export function isProductAvailable(product: Pick<Product, "inStock" | "status">)
 export function modificationLabels(product: Pick<Product, "modifications" | "category">) {
   const custom = product.modifications;
 
-  if (Array.isArray(custom) && custom.length > 0) {
+  if (Array.isArray(custom)) {
     return custom.map((modification) =>
       typeof modification === "string" ? modification : modification.name,
     );

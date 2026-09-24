@@ -129,7 +129,11 @@ export default function EmployeeHistoryScreen() {
                             >
                                 <View style={styles.orderCardHeader}>
                                     <Text style={styles.orderNumber}>#{formatOrderNumber(order.orderNumber)}</Text>
-                                    <Text style={styles.orderTotal}>${order.totalAmount.toFixed(2)}</Text>
+                                    {(() => {
+  const prefix = employeeCafeteria === 'Busters' ? 'BT' : 'BS';
+  const cafeteriaTotal = order.items.filter(item => item.productId.startsWith(prefix)).reduce((acc, i) => acc + i.price * i.quantity, 0);
+  return <Text style={styles.orderTotal}>${cafeteriaTotal.toFixed(2)}</Text>;
+})()}
                                 </View>
                                 <Text style={styles.orderDate}>{new Date(order.createdAt).toLocaleString("es-MX")}</Text>
                             </Pressable>

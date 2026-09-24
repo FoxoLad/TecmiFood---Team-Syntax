@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { EmployeeHeader } from "../../../components/EmployeeHeader";
 import { ProductImage } from "../../../components/ProductImage";
+import { useUserStore } from "../../../stores/useUserStore";
 import { colors, employee, radii } from "../../../constants/theme";
 import { useOrders } from "../../../stores/useOrders";
 import { formatOrderNumber } from "../../../types/order";
@@ -106,7 +107,12 @@ export default function EmployeeOrderDetailsScreen() {
           </Text>
         </View>
 
-        {order.items.map((product, idx) => (
+        {order.items.filter(item => {
+    const isBusters = item.productId.startsWith('BT');
+    const isBeeSweet = item.productId.startsWith('BS');
+    const isEmployeeBusters = useUserStore.getState().user?.employeeCafeteria === 'Busters';
+    return (isBusters && isEmployeeBusters) || (isBeeSweet && !isEmployeeBusters);
+  }).map((product, idx) => (
           <View key={`${product.productId}-${idx}`} style={styles.productCard}>
             <ProductImage
               contentFit="contain"

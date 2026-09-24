@@ -1,7 +1,8 @@
 /** Punto de estado en Busters. El horario y el tiempo restante salen al tocarlo. */
-import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View, Text } from "react-native";
 import { colors } from "../constants/theme";
 import { useCafeteriaStatus } from "../stores/useCafeteriaStatus";
+import { useColors } from "../stores/useTheme";
 
 function minutesUntilClose(closesAt: string) {
   const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(closesAt);
@@ -39,6 +40,7 @@ export function CafeteriaStatusBanner() {
   const isOpen = useCafeteriaStatus((state) => state.isOpen);
   const opensAt = useCafeteriaStatus((state) => state.opensAt);
   const closesAt = useCafeteriaStatus((state) => state.closesAt);
+  const themeColors = useColors();
 
   const showSchedule = () => {
     Alert.alert(
@@ -56,6 +58,7 @@ export function CafeteriaStatusBanner() {
       style={styles.hit}
     >
       <View style={[styles.dot, { backgroundColor: isOpen ? colors.success : colors.danger }]} />
+      <Text style={[styles.text, { color: themeColors.text }]}>{isOpen ? "Abierta" : "Cerrada"}</Text>
     </Pressable>
   );
 }
@@ -65,11 +68,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 44,
     justifyContent: "center",
-    width: 44,
+    flexDirection: "row",
+    gap: 6,
   },
   dot: {
     borderRadius: 8,
-    height: 16,
-    width: 16,
+    height: 12,
+    width: 12,
   },
+  text: {
+    fontSize: 14,
+    fontWeight: "600",
+  }
 });

@@ -33,13 +33,13 @@ export default function ProfileScreen() {
   const openSettings = () => router.push("/client/settings" as Href);
 
   // Hardcoded for now.
-  const BUSTERS_CODE = "BUSTERS123";
-  const BEESWEET_CODE = "BEESWEET123";
+  const BUSTERS_CODE = "11111";
+  const BEESWEET_CODE = "22222";
   // Fallback for previous code if needed, mapped to Busters
   const LEGACY_CODE = "12345";
 
   const accessEmployeeOrders = () => {
-    const code = employeeCode.trim().toUpperCase();
+    const code = employeeCode.trim();
     
     let cafeteriaId = null;
     if (code === BUSTERS_CODE || code === LEGACY_CODE) {

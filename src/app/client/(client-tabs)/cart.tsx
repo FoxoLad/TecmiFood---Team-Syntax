@@ -254,7 +254,9 @@ export default function CartScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       >
-        {bustersItems.length > 0 && (
+        {bustersItems.length > 0 && (() => {
+          const subtotal = bustersItems.reduce((acc, i) => acc + i.product.price * i.quantity, 0);
+          return (
           <View style={[styles.cafeteriaGroup, { backgroundColor: tone.bustersCard }]}>
             <View style={styles.cafeteriaGroupHeader}>
               <Text style={styles.cafeteriaGroupTitle}>BUSTERS</Text>
@@ -267,12 +269,14 @@ export default function CartScreen() {
               style={styles.orderOnlyButton}
               onPress={() => openConfirmModal("busters")}
             >
-              <Text style={styles.orderOnlyButtonText}>Ordenar solo Busters</Text>
+              <Text style={styles.orderOnlyButtonText}>Ordenar solo Busters | ${subtotal.toFixed(2)}</Text>
             </Pressable>
           </View>
-        )}
+        ); })()}
 
-        {beeSweetItems.length > 0 && (
+        {beeSweetItems.length > 0 && (() => {
+          const subtotal = beeSweetItems.reduce((acc, i) => acc + i.product.price * i.quantity, 0);
+          return (
           <View style={[styles.cafeteriaGroup, { backgroundColor: tone.beeSweetCard }]}>
             <View style={styles.cafeteriaGroupHeader}>
               <Text style={styles.cafeteriaGroupTitle}>BEE SWEET</Text>
@@ -285,10 +289,10 @@ export default function CartScreen() {
               style={styles.orderOnlyButton}
               onPress={() => openConfirmModal("beesweet")}
             >
-              <Text style={styles.orderOnlyButtonText}>Ordenar solo Bee Sweet</Text>
+              <Text style={styles.orderOnlyButtonText}>Ordenar solo Bee Sweet | ${subtotal.toFixed(2)}</Text>
             </Pressable>
           </View>
-        )}
+        ); })()}
       </ScrollView>
 
       <View style={styles.footer}>

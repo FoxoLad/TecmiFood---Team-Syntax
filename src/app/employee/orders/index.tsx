@@ -272,6 +272,10 @@ export default function EmployeeOrdersScreen() {
           </View>
         ) : (
           filteredOrders.map((order) => {
+            const prefix = employeeCafeteria === 'Busters' ? 'BT' : 'BS';
+            const cafeteriaItems = order.items.filter(item => item.productId.startsWith(prefix));
+            const cafeteriaTotal = cafeteriaItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
+            
             const status = statusStyles[order.status] || { backgroundColor: "#ccc", color: "#000", label: order.status };
 
             return (
@@ -293,7 +297,7 @@ export default function EmployeeOrdersScreen() {
                   </Text>
 
                   <View style={style.itemsList}>
-                    {order.items.map((item, index) => (
+                    {cafeteriaItems.map((item, index) => (
                       <View key={`${item.productId}-${index}`} style={style.itemRow}>
                         <ProductImage
                           contentFit="cover"
@@ -308,7 +312,7 @@ export default function EmployeeOrdersScreen() {
                           </Text>
                           {item.modifications && item.modifications.length > 0 && (
                             <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                              Mods: {item.modifications.join(", ")}
+                              Mods: {item.modifications.map(m => typeof m === 'string' ? m : m.name).join(", ")}
                             </Text>
                           )}
                           {item.notes ? (
@@ -326,7 +330,7 @@ export default function EmployeeOrdersScreen() {
 
                   <View style={style.totalRow}>
                     <Text style={style.totalLabel}>Total</Text>
-                    <Text style={style.totalValue}>${order.totalAmount.toFixed(2)}</Text>
+                    <Text style={style.totalValue}>${cafeteriaTotal.toFixed(2)}</Text>
                   </View>
                 </View>
               </Pressable>

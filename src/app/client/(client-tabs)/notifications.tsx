@@ -28,6 +28,8 @@ export default function NotificationsScreen() {
   const clientId = useUserStore((state) => state.clientId);
   const notificationsClearedAt = useUserStore((state) => state.notificationsClearedAt);
   const clearNotifications = useUserStore((state) => state.clearNotifications);
+  const deleteNotification = useUserStore((state) => state.deleteNotification);
+  const deletedNotificationIds = useUserStore((state) => state.deletedNotificationIds);
   const orders = useOrders((state) => state.orders);
   const fetchOrders = useOrders((state) => state.fetchOrders);
 
@@ -41,7 +43,8 @@ export default function NotificationsScreen() {
     .filter(
       (order) =>
         isClientOrder(order.customerName, clientId) &&
-        isAlertVisible(order.updatedAt, notificationsClearedAt),
+        isAlertVisible(order.updatedAt, notificationsClearedAt) &&
+        !deletedNotificationIds.includes(order._id),
     )
     .map((order) => ({
       id: order._id,
@@ -109,6 +112,12 @@ export default function NotificationsScreen() {
                 <Text style={styles.notificationBody}>{item.body}</Text>
                 <Text style={styles.notificationDate}>{item.date}</Text>
               </View>
+              <Pressable
+                style={{ padding: 10 }}
+                onPress={() => deleteNotification(item.id)}
+              >
+                <Ionicons name="close" size={20} color={colors.textSecondary} />
+              </Pressable>
             </Pressable>
           )}
         />

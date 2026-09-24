@@ -13,6 +13,7 @@ import {
     Text,
     TextInput,
     View,
+    Animated,
 } from "react-native";
 
 import SafeView from "../../../../components/SafeView";
@@ -65,6 +66,18 @@ export default function BustersProductScreen() {
         state.items.reduce((acc, i) => acc + i.quantity, 0)
     );
 
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const fadeAnim = useState(new Animated.Value(0))[0];
+
+    const showToast = (msg: string) => {
+        setToastMessage(msg);
+        Animated.sequence([
+            Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+            Animated.delay(2000),
+            Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true })
+        ]).start(() => setToastMessage(null));
+    };
+
     const handleConfirmOrder = () => {
         if (!product) return;
         if (!useCafeteriaStatus.getState().isOpen) {
@@ -72,28 +85,15 @@ export default function BustersProductScreen() {
             Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
             return;
         }
-        if (currentCartTotal >= 8) {
-            setModalType(null);
-            Alert.alert("Carrito lleno", "Puedes pedir máximo 8 productos.");
-            return;
-        }
+
+        const res = addItemToCart(product, 1, selectedModifications, additionalNotes);
         
-        // Also check if this specific product is already maxed at 3 (if same mods/notes)
-        const cartItem = useCartStore.getState().items.find(
-            i => i.product.id === product.id && 
-            JSON.stringify(i.modifications) === JSON.stringify(selectedModifications) && 
-            i.notes === additionalNotes
-        );
-        if (cartItem && cartItem.quantity >= 3) {
-            setModalType(null);
-            Alert.alert(
-                "Límite del producto",
-                "No puedes pedir más de 3 veces el mismo producto con las mismas modificaciones.",
-            );
+        setModalType(null);
+        if (!res.success) {
+            showToast(res.reason === "product_limit" ? "Límite de 3 por producto alcanzado." : "Límite de 8 productos en total alcanzado.");
             return;
         }
 
-        addItemToCart(product, 1, selectedModifications, additionalNotes);
         setModalType("success");
     };
 
@@ -332,6 +332,12 @@ export default function BustersProductScreen() {
                     </View>
                 </View>
             </Modal>
+
+            {toastMessage && (
+                <Animated.View style={[styles.toastContainer, { opacity: fadeAnim }]}>
+                    <Text style={styles.toastText}>{toastMessage}</Text>
+                </Animated.View>
+            )}
         </SafeView>
     );
 }
@@ -540,6 +546,25 @@ const styles = StyleSheet.create({
         color: "#555555",
         fontSize: 18,
         marginTop: 40,
+        textAlign: "center",
+    },
+    toastContainer: {
+        position: "absolute",
+        top: "50%",
+        left: "10%",
+        right: "10%",
+        backgroundColor: "rgba(0,0,0,0.75)",
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: radii.large,
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+    },
+    toastText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "600",
         textAlign: "center",
     },
 });

@@ -11,6 +11,7 @@ import {
     Text,
     View,
     Modal,
+    Animated,
 } from "react-native";
 import { FillingCartIcon } from "../../../components/FillingCartIcon";
 import SafeView from "../../../components/SafeView";
@@ -41,6 +42,25 @@ export default function CartScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmCountdown, setConfirmCountdown] = useState(2);
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const fadeAnim = useState(new Animated.Value(0))[0];
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    Animated.sequence([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.delay(2000),
+      Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true })
+    ]).start(() => setToastMessage(null));
+  };
+
+  const handleUpdateQuantity = (cartItemId: string, delta: number) => {
+    const res = updateQuantity(cartItemId, delta);
+    if (!res.success) {
+      showToast(res.reason === "product_limit" ? "Límite de 3 por producto alcanzado." : "Límite de 8 productos en total alcanzado.");
+    }
+  };
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -188,14 +208,14 @@ export default function CartScreen() {
 
             <View style={styles.quantityControl}>
               <Pressable
-                onPress={() => updateQuantity(item.cartItemId, -1)}
+                onPress={() => handleUpdateQuantity(item.cartItemId, -1)}
                 style={styles.quantityBtn}
               >
                 <Ionicons name="remove" size={18} color={colors.text} />
               </Pressable>
               <Text style={styles.quantityText}>{item.quantity}</Text>
               <Pressable
-                onPress={() => updateQuantity(item.cartItemId, 1)}
+                onPress={() => handleUpdateQuantity(item.cartItemId, 1)}
                 style={styles.quantityBtn}
               >
                 <Ionicons name="add" size={18} color={colors.text} />
@@ -268,6 +288,12 @@ export default function CartScreen() {
           </View>
         </View>
       </Modal>
+
+      {toastMessage && (
+        <Animated.View style={[styles.toastContainer, { opacity: fadeAnim }]}>
+          <Text style={styles.toastText}>{toastMessage}</Text>
+        </Animated.View>
+      )}
     </SafeView>
   );
 }
@@ -496,5 +522,24 @@ const styles = StyleSheet.create({
   modalButtonConfirmText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  toastContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "10%",
+    right: "10%",
+    backgroundColor: "rgba(0,0,0,0.75)",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: radii.large,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+  },
+  toastText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

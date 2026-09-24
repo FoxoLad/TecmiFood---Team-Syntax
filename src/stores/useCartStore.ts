@@ -11,6 +11,11 @@ export type CartItem = {
   notes: string;
 };
 
+export type CartActionResponse = {
+  success: boolean;
+  reason?: "product_limit" | "total_limit";
+};
+
 type CartStore = {
   items: CartItem[];
   addItem: (
@@ -18,8 +23,8 @@ type CartStore = {
     quantity: number,
     modifications: string[],
     notes: string,
-  ) => void;
-  updateQuantity: (cartItemId: string, delta: number) => void;
+  ) => CartActionResponse;
+  updateQuantity: (cartItemId: string, delta: number) => CartActionResponse;
   removeItem: (cartItemId: string) => void;
   clearCart: () => void;
   getTotal: () => number;
@@ -28,18 +33,35 @@ type CartStore = {
 export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
   addItem: (product, quantity, modifications, notes) => {
+    let response: CartActionResponse = { success: true };
     set((state) => {
-      const safeQuantity = Math.min(3, quantity);
-      if (safeQuantity < 1) {
-        return state;
-      }
+      if (quantity < 1) return state;
 
       const currentTotal = state.items.reduce((acc, item) => acc + item.quantity, 0);
-      if (currentTotal + safeQuantity > 8) {
+      if (currentTotal >= 8) {
+        response = { success: false, reason: "total_limit" };
         return state;
       }
 
-      // Find if an identical item exists (same product, same mods, same notes)
+      const existingProductCount = state.items
+        .filter(i => i.product.id === product.id)
+        .reduce((sum, i) => sum + i.quantity, 0);
+
+      if (existingProductCount >= 3) {
+        response = { success: false, reason: "product_limit" };
+        return state;
+      }
+
+      const spaceLeftForProduct = 3 - existingProductCount;
+      const spaceLeftTotal = 8 - currentTotal;
+      const safeQuantity = Math.min(quantity, spaceLeftForProduct, spaceLeftTotal);
+
+      if (safeQuantity < quantity) {
+        response = { success: false, reason: spaceLeftForProduct <= spaceLeftTotal ? "product_limit" : "total_limit" };
+        if (safeQuantity === 0) return state;
+      }
+
+      // Find if an identical item exists
       const existingItemIndex = state.items.findIndex(
         (i) =>
           i.product.id === product.id &&
@@ -48,14 +70,8 @@ export const useCartStore = create<CartStore>((set, get) => ({
       );
 
       if (existingItemIndex >= 0) {
-        const existingItem = state.items[existingItemIndex];
-        const nextQuantity = Math.min(3, existingItem.quantity + safeQuantity);
-        if (nextQuantity === existingItem.quantity) {
-          return state;
-        }
-
         const newItems = state.items.map((item, index) =>
-          index === existingItemIndex ? { ...item, quantity: nextQuantity } : item,
+          index === existingItemIndex ? { ...item, quantity: item.quantity + safeQuantity } : item,
         );
         return { items: newItems };
       }
@@ -68,28 +84,50 @@ export const useCartStore = create<CartStore>((set, get) => ({
         ],
       };
     });
+    return response;
   },
   updateQuantity: (cartItemId: string, delta: number) => {
+    let response: CartActionResponse = { success: true };
     set((state) => {
+      const targetItem = state.items.find(i => i.cartItemId === cartItemId);
+      if (!targetItem) return state;
+
+      if (delta < 0) {
+        const newItems = state.items.map((item) => {
+          if (item.cartItemId === cartItemId) {
+            return { ...item, quantity: item.quantity + delta };
+          }
+          return item;
+        }).filter((item) => item.quantity > 0);
+        return { items: newItems };
+      }
+
+      // Delta > 0 (Adding)
+      const currentTotal = state.items.reduce((acc, item) => acc + item.quantity, 0);
+      if (currentTotal >= 8) {
+        response = { success: false, reason: "total_limit" };
+        return state;
+      }
+
+      const existingProductCount = state.items
+        .filter(i => i.product.id === targetItem.product.id)
+        .reduce((sum, i) => sum + i.quantity, 0);
+
+      if (existingProductCount >= 3) {
+        response = { success: false, reason: "product_limit" };
+        return state;
+      }
+
       const newItems = state.items.map((item) => {
         if (item.cartItemId === cartItemId) {
-          let newQuantity = item.quantity + delta;
-          // Check limits: max 3 per item
-          if (newQuantity > 3) newQuantity = 3;
-          
-          return { ...item, quantity: newQuantity };
+          return { ...item, quantity: item.quantity + 1 };
         }
         return item;
-      }).filter((item) => item.quantity > 0); // Removing if quantity becomes 0
+      });
 
-      // Enforce total max 8
-      const newTotal = newItems.reduce((acc, i) => acc + i.quantity, 0);
-      if (newTotal > 8 && delta > 0) {
-        return state; // Cancel the change if it exceeds global 8
-      }
-      
       return { items: newItems };
     });
+    return response;
   },
   removeItem: (cartItemId) => {
     set((state) => ({

@@ -23,7 +23,15 @@ import {
   useCafeteriaStatus,
 } from "../../../stores/useCafeteriaStatus";
 import { useOrders } from "../../../stores/useOrders";
-import { formatOrderNumber } from "../../../types/order";
+import { formatOrderNumber, ORDER_STATUS_LABELS } from "../../../types/order";
+
+const statusStyles: Record<string, { backgroundColor: string; color: string; label: string }> = {
+  "Pendiente": { backgroundColor: colors.accentSoft, color: colors.accent, label: ORDER_STATUS_LABELS["Pendiente"] },
+  "En preparación": { backgroundColor: "#E5F1FF", color: "#0A5FCC", label: ORDER_STATUS_LABELS["En preparación"] },
+  "Terminado": { backgroundColor: "#E3F6E8", color: "#15803d", label: ORDER_STATUS_LABELS["Terminado"] },
+  "Entregado": { backgroundColor: colors.surfaceMuted, color: colors.textSecondary, label: ORDER_STATUS_LABELS["Entregado"] },
+  "Cancelado": { backgroundColor: "#FFE5E5", color: "#CC0A0A", label: ORDER_STATUS_LABELS["Cancelado"] },
+};
 
 export default function EmployeeOrdersScreen() {
   const { orders, isLoading, fetchOrders } = useOrders();
@@ -252,125 +260,64 @@ export default function EmployeeOrdersScreen() {
           </View>
         ) : (
           filteredOrders.map((order) => {
-            const orderNumber = order.orderNumber;
-            const total = order.totalAmount;
-            const isDeliveredView = order.status === "Entregado";
-            const displayStatus = order.status;
+            const status = statusStyles[order.status] || { backgroundColor: "#ccc", color: "#000", label: order.status };
 
             return (
-              <View
-                key={order._id || orderNumber}
-                style={[
-                  style.orderCard,
-                  isDeliveredView && style.deliveredOrderCard,
-                ]}
+              <Pressable
+                key={order._id || order.orderNumber}
+                onPress={() => router.push(`/employee/orders/${order.orderNumber}`)}
               >
-                <View
-                  style={[
-                    style.orderHeader,
-                    isDeliveredView && style.deliveredOrderHeader,
-                  ]}
-                >
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={[
-                      style.orderNumber,
-                      isDeliveredView && style.deliveredOrderNumber,
-                    ]}
-                  >
-                    #{formatOrderNumber(orderNumber)} -{" "}
-                    {order.customerName}
-                  </Text>
-                  <Text
-                    style={[
-                      style.status,
-                      isDeliveredView && style.deliveredStatusText,
-                    ]}
-                  >
-                    Estado:{" "}
-                    <Text
-                      style={[
-                        style.statusValue,
-                        isDeliveredView && style.deliveredStatus,
-                      ]}
-                    >
-                      {displayStatus}
+                <View style={[style.orderCard, { padding: 16 }]}>
+                  <View style={[style.orderHeader, { borderBottomWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}>
+                    <Text style={style.orderNumber} numberOfLines={1} ellipsizeMode="tail">
+                      #{formatOrderNumber(order.orderNumber)} - {order.customerName}
                     </Text>
+                    <View style={[style.statusPill, { backgroundColor: status.backgroundColor }]}>
+                      <Text style={[style.statusText, { color: status.color }]}>{status.label}</Text>
+                    </View>
+                  </View>
+                  <Text style={style.orderDate}>
+                    {new Date(order.createdAt).toLocaleString("es-MX")}
                   </Text>
-                </View>
 
-                {order.items.map((product, idx) => (
-                  <Pressable
-                    accessibilityLabel={`Ver detalles de la orden ${orderNumber}`}
-                    accessibilityRole="button"
-                    key={`${product.productId}-${idx}`}
-                    onPress={() =>
-                      router.push(`/employee/orders/${orderNumber}`)
-                    }
-                    style={[
-                      style.productRow,
-                      isDeliveredView && style.deliveredProductRow,
-                    ]}
-                  >
-                    <ProductImage
-                      contentFit="cover"
-                      image={product.image}
-                      name={product.name}
-                      style={[
-                        style.productActions,
-                        isDeliveredView && style.deliveredProductActions,
-                      ]}
-                    />
-                    <View style={style.productDetails}>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        <Text
-                          style={[
-                            style.productName,
-                            isDeliveredView && style.deliveredProductName,
-                            { flex: 1 }
-                          ]}
-                        >
-                          {product.quantity}x {product.name}
-                        </Text>
-                        <Text style={[style.productName, isDeliveredView && style.deliveredProductName, { fontWeight: "bold" }]}>
-                          ${(product.price * product.quantity).toFixed(2)}
+                  <View style={style.itemsList}>
+                    {order.items.map((item, index) => (
+                      <View key={`${item.productId}-${index}`} style={style.itemRow}>
+                        <ProductImage
+                          contentFit="cover"
+                          image={item.image}
+                          name={item.name}
+                          style={style.itemImage}
+                        />
+                        <Text style={style.itemQuantity}>{item.quantity}×</Text>
+                        <View style={{ flex: 1, paddingRight: 8 }}>
+                          <Text numberOfLines={2} style={style.itemName}>
+                            {item.name}
+                          </Text>
+                          {item.modifications && item.modifications.length > 0 && (
+                            <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
+                              Mods: {item.modifications.join(", ")}
+                            </Text>
+                          )}
+                          {item.notes ? (
+                            <Text style={{ fontSize: 12, color: colors.textSecondary, fontStyle: "italic", marginTop: 2 }}>
+                              Nota: {item.notes}
+                            </Text>
+                          ) : null}
+                        </View>
+                        <Text style={style.itemPrice}>
+                          ${(item.price * item.quantity).toFixed(2)}
                         </Text>
                       </View>
-                      {product.modifications &&
-                        product.modifications.length > 0 && (
-                          <Text style={style.productName} numberOfLines={1}>
-                            Mods: {product.modifications.join(", ")}
-                          </Text>
-                        )}
-                    </View>
-                  </Pressable>
-                ))}
+                    ))}
+                  </View>
 
-                <View
-                  style={[
-                    style.totalContainer,
-                    isDeliveredView && style.deliveredTotalContainer,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      style.totalText,
-                      isDeliveredView && style.deliveredTotalText,
-                    ]}
-                  >
-                    Total:
-                  </Text>
-                  <Text
-                    style={[
-                      style.totalAmount,
-                      isDeliveredView && style.deliveredTotalAmount,
-                    ]}
-                  >
-                    ${total.toFixed(2)}
-                  </Text>
+                  <View style={style.totalRow}>
+                    <Text style={style.totalLabel}>Total</Text>
+                    <Text style={style.totalValue}>${order.totalAmount.toFixed(2)}</Text>
+                  </View>
                 </View>
-              </View>
+              </Pressable>
             );
           })
         )}
@@ -767,5 +714,70 @@ const style = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 8,
+  },
+  statusPill: {
+    borderRadius: radii.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "800",
+  },
+  orderDate: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  itemsList: {
+    borderColor: colors.border,
+    borderTopWidth: 1,
+    gap: 8,
+    marginTop: 12,
+    paddingTop: 12,
+  },
+  itemRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  itemImage: {
+    borderRadius: 10,
+    height: 40,
+    width: 40,
+  },
+  itemQuantity: {
+    color: colors.accent,
+    fontSize: 14,
+    fontWeight: "800",
+    minWidth: 26,
+  },
+  itemName: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  itemPrice: {
+    color: colors.textSecondary,
+    fontSize: 14,
+  },
+  totalRow: {
+    alignItems: "center",
+    borderColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12,
+    paddingTop: 12,
+  },
+  totalLabel: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  totalValue: {
+    color: colors.accent,
+    fontSize: 20,
+    fontWeight: "900",
   },
 });

@@ -44,7 +44,7 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
     }
 
     try {
-      const res = await fetch(endpoints.products);
+      const res = await fetch(endpoints.products + "?admin=true");
       if (!res.ok) {
         throw new Error(`Error HTTP ${res.status}`);
       }

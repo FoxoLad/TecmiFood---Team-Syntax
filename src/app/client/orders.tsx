@@ -59,6 +59,7 @@ export default function ClientOrdersScreen() {
   const setView = (nextView: OrdersView) => setViewState({ source: paramView, view: nextView });
   const orders = useOrders((state) => state.orders);
   const fetchOrders = useOrders((state) => state.fetchOrders);
+  const updateOrderStatus = useOrders((state) => state.updateOrderStatus);
   const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
   const clientId = useUserStore((state) => state.clientId);
   const addItemToCart = useCartStore((state) => state.addItem);
@@ -81,6 +82,25 @@ export default function ClientOrdersScreen() {
 
   const displayOrders = view === "active" ? active : history;
   const emptyState = emptyStates[view];
+
+  
+  const handleCancel = (order: RealOrder) => {
+    Alert.alert(
+      "Cancelar pedido",
+      "¿Estás seguro de que deseas cancelar este pedido?",
+      [
+        { text: "No", style: "cancel" },
+        { 
+          text: "Sí, cancelar", 
+          style: "destructive", 
+          onPress: async () => {
+             await updateOrderStatus(order.orderNumber, "Cancelado");
+             fetchOrders();
+          }
+        }
+      ]
+    );
+  };
 
   const handleReorder = (order: RealOrder) => {
     if (!useCafeteriaStatus.getState().isOpen) {
@@ -212,8 +232,8 @@ export default function ClientOrdersScreen() {
 
                 <View style={styles.itemsList}>
                   {(() => {
-                    const bustersItems = order.items.filter(item => item.productId.startsWith('BT'));
-                    const beeSweetItems = order.items.filter(item => item.productId.startsWith('BS'));
+                    const bustersItems = order.items.filter(item => item.productId?.startsWith('BT'));
+                    const beeSweetItems = order.items.filter(item => item.productId?.startsWith('BS'));
                     
                     const renderItem = (item: any, index: number) => (
                       <View key={`${item.productId}-${index}`} style={styles.itemRow}>
@@ -272,6 +292,11 @@ export default function ClientOrdersScreen() {
                   <Text style={styles.totalLabel}>Total</Text>
                   <Text style={styles.totalValue}>${order.totalAmount.toFixed(2)}</Text>
                 </View>
+                {view === "active" && (order.status === "Nuevo pedido" || order.status === "Pendiente") && (
+                   <Pressable onPress={() => handleCancel(order)} style={{ marginTop: 12, backgroundColor: '#FFE5E5', padding: 12, borderRadius: 8, alignItems: 'center' }}>
+                       <Text style={{ color: '#CC0A0A', fontWeight: 'bold' }}>Cancelar pedido</Text>
+                   </Pressable>
+                )}
               </View>
             );
           }}

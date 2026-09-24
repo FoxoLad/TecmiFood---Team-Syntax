@@ -49,20 +49,7 @@ export default function SettingsScreen() {
             value={shownMode === "dark"}
           />
         </View>
-        <View style={styles.divider} />
-        <View style={styles.row}>
-          <View style={styles.copy}>
-            <Text style={styles.rowTitle}>Animación del tema</Text>
-            <Text style={styles.rowHint}>El círculo se abre desde el centro.</Text>
-          </View>
-          <Switch
-            accessibilityLabel="Animar el cambio de tema"
-            onValueChange={setAnimate}
-            thumbColor="#FFFFFF"
-            trackColor={{ false: colors.border, true: colors.accent }}
-            value={animate}
-          />
-        </View>
+        
       </View>
 
       <Text style={styles.section}>GENERAL</Text>

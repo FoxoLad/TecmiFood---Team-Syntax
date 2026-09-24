@@ -28,9 +28,9 @@ export default function EmployeeHistoryScreen() {
 
         const deliveredOrders = orders.filter(o => o.status === 'Entregado').filter((order) => {
             if (employeeCafeteria === "Busters") {
-              return order.items.some(item => item.productId.startsWith("BT"));
+              return order.items.some(item => item.productId?.startsWith("BT"));
             } else if (employeeCafeteria === "Bee Sweet") {
-              return order.items.some(item => item.productId.startsWith("BS"));
+              return order.items.some(item => item.productId?.startsWith("BS"));
             }
             return true;
         });
@@ -52,7 +52,7 @@ export default function EmployeeHistoryScreen() {
         periodOrders.forEach(order => {
             order.items.forEach(item => {
                 const prefix = employeeCafeteria === 'Busters' ? 'BT' : 'BS';
-                if (!item.productId.startsWith(prefix)) return;
+                if (!item.productId?.startsWith(prefix)) return;
                 const pName = item.name;
                 if (!productMap[pName]) {
                     productMap[pName] = { qty: 0, price: item.price, total: 0 };
@@ -133,7 +133,7 @@ export default function EmployeeHistoryScreen() {
                                     <Text style={styles.orderNumber}>#{formatOrderNumber(order.orderNumber)}</Text>
                                     {(() => {
   const prefix = employeeCafeteria === 'Busters' ? 'BT' : 'BS';
-  const cafeteriaTotal = order.items.filter(item => item.productId.startsWith(prefix)).reduce((acc, i) => acc + i.price * i.quantity, 0);
+  const cafeteriaTotal = order.items.filter(item => item.productId?.startsWith(prefix)).reduce((acc, i) => acc + i.price * i.quantity, 0);
   return <Text style={styles.orderTotal}>${cafeteriaTotal.toFixed(2)}</Text>;
 })()}
                                 </View>

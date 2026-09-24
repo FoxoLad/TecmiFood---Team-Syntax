@@ -97,10 +97,10 @@ export default function EmployeeOrdersScreen() {
   const filteredOrders = orders.filter((order) => {
     // If the employee is logged in to a specific cafeteria, only show orders containing items from that cafeteria.
     if (employeeCafeteria === "Busters") {
-      const hasBusters = order.items.some(item => item.productId.startsWith("BT"));
+      const hasBusters = order.items.some(item => item.productId?.startsWith("BT"));
       if (!hasBusters) return false;
     } else if (employeeCafeteria === "Bee Sweet") {
-      const hasBeeSweet = order.items.some(item => item.productId.startsWith("BS"));
+      const hasBeeSweet = order.items.some(item => item.productId?.startsWith("BS"));
       if (!hasBeeSweet) return false;
     }
 
@@ -111,13 +111,21 @@ export default function EmployeeOrdersScreen() {
       item.name.toLowerCase().includes(query)
     );
     const isDelivered = order.status === "Entregado";
-    const isClosed = isDelivered || order.status === "Cancelado";
-    const matchesStatus =
-      selectedFilter === "Todos" ||
-      (selectedFilter === "Entregados" ? isDelivered : !isClosed);
+    const isCancelled = order.status === "Cancelado";
+    const isArchived = order.status === "Cancelado_Archivado" || order.status === "Cancelado_Oculto";
+    if (isArchived) return false;
+    
+    const isPending = !isDelivered && !isCancelled;
+    
+    let matchesStatus = false;
+    if (selectedFilter === "Todos") matchesStatus = true;
+    else if (selectedFilter === "Entregados") matchesStatus = isDelivered;
+    else matchesStatus = isPending || isCancelled; // Pendientes shows active + cancelled
+
     return (matchesName || matchesOrder || matchesProduct) && matchesStatus;
   });
 
+  const updateOrderStatus = useOrders((state) => state.updateOrderStatus);
   const confirmReturnToClient = () => {
     setShowReturnConfirmation(true);
   };
@@ -134,14 +142,24 @@ export default function EmployeeOrdersScreen() {
           backLabel="Cliente"
           onBack={confirmReturnToClient}
           right={
-            <Pressable
-              accessibilityLabel="Ver ventas"
-              accessibilityRole="button"
-              onPress={() => router.push("/employee/history")}
-              style={style.historyButton}
-            >
-              <Ionicons color={employee.accent} name="bar-chart-outline" size={24} />
-            </Pressable>
+            <View style={{ flexDirection: 'row', gap: 16 }}>
+              <Pressable
+                accessibilityLabel="Inventario"
+                accessibilityRole="button"
+                onPress={() => router.push("/employee/inventory")}
+                style={style.historyButton}
+              >
+                <Ionicons color={employee.accent} name="cube-outline" size={24} />
+              </Pressable>
+              <Pressable
+                accessibilityLabel="Ver ventas"
+                accessibilityRole="button"
+                onPress={() => router.push("/employee/history")}
+                style={style.historyButton}
+              >
+                <Ionicons color={employee.accent} name="bar-chart-outline" size={24} />
+              </Pressable>
+            </View>
           }
           title={employeeCafeteria || "Órdenes"}
         />
@@ -273,7 +291,7 @@ export default function EmployeeOrdersScreen() {
         ) : (
           filteredOrders.map((order) => {
             const prefix = employeeCafeteria === 'Busters' ? 'BT' : 'BS';
-            const cafeteriaItems = order.items.filter(item => item.productId.startsWith(prefix));
+            const cafeteriaItems = order.items.filter(item => item.productId?.startsWith(prefix));
             const cafeteriaTotal = cafeteriaItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
             
             const status = statusStyles[order.status] || { backgroundColor: "#ccc", color: "#000", label: order.status };
@@ -283,7 +301,15 @@ export default function EmployeeOrdersScreen() {
                 key={order._id || order.orderNumber}
                 onPress={() => router.push(`/employee/orders/${order.orderNumber}`)}
               >
-                <View style={[style.orderCard, { padding: 16 }]}>
+                <View style={[style.orderCard, { padding: 16, opacity: order.status === "Cancelado" ? 0.6 : 1 }]}>
+                  {order.status === "Cancelado" && (
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.7)', zIndex: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 24 }}>
+                       <Text style={{ color: '#CC0A0A', fontSize: 24, fontWeight: 'bold', backgroundColor: '#FFE5E5', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12, overflow: 'hidden' }}>CANCELADO</Text>
+                       <Pressable onPress={(e) => { e.stopPropagation(); updateOrderStatus(order.orderNumber, "Cancelado_Oculto"); }} style={{ marginTop: 16, backgroundColor: '#333', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20 }}>
+                          <Text style={{ color: '#FFF', fontWeight: '600' }}>Ocultar</Text>
+                       </Pressable>
+                    </View>
+                  )}
                   <View style={[style.orderHeader, { borderBottomWidth: 0, paddingHorizontal: 0, paddingVertical: 0 }]}>
                     <Text style={style.orderNumber} numberOfLines={1} ellipsizeMode="tail">
                       #{formatOrderNumber(order.orderNumber)} - {order.customerName}

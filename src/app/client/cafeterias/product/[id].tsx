@@ -200,6 +200,9 @@ export default function BustersProductScreen() {
                 />
 
                 <Text style={styles.name}>{product.name}</Text>
+                {!product.inStock && (
+                    <Text style={{ color: '#CC0A0A', fontWeight: 'bold', fontSize: 16, marginBottom: 8, backgroundColor: '#FFE5E5', padding: 8, borderRadius: 8, textAlign: 'center', overflow: 'hidden' }}>PRODUCTO AGOTADO</Text>
+                )}
                 <Text style={styles.category}>{product.category}</Text>
                 <Text style={styles.description}>
                     {product.description || "Sin descripción disponible."}

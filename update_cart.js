@@ -1,4 +1,6 @@
-/** Carrito del cliente. Confirma el pedido y lo envía al API de órdenes. */
+const fs = require('fs');
+
+const code = `/** Carrito del cliente. Confirma el pedido y lo envía al API de órdenes. */
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState, useEffect, useMemo } from "react";
@@ -193,7 +195,7 @@ export default function CartScreen() {
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>{item.product.name}</Text>
         <Text style={styles.itemPrice}>
-          ${item.product.price.toFixed(2)}
+          \${item.product.price.toFixed(2)}
         </Text>
 
         {item.modifications.length > 0 && (
@@ -294,7 +296,7 @@ export default function CartScreen() {
       <View style={styles.footer}>
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Total a pagar:</Text>
-          <Text style={styles.totalValue}>${getTotal().toFixed(2)}</Text>
+          <Text style={styles.totalValue}>\${getTotal().toFixed(2)}</Text>
         </View>
 
         {!isOpen ? (
@@ -341,7 +343,7 @@ export default function CartScreen() {
                 disabled={confirmCountdown > 0}
               >
                 <Text style={styles.modalButtonConfirmText}>
-                  {confirmCountdown > 0 ? `Confirmar (${confirmCountdown})` : "Confirmar"}
+                  {confirmCountdown > 0 ? \`Confirmar (\${confirmCountdown})\` : "Confirmar"}
                 </Text>
               </Pressable>
             </View>
@@ -635,3 +637,7 @@ function createStyles(colors: Palette) {
   },
   });
 }
+`;
+
+fs.writeFileSync('src/app/client/(client-tabs)/cart.tsx', code);
+console.log('Cart updated');

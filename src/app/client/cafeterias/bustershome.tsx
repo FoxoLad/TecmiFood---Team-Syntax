@@ -79,7 +79,17 @@ export default function HomeScreen() {
         }
         if (selectedFilter === "Bebidas") {
             const drinks = filteredProducts.filter((product) => product.category === "Bebidas");
-            const subcategories = Array.from(new Set(drinks.map((product) => product.subcategory || "Otros")));
+            let subcategories = Array.from(new Set(drinks.map((product) => product.subcategory || "Otros")));
+            
+            const sortWeight = (s: string) => { 
+                const lower = s.toLowerCase(); 
+                if (lower.includes('frío') || lower.includes('frio')) return 1; 
+                if (lower.includes('caliente')) return 2; 
+                if (lower.includes('frappe') || lower.includes('frappé')) return 3; 
+                return 4; 
+            };
+            subcategories.sort((a, b) => sortWeight(a) - sortWeight(b));
+
             return subcategories.flatMap((subcategory) => {
                 const group = drinks.filter((product) => (product.subcategory || "Otros") === subcategory);
                 const title: MenuRow = { id: `title-${subcategory}`, type: "title", title: subcategory };

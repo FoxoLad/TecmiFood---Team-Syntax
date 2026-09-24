@@ -29,8 +29,16 @@ export default function PreparingOrderScreen() {
     <SafeView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.card}>
-        <View style={styles.iconCircle}>
-          <Ionicons
+          <Pressable
+            accessibilityLabel="Cerrar ventana"
+            accessibilityRole="button"
+            onPress={() => router.back()}
+            style={styles.closeButton}
+          >
+            <Ionicons color={colors.textSecondary} name="close" size={24} />
+          </Pressable>
+          <View style={styles.iconCircle}>
+            <Ionicons
             color={colors.accent}
             name={isReady ? "checkmark-circle-outline" : "restaurant-outline"}
             size={52}
@@ -106,6 +114,14 @@ function createStyles(colors: Palette) {
     borderWidth: 1,
     maxWidth: 360,
     padding: 20,
+    position: "relative",
+  },
+  closeButton: {
+    position: "absolute",
+    right: 16,
+    top: 16,
+    padding: 4,
+    zIndex: 10,
   },
   iconCircle: {
     alignItems: "center",

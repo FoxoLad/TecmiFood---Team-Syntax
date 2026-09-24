@@ -312,13 +312,13 @@ export default function HomeScreen() {
                 {getVisibleProducts(section).map((item) => (
                   <Pressable
                     accessibilityLabel={`Ver ${item.name}`}
-                    accessibilityRole={item.businessId === "BT" ? "button" : undefined}
-                    disabled={item.businessId !== "BT"}
+                    accessibilityRole="button"
+                    
                     key={item.id}
                     onPress={() => openProduct(item)}
                     style={({ pressed }) => [
                       styles.productCard,
-                      pressed && item.businessId === "BT" && styles.productCardPressed,
+                      pressed && styles.productCardPressed,
                     ]}
                   >
                   <View style={styles.productImageWrap}>
@@ -336,12 +336,12 @@ export default function HomeScreen() {
                     <Text style={styles.productPrice}>
                       ${item.price.toFixed(2)}
                     </Text>
-                    {item.businessId === "BT" ? (
+                    
                       <View style={styles.viewProductLabel}>
                         <Text style={styles.viewProductText}>Ver producto</Text>
                         <Ionicons name="arrow-forward" size={13} color="#FFFFFF" />
                       </View>
-                    ) : null}
+                    
                   </Pressable>
                 ))}
                 {(visibleProducts[section.businessId] ?? BATCH_SIZE) < section.data.length ? (

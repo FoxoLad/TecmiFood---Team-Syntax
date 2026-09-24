@@ -31,8 +31,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -133,11 +137,21 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ]
   },
   {
@@ -150,8 +164,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -164,8 +182,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -178,8 +200,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -192,8 +218,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -206,11 +236,21 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ]
   },
   {
@@ -223,8 +263,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -248,8 +292,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -284,8 +332,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -298,8 +350,12 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -313,8 +369,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -328,8 +388,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -343,8 +407,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -358,8 +426,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -373,8 +445,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -412,8 +488,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -427,8 +507,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -454,8 +538,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -469,8 +557,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -484,8 +576,12 @@
     "category": "Bebidas",
     "subcategory": "Otros",
     "modifications": [
-      "Fría",
-      "Al tiempo"
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
     ]
   },
   {
@@ -533,11 +629,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -550,11 +656,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -567,11 +683,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -584,8 +710,12 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Caliente",
-      "Para llevar"
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
     ]
   },
   {
@@ -598,11 +728,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -615,11 +755,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -632,11 +782,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -660,10 +820,18 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin mostaza",
-      "Sin catsup",
-      "Sin tomate",
-      "Sin cebolla"
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin catsup"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin cebolla"
+      }
     ]
   },
   {
@@ -698,11 +866,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -715,9 +893,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin cebolla",
-      "Sin crema",
-      "Extra picante"
+      {
+        "name": "Sin cebolla"
+      },
+      {
+        "name": "Sin crema"
+      },
+      {
+        "name": "Extra picante"
+      }
     ]
   },
   {
@@ -730,10 +914,18 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin mostaza",
-      "Sin catsup",
-      "Sin tomate",
-      "Sin cebolla"
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin catsup"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin cebolla"
+      }
     ]
   },
   {
@@ -746,11 +938,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -763,11 +965,21 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin aderezos",
-      "Sin tomate",
-      "Sin lechuga",
-      "Caliente",
-      "Sin jalapeños"
+      {
+        "name": "Sin aderezos"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin jalapeños"
+      }
     ]
   },
   {
@@ -791,10 +1003,18 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin mostaza",
-      "Sin catsup",
-      "Sin tomate",
-      "Sin cebolla"
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin catsup"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin cebolla"
+      }
     ]
   },
   {
@@ -807,10 +1027,18 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin mostaza",
-      "Sin catsup",
-      "Sin tomate",
-      "Sin cebolla"
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin catsup"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin cebolla"
+      }
     ]
   },
   {
@@ -823,9 +1051,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Sin cebolla",
-      "Sin crema",
-      "Extra picante"
+      {
+        "name": "Sin cebolla"
+      },
+      {
+        "name": "Sin crema"
+      },
+      {
+        "name": "Extra picante"
+      }
     ]
   },
   {
@@ -835,10 +1069,18 @@
     "description": "Frappé de café.",
     "price": 53,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/cafefrap.jpg",
     "status": "active",
@@ -852,10 +1094,18 @@
     "description": "Frappé de mocha o mocha blanco.",
     "price": 69,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106317/mochafrap.jpg",
     "status": "active",
@@ -869,10 +1119,18 @@
     "description": "Frappé sabor caramelo.",
     "price": 71,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106248/CaraFrap.jpg",
     "status": "active",
@@ -886,10 +1144,18 @@
     "description": "Frappé de cookies and cream.",
     "price": 74,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/C_CFrap.jpg",
     "status": "active",
@@ -903,10 +1169,18 @@
     "description": "Frappé de yogurt con fresa o mango.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
     "status": "active",
@@ -920,10 +1194,18 @@
     "description": "Smoothie de fresa o mango.",
     "price": 48,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106371/Smoothie.jpg",
     "status": "active",
@@ -937,10 +1219,18 @@
     "description": "Frappé sabor chai.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106256/ChaiFrap.jpg",
     "status": "active",
@@ -954,10 +1244,18 @@
     "description": "Frappé preparado con tisana.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
     "status": "active",
@@ -971,10 +1269,18 @@
     "description": "Frappé de vainilla.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "C&CFrap",
     "status": "active",
@@ -988,10 +1294,18 @@
     "description": "Frappé de caramelo.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "C&CFrap",
     "status": "active",
@@ -1005,10 +1319,18 @@
     "description": "Frappé de chocolate blanco.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "C&CFrap",
     "status": "active",
@@ -1022,10 +1344,18 @@
     "description": "Frappé de chocolate.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "C&CFrap",
     "status": "active",
@@ -1039,10 +1369,18 @@
     "description": "Frappé sabor taro.",
     "price": 74,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "TisanaFrap",
     "status": "active",
@@ -1056,10 +1394,18 @@
     "description": "Licuado de plátano, fresa o mango.",
     "price": 55,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Sin crema batida"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Sin crema batida"
+      }
     ],
     "image": "Smoothie",
     "status": "active",
@@ -1073,11 +1419,21 @@
     "description": "Capuchino italiano.",
     "price": 50,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "Latte",
     "status": "active",
@@ -1091,11 +1447,21 @@
     "description": "Café americano.",
     "price": 35,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "Espresso",
     "status": "active",
@@ -1109,11 +1475,21 @@
     "description": "Espresso americano.",
     "price": 40,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "Espresso",
     "status": "active",
@@ -1127,11 +1503,21 @@
     "description": "Café latte.",
     "price": 49,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106325/Latte.png",
     "status": "active",
@@ -1145,11 +1531,21 @@
     "description": "Bebida de mocha o mocha blanco.",
     "price": 64,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106318/Mocha.png",
     "status": "active",
@@ -1163,11 +1559,21 @@
     "description": "Café sabor caramelo.",
     "price": 65,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "Mocha",
     "status": "active",
@@ -1181,11 +1587,21 @@
     "description": "Espresso con diferentes cantidades de shots.",
     "price": 37,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/Espresso.png",
     "status": "active",
@@ -1211,11 +1627,21 @@
     "description": "Chocolate caliente o helado.",
     "price": 54,
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "Mocha",
     "status": "active",
@@ -1229,9 +1655,15 @@
     "description": "Té preparado.",
     "price": 35,
     "modifications": [
-      "Frío",
-      "Caliente",
-      "Sin azúcar"
+      {
+        "name": "Frío"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "ChaiFrap",
     "status": "active",
@@ -1245,9 +1677,15 @@
     "description": "Tisana preparada.",
     "price": 59,
     "modifications": [
-      "Frío",
-      "Caliente",
-      "Sin azúcar"
+      {
+        "name": "Frío"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "TisanaFrap",
     "status": "active",
@@ -1261,9 +1699,15 @@
     "description": "Bebida chai.",
     "price": 70,
     "modifications": [
-      "Frío",
-      "Caliente",
-      "Sin azúcar"
+      {
+        "name": "Frío"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "ChaiFrap",
     "status": "active",
@@ -1277,9 +1721,15 @@
     "description": "Bebida de matcha.",
     "price": 70,
     "modifications": [
-      "Frío",
-      "Caliente",
-      "Sin azúcar"
+      {
+        "name": "Frío"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "Latte",
     "status": "active",
@@ -1293,9 +1743,15 @@
     "description": "Bebida sabor taro.",
     "price": 76,
     "modifications": [
-      "Frío",
-      "Caliente",
-      "Sin azúcar"
+      {
+        "name": "Frío"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ],
     "image": "CaraFrap",
     "status": "active",
@@ -1334,11 +1790,21 @@
     "status": "active",
     "category": "Extras y Desechables",
     "modifications": [
-      "Leche entera",
-      "Leche deslactosada",
-      "Leche de almendra",
-      "Con azúcar",
-      "Sin azúcar"
+      {
+        "name": "Leche entera"
+      },
+      {
+        "name": "Leche deslactosada"
+      },
+      {
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      }
     ]
   },
   {
@@ -1461,9 +1927,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1498,10 +1970,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1525,10 +2005,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1552,9 +2040,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1567,10 +2061,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1583,9 +2085,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1598,10 +2106,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1636,9 +2152,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1651,9 +2173,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1666,10 +2194,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1682,9 +2218,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1697,9 +2239,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1712,9 +2260,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1738,10 +2292,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1765,9 +2327,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1780,10 +2348,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1796,10 +2372,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1812,9 +2396,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1838,10 +2428,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1854,9 +2452,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1869,9 +2473,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1884,10 +2494,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1900,9 +2518,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1915,10 +2539,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1942,9 +2574,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -1957,10 +2595,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1973,10 +2619,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -1989,10 +2643,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2005,10 +2667,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2021,10 +2691,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2048,9 +2726,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2063,9 +2747,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2078,9 +2768,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2115,9 +2811,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2130,10 +2832,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2157,9 +2867,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2172,10 +2888,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2199,9 +2923,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2214,9 +2944,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2229,9 +2965,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2244,10 +2986,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2260,10 +3010,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2276,9 +3034,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2291,10 +3055,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2307,9 +3079,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2322,9 +3100,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2337,9 +3121,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2352,10 +3142,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2379,9 +3177,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2405,9 +3209,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2420,9 +3230,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2435,10 +3251,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2451,9 +3275,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2466,10 +3296,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2482,10 +3320,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2498,9 +3344,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2524,10 +3376,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2540,9 +3400,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2555,9 +3421,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2570,9 +3442,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2585,10 +3463,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2612,9 +3498,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2627,10 +3519,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2643,9 +3543,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2658,10 +3564,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2674,10 +3588,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2690,9 +3612,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2705,9 +3633,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2720,10 +3654,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2758,9 +3700,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2773,10 +3721,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2789,9 +3745,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2804,10 +3766,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2831,10 +3801,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2847,9 +3825,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   },
   {
@@ -2862,10 +3846,18 @@
     "status": "active",
     "category": "Bebidas",
     "modifications": [
-      "Sin azúcar",
-      "Leche light",
-      "Deslactosada",
-      "Extra hielo"
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Leche light"
+      },
+      {
+        "name": "Deslactosada"
+      },
+      {
+        "name": "Extra hielo"
+      }
     ]
   },
   {
@@ -2878,9 +3870,15 @@
     "status": "active",
     "category": "Comidas",
     "modifications": [
-      "Para llevar",
-      "Con cubiertos",
-      "Extra jarabe"
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cubiertos"
+      },
+      {
+        "name": "Extra jarabe"
+      }
     ]
   }
 ]

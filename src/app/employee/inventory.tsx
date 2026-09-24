@@ -79,7 +79,7 @@ export default function InventoryScreen() {
              keyExtractor={p => p.id}
              contentContainerStyle={styles.list}
              renderItem={({ item }) => (
-                <View style={styles.itemRow}>
+                <Pressable style={styles.itemRow} onPress={() => router.push({ pathname: "/employee/product-form" as any, params: { id: item.id } })}>
                    <ProductImage image={item.image} name={item.name} style={styles.image} contentFit="cover" />
                    <View style={styles.info}>
                       <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
@@ -97,10 +97,17 @@ export default function InventoryScreen() {
                           />
                       )}
                    </View>
-                </View>
+                   </Pressable>
              )}
            />
         )}
+      
+        <Pressable 
+          style={styles.fab} 
+          onPress={() => router.push("/employee/product-form" as any)}
+        >
+          <Ionicons name="add" size={32} color="#FFF" />
+        </Pressable>
       </SafeAreaView>
     </View>
   );
@@ -164,5 +171,22 @@ const styles = StyleSheet.create({
   action: {
     width: 60,
     alignItems: "flex-end",
+  },
+
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    backgroundColor: employee.accent,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
 });

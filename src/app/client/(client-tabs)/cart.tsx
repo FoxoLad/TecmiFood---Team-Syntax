@@ -34,7 +34,8 @@ export default function CartScreen() {
   const clientId = useUserStore((state) => state.clientId);
   const rememberOrder = useOrders((state) => state.rememberOrder);
   const fetchOrders = useOrders((state) => state.fetchOrders);
-  const isOpen = useCafeteriaStatus((state) => state.isOpen);
+  const bustersState = useCafeteriaStatus((state) => state.busters);
+  const beesweetState = useCafeteriaStatus((state) => state.beesweet);
   const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
 
   useFocusEffect(
@@ -79,9 +80,24 @@ export default function CartScreen() {
 
   const bustersItems = items.filter(i => i.product.businessId === "BT");
   const beeSweetItems = items.filter(i => i.product.businessId === "BS");
+  const canOrderAll = (bustersItems.length === 0 || bustersState.isOpen) && (beeSweetItems.length === 0 || beesweetState.isOpen);
 
   const openConfirmModal = (scope: "all" | "busters" | "beesweet") => {
-    if (items.length === 0 || !isOpen) return;
+    if (items.length === 0) return;
+    
+    if (scope === "all" && (!bustersState.isOpen || !beesweetState.isOpen)) {
+        Alert.alert("Cafetería cerrada", "No puedes pedir de ambas cafeterías juntas porque alguna está cerrada.");
+        return;
+    }
+    if (scope === "busters" && !bustersState.isOpen) {
+        Alert.alert("Cafetería cerrada", "Busters se encuentra cerrada.");
+        return;
+    }
+    if (scope === "beesweet" && !beesweetState.isOpen) {
+        Alert.alert("Cafetería cerrada", "Bee Sweet se encuentra cerrada.");
+        return;
+    }
+
     setCheckoutScope(scope);
     setConfirmCountdown(2);
     setShowConfirmModal(true);
@@ -92,8 +108,19 @@ export default function CartScreen() {
     setIsSubmitting(true);
     try {
       await fetchStatus();
-      if (!useCafeteriaStatus.getState().isOpen) {
-        Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
+      const status = useCafeteriaStatus.getState();
+      if (checkoutScope === "all" && (!status.busters.isOpen || !status.beesweet.isOpen)) {
+        Alert.alert("Cafetería cerrada", "Alguna de las cafeterías está cerrada.");
+        setIsSubmitting(false);
+        return;
+      }
+      if (checkoutScope === "busters" && !status.busters.isOpen) {
+        Alert.alert("Cafetería cerrada", "Busters está cerrada.");
+        setIsSubmitting(false);
+        return;
+      }
+      if (checkoutScope === "beesweet" && !status.beesweet.isOpen) {
+        Alert.alert("Cafetería cerrada", "Bee Sweet está cerrada.");
         setIsSubmitting(false);
         return;
       }
@@ -361,22 +388,22 @@ export default function CartScreen() {
           <Text style={styles.totalValue}>${getTotal().toFixed(2)}</Text>
         </View>
 
-        {!isOpen ? (
+        {!canOrderAll ? (
           <Text style={styles.closedNote}>La cafetería está cerrada. No se pueden enviar pedidos.</Text>
         ) : null}
         <Pressable
           style={[
             styles.checkoutButton,
-            (isSubmitting || !isOpen) && styles.checkoutButtonDisabled,
+            (isSubmitting || !canOrderAll) && styles.checkoutButtonDisabled,
           ]}
           onPress={() => openConfirmModal("all")}
-          disabled={isSubmitting || !isOpen}
+          disabled={isSubmitting || !canOrderAll}
         >
           {isSubmitting ? (
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.checkoutButtonText}>
-              {isOpen ? "CONFIRMAR PEDIDO" : "CAFETERÍA CERRADA"}
+              {canOrderAll ? "CONFIRMAR PEDIDO" : "CAFETERÍA CERRADA"}
             </Text>
           )}
         </Pressable>

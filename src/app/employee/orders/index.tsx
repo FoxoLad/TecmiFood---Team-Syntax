@@ -41,9 +41,12 @@ export default function EmployeeOrdersScreen() {
   const [selectedFilter, setSelectedFilter] = useState("Pendientes");
   const [showReturnConfirmation, setShowReturnConfirmation] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const isOpen = useCafeteriaStatus((state) => state.isOpen);
-  const opensAt = useCafeteriaStatus((state) => state.opensAt);
-  const closesAt = useCafeteriaStatus((state) => state.closesAt);
+    const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
+  const cafeteriaKey = employeeCafeteria === 'Busters' ? 'busters' : 'beesweet';
+  const status = useCafeteriaStatus((state) => state[cafeteriaKey]);
+  const isOpen = status.isOpen;
+  const opensAt = status.opensAt;
+  const closesAt = status.closesAt;
   const setOpen = useCafeteriaStatus((state) => state.setOpen);
   const setHours = useCafeteriaStatus((state) => state.setHours);
   const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
@@ -64,7 +67,7 @@ export default function EmployeeOrdersScreen() {
 
   const saveHours = () => {
     if (isValidTime(hourDraft.opensAt) && isValidTime(hourDraft.closesAt)) {
-      setHours(hourDraft.opensAt, hourDraft.closesAt);
+      setHours(cafeteriaKey, hourDraft.opensAt, hourDraft.closesAt);
       return;
     }
     setHourDraft({
@@ -92,8 +95,7 @@ export default function EmployeeOrdersScreen() {
     setRefreshing(false);
   }, [fetchOrders]);
 
-  const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
-
+  
   const filteredOrders = orders.filter((order) => {
     // If the employee is logged in to a specific cafeteria, only show orders containing items from that cafeteria.
     if (employeeCafeteria === "Busters") {
@@ -190,7 +192,7 @@ export default function EmployeeOrdersScreen() {
               accessibilityLabel={isOpen ? "Cerrar cafetería" : "Abrir cafetería"}
               accessibilityRole="switch"
               ios_backgroundColor="#E7D5D3"
-              onValueChange={setOpen}
+              onValueChange={(val) => setOpen(cafeteriaKey, val)}
               thumbColor={isOpen ? colors.success : colors.danger}
               trackColor={{ false: "#F3D6D4", true: "#D7F3E1" }}
               value={isOpen}

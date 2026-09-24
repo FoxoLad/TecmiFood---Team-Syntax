@@ -4,12 +4,12 @@ const Cafeteria = require("../models/Cafeteria");
 const router = express.Router();
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-async function getStatus() {
+async function getStatus(key) {
   return Cafeteria.findOneAndUpdate(
-    { key: "busters" },
+    { key },
     {
       $setOnInsert: {
-        key: "busters",
+        key,
         isOpen: true,
         opensAt: "08:00",
         closesAt: "17:00",
@@ -27,17 +27,22 @@ function publicStatus(status) {
   };
 }
 
+// Endpoint to get ALL statuses or a specific one
 router.get("/", async (req, res) => {
   try {
-    const status = await getStatus();
-    res.json(publicStatus(status));
+    const busters = await getStatus("busters");
+    const beesweet = await getStatus("beesweet");
+    res.json({
+      busters: publicStatus(busters),
+      beesweet: publicStatus(beesweet)
+    });
   } catch (error) {
-    console.error("Error al leer el estado de la cafetería:", error);
-    res.status(500).json({ error: "No se pudo leer el estado de la cafetería" });
+    console.error("Error al leer el estado de las cafeterías:", error);
+    res.status(500).json({ error: "No se pudo leer el estado de las cafeterías" });
   }
 });
 
-router.patch("/", async (req, res) => {
+router.patch("/:key", async (req, res) => {
   try {
     const update = {};
 
@@ -55,7 +60,7 @@ router.patch("/", async (req, res) => {
       return res.status(400).json({ error: "No hay cambios válidos" });
     }
 
-    const status = await Cafeteria.findOneAndUpdate({ key: "busters" }, update, {
+    const status = await Cafeteria.findOneAndUpdate({ key: req.params.key }, update, {
       new: true,
       upsert: true,
       setDefaultsOnInsert: true,

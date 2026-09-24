@@ -103,8 +103,11 @@ export default function ClientOrdersScreen() {
   };
 
   const handleReorder = (order: RealOrder) => {
-    if (!useCafeteriaStatus.getState().isOpen) {
-      Alert.alert("Cafetería cerrada", "Solo puedes volver a pedir cuando la cafetería esté abierta.");
+    const state = useCafeteriaStatus.getState();
+    const hasBusters = order.items.some(i => i.productId?.startsWith("BT"));
+    const hasBeeSweet = order.items.some(i => i.productId?.startsWith("BS"));
+    if ((hasBusters && !state.busters.isOpen) || (hasBeeSweet && !state.beesweet.isOpen)) {
+      Alert.alert("Cafetería cerrada", "Alguna de las cafeterías de este pedido se encuentra cerrada actualmente.");
       return;
     }
 

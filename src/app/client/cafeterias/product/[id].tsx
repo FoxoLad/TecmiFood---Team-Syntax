@@ -43,7 +43,8 @@ export default function BustersProductScreen() {
     const fetchProducts = useProductStore((state) => state.fetchProducts);
     const isLoading = useProductStore((state) => state.isLoading);
     const addItemToCart = useCartStore((state) => state.addItem);
-    const isOpen = useCafeteriaStatus((state) => state.isOpen);
+    const busters = useCafeteriaStatus((state) => state.busters);
+    const beesweet = useCafeteriaStatus((state) => state.beesweet);
     const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
 
     useFocusEffect(
@@ -65,6 +66,7 @@ export default function BustersProductScreen() {
         () => products.find((currentProduct) => currentProduct.id === productId),
         [productId, products],
     );
+    const isOpen = product ? (product.businessId === "BS" ? beesweet.isOpen : busters.isOpen) : false;
     const currentCartTotal = useCartStore((state) => 
         state.items.reduce((acc, i) => acc + i.quantity, 0)
     );
@@ -83,7 +85,7 @@ export default function BustersProductScreen() {
 
     const handleConfirmOrder = () => {
         if (!product) return;
-        if (!useCafeteriaStatus.getState().isOpen) {
+        if (!isOpen) {
             setModalType(null);
             Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
             return;

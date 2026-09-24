@@ -1,4 +1,3 @@
-/** Punto de estado en Busters. El horario y el tiempo restante salen al tocarlo. */
 import { Alert, Pressable, StyleSheet, View, Text } from "react-native";
 import { colors } from "../constants/theme";
 import { useCafeteriaStatus } from "../stores/useCafeteriaStatus";
@@ -36,29 +35,27 @@ function closingMessage(closesAt: string) {
   return `Faltan ${hourLabel} ${minuteLabel} para que cierre`;
 }
 
-export function CafeteriaStatusBanner() {
-  const isOpen = useCafeteriaStatus((state) => state.isOpen);
-  const opensAt = useCafeteriaStatus((state) => state.opensAt);
-  const closesAt = useCafeteriaStatus((state) => state.closesAt);
+export function CafeteriaStatusBanner({ cafeteriaKey }: { cafeteriaKey: "busters" | "beesweet" }) {
+  const status = useCafeteriaStatus((state) => state[cafeteriaKey]);
   const themeColors = useColors();
 
   const showSchedule = () => {
     Alert.alert(
-      isOpen ? "Abierta" : "Cerrada",
-      `Horario: ${opensAt} a ${closesAt}\n${closingMessage(closesAt)}`,
+      status.isOpen ? "Abierta" : "Cerrada",
+      `Horario: ${status.opensAt} a ${status.closesAt}\n${closingMessage(status.closesAt)}`,
     );
   };
 
   return (
     <Pressable
-      accessibilityLabel={isOpen ? "Cafetería abierta. Ver horario" : "Cafetería cerrada. Ver horario"}
+      accessibilityLabel={status.isOpen ? "Cafetería abierta. Ver horario" : "Cafetería cerrada. Ver horario"}
       accessibilityRole="button"
       hitSlop={8}
       onPress={showSchedule}
       style={styles.hit}
     >
-      <View style={[styles.dot, { backgroundColor: isOpen ? colors.success : colors.danger }]} />
-      <Text style={[styles.text, { color: themeColors.text }]}>{isOpen ? "Abierta" : "Cerrada"}</Text>
+      <View style={[styles.dot, { backgroundColor: status.isOpen ? colors.success : colors.danger }]} />
+      <Text style={[styles.text, { color: themeColors.text }]}>{status.isOpen ? "Abierta" : "Cerrada"}</Text>
     </Pressable>
   );
 }

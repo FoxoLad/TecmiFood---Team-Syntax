@@ -141,7 +141,7 @@ export default function HomeScreen() {
                     <Ionicons name="chevron-back" size={26} color={colors.text} />
                 </Pressable>
                 <Text style={styles.title}>{cafeteriaName}</Text>
-                <CafeteriaStatusBanner />
+                <CafeteriaStatusBanner cafeteriaKey="busters" />
             </View>
 
             <View style={styles.searchContainer}>

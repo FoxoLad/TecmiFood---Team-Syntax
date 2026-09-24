@@ -1,22 +1,20 @@
-/** Estado compartido de la cafetería. Se guarda en el teléfono y se sincroniza con el API. */
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { endpoints } from "../constants/api";
 
-type CafeteriaStatusStore = {
+export type CafeteriaState = {
   isOpen: boolean;
   opensAt: string;
   closesAt: string;
-  fetchStatus: () => Promise<void>;
-  setOpen: (isOpen: boolean) => void;
-  setHours: (opensAt: string, closesAt: string) => void;
 };
 
-type RemoteStatus = {
-  isOpen?: boolean;
-  opensAt?: string;
-  closesAt?: string;
+type CafeteriaStatusStore = {
+  busters: CafeteriaState;
+  beesweet: CafeteriaState;
+  fetchStatus: () => Promise<void>;
+  setOpen: (key: "busters" | "beesweet", isOpen: boolean) => void;
+  setHours: (key: "busters" | "beesweet", opensAt: string, closesAt: string) => void;
 };
 
 export function maskTime(value: string) {
@@ -31,9 +29,33 @@ export function isValidTime(value: string) {
   return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
 }
 
-async function pushStatus(status: RemoteStatus) {
+function computeAutoClose(status: CafeteriaState): CafeteriaState {
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    
+    const parseMinutes = (time: string) => {
+        const [h, m] = time.split(':').map(Number);
+        return h * 60 + m;
+    };
+    
+    const openMins = parseMinutes(status.opensAt);
+    const closeMins = parseMinutes(status.closesAt);
+    
+    let shouldBeOpen = currentMinutes >= openMins && currentMinutes < closeMins;
+    
+    if (closeMins < openMins) {
+        shouldBeOpen = currentMinutes >= openMins || currentMinutes < closeMins;
+    }
+    
+    if (status.isOpen && !shouldBeOpen) {
+        return { ...status, isOpen: false };
+    }
+    return status;
+}
+
+async function pushStatus(key: string, status: Partial<CafeteriaState>) {
   try {
-    await fetch(endpoints.cafeteria, {
+    await fetch(`${endpoints.cafeteria}/${key}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(status),
@@ -43,38 +65,49 @@ async function pushStatus(status: RemoteStatus) {
   }
 }
 
+const defaultState: CafeteriaState = { isOpen: true, opensAt: "08:00", closesAt: "17:00" };
+
 export const useCafeteriaStatus = create<CafeteriaStatusStore>()(
   persist(
     (set, get) => ({
-      isOpen: true,
-      opensAt: "08:00",
-      closesAt: "17:00",
+      busters: { ...defaultState },
+      beesweet: { ...defaultState },
       fetchStatus: async () => {
         try {
           const response = await fetch(endpoints.cafeteria);
-          if (!response.ok) {
-            return;
-          }
-          const data: RemoteStatus = await response.json();
+          if (!response.ok) return;
+          const data = await response.json();
+          
+          const processData = (key: "busters" | "beesweet", remote: Partial<CafeteriaState> | undefined) => {
+              if (!remote) return get()[key];
+              const newState = {
+                  isOpen: typeof remote.isOpen === "boolean" ? remote.isOpen : get()[key].isOpen,
+                  opensAt: remote.opensAt && isValidTime(remote.opensAt) ? remote.opensAt : get()[key].opensAt,
+                  closesAt: remote.closesAt && isValidTime(remote.closesAt) ? remote.closesAt : get()[key].closesAt,
+              };
+              const computed = computeAutoClose(newState);
+              if (computed.isOpen !== newState.isOpen) {
+                  pushStatus(key, { isOpen: false });
+              }
+              return computed;
+          };
+
           set({
-            isOpen: typeof data.isOpen === "boolean" ? data.isOpen : get().isOpen,
-            opensAt: data.opensAt && isValidTime(data.opensAt) ? data.opensAt : get().opensAt,
-            closesAt: data.closesAt && isValidTime(data.closesAt) ? data.closesAt : get().closesAt,
+            busters: processData("busters", data.busters),
+            beesweet: processData("beesweet", data.beesweet)
           });
         } catch (error) {
           console.error("No se pudo leer el estado de la cafetería:", error);
         }
       },
-      setOpen: (isOpen) => {
-        set({ isOpen });
-        pushStatus({ isOpen, opensAt: get().opensAt, closesAt: get().closesAt });
+      setOpen: (key, isOpen) => {
+        set({ [key]: { ...get()[key], isOpen } });
+        pushStatus(key, { isOpen, opensAt: get()[key].opensAt, closesAt: get()[key].closesAt });
       },
-      setHours: (opensAt, closesAt) => {
-        if (!isValidTime(opensAt) || !isValidTime(closesAt)) {
-          return;
-        }
-        set({ opensAt, closesAt });
-        pushStatus({ isOpen: get().isOpen, opensAt, closesAt });
+      setHours: (key, opensAt, closesAt) => {
+        if (!isValidTime(opensAt) || !isValidTime(closesAt)) return;
+        set({ [key]: { ...get()[key], opensAt, closesAt } });
+        pushStatus(key, { isOpen: get()[key].isOpen, opensAt, closesAt });
       },
     }),
     {

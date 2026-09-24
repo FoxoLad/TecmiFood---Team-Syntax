@@ -62,7 +62,11 @@ router.get("/", async (req, res) => {
 router.get("/metrics/stats", async (req, res) => {
   try {
     const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
     const startOfWeek = new Date(startOfDay);
     const dayOfWeek = startOfDay.getDay();
     const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
@@ -139,11 +143,12 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
-
-// Eliminar un pedido
+//Eliminar un pedido
 router.delete("/:orderNumber", async (req, res) => {
   try {
-    const order = await Order.findOneAndDelete({ orderNumber: req.params.orderNumber });
+    const order = await Order.findOneAndDelete({
+      orderNumber: req.params.orderNumber,
+    });
     if (!order) return res.status(404).json({ error: "Pedido no encontrado" });
     res.json({ message: "Pedido eliminado correctamente" });
   } catch (error) {

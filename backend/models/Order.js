@@ -10,19 +10,26 @@ const OrderItemSchema = new mongoose.Schema({
   notes: { type: String, default: "" },
 });
 
+//Esquema principal de una orden
 const OrderSchema = new mongoose.Schema(
   {
     orderNumber: { type: Number, required: true, unique: true },
-    customerName: { type: String, default: "Cliente" }, //En el futuro se ligará a un usuario
+    customerName: { type: String, default: "Cliente" },
     items: [OrderItemSchema],
     totalAmount: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["Pendiente", "En preparación", "Terminado", "Entregado", "Cancelado"],
+      enum: [
+        "Pendiente",
+        "En preparación",
+        "Terminado",
+        "Entregado",
+        "Cancelado",
+      ],
       default: "Pendiente",
     },
   },
-  { timestamps: true }, //Agrega createdAt y updatedAt automáticamente
+  { timestamps: true }, //Guardar la fecha de creación y modificación
 );
 
 module.exports = mongoose.model("Order", OrderSchema);

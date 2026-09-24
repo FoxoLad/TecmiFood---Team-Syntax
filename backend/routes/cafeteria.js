@@ -27,18 +27,19 @@ function publicStatus(status) {
   };
 }
 
-// Endpoint to get ALL statuses or a specific one
 router.get("/", async (req, res) => {
   try {
     const busters = await getStatus("busters");
     const beesweet = await getStatus("beesweet");
     res.json({
       busters: publicStatus(busters),
-      beesweet: publicStatus(beesweet)
+      beesweet: publicStatus(beesweet),
     });
   } catch (error) {
     console.error("Error al leer el estado de las cafeterías:", error);
-    res.status(500).json({ error: "No se pudo leer el estado de las cafeterías" });
+    res
+      .status(500)
+      .json({ error: "No se pudo leer el estado de las cafeterías" });
   }
 });
 
@@ -49,10 +50,16 @@ router.patch("/:key", async (req, res) => {
     if (typeof req.body.isOpen === "boolean") {
       update.isOpen = req.body.isOpen;
     }
-    if (typeof req.body.opensAt === "string" && TIME_PATTERN.test(req.body.opensAt)) {
+    if (
+      typeof req.body.opensAt === "string" &&
+      TIME_PATTERN.test(req.body.opensAt)
+    ) {
       update.opensAt = req.body.opensAt;
     }
-    if (typeof req.body.closesAt === "string" && TIME_PATTERN.test(req.body.closesAt)) {
+    if (
+      typeof req.body.closesAt === "string" &&
+      TIME_PATTERN.test(req.body.closesAt)
+    ) {
       update.closesAt = req.body.closesAt;
     }
 
@@ -60,11 +67,15 @@ router.patch("/:key", async (req, res) => {
       return res.status(400).json({ error: "No hay cambios válidos" });
     }
 
-    const status = await Cafeteria.findOneAndUpdate({ key: req.params.key }, update, {
-      new: true,
-      upsert: true,
-      setDefaultsOnInsert: true,
-    });
+    const status = await Cafeteria.findOneAndUpdate(
+      { key: req.params.key },
+      update,
+      {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true,
+      },
+    );
     res.json(publicStatus(status));
   } catch (error) {
     console.error("Error al actualizar el estado de la cafetería:", error);

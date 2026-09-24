@@ -1,36 +1,44 @@
-/** Carrito del cliente. Confirma el pedido y lo envía al API de órdenes. */
+//Pantalla del Carrito de Compras
+//Se encarga de mostrar los productos añadidos, calcular subtotales y validar el checkout
+//Dependiendo de los productos (Busters o Bee Sweet), se generan órdenes independientes
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-    Modal,
-    Animated,
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { FillingCartIcon } from "../../../components/FillingCartIcon";
-import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
+import SafeView from "../../../components/SafeView";
 import { endpoints } from "../../../constants/api";
-import { radii, shadows, type Palette, cafeteriaOptionColors } from "../../../constants/theme";
-import { useColors, useThemeStore } from "../../../stores/useTheme";
+import {
+  cafeteriaOptionColors,
+  radii,
+  type Palette,
+} from "../../../constants/theme";
 import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
-import { isRealOrder, useOrders } from "../../../stores/useOrders";
 import { useCartStore } from "../../../stores/useCartStore";
+import { isRealOrder, useOrders } from "../../../stores/useOrders";
+import { useColors, useThemeStore } from "../../../stores/useTheme";
 import { useUserStore } from "../../../stores/useUserStore";
 import { clientLabel } from "../../../utils/client";
 
+//Zustand
 export default function CartScreen() {
   const colors = useColors();
   const mode = useThemeStore((state) => state.mode);
   const tone = cafeteriaOptionColors[mode];
   const styles = useMemo(() => createStyles(colors), [colors]);
-  const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore();
+  const { items, removeItem, updateQuantity, clearCart, getTotal } =
+    useCartStore();
   const clientId = useUserStore((state) => state.clientId);
   const rememberOrder = useOrders((state) => state.rememberOrder);
   const fetchOrders = useOrders((state) => state.fetchOrders);
@@ -38,6 +46,7 @@ export default function CartScreen() {
   const beesweetState = useCafeteriaStatus((state) => state.beesweet);
   const fetchStatus = useCafeteriaStatus((state) => state.fetchStatus);
 
+  //Verificar cada 15 segundos si la cafetería está abierta
   useFocusEffect(
     useCallback(() => {
       fetchStatus();
@@ -49,53 +58,76 @@ export default function CartScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmCountdown, setConfirmCountdown] = useState(2);
-  const [checkoutScope, setCheckoutScope] = useState<"all" | "busters" | "beesweet">("all");
+  const [checkoutScope, setCheckoutScope] = useState<
+    "all" | "busters" | "beesweet"
+  >("all");
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const fadeAnim = useState(new Animated.Value(0))[0];
 
+  //Función para mostrar un mensaje en la pantalla
   const showToast = (msg: string) => {
     setToastMessage(msg);
     Animated.sequence([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
       Animated.delay(2000),
-      Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true })
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
     ]).start(() => setToastMessage(null));
   };
 
+  //Función para limitar la cantidad de productos en el carrito
   const handleUpdateQuantity = (cartItemId: string, delta: number) => {
     const res = updateQuantity(cartItemId, delta);
     if (!res.success) {
-      showToast(res.reason === "product_limit" ? "Límite de 3 por producto alcanzado." : "Límite de 8 productos en total alcanzado.");
+      showToast(
+        res.reason === "product_limit"
+          ? "Límite de 3 por producto alcanzado."
+          : "Límite de 8 productos en total alcanzado.",
+      );
     }
   };
 
+  //Funcion para que correr el tiempo de espera al querer confirmar una orden
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     if (showConfirmModal && confirmCountdown > 0) {
-      timer = setTimeout(() => setConfirmCountdown(prev => prev - 1), 1000);
+      timer = setTimeout(() => setConfirmCountdown((prev) => prev - 1), 1000);
     }
     return () => clearTimeout(timer);
   }, [showConfirmModal, confirmCountdown]);
 
-  const bustersItems = items.filter(i => i.product.businessId === "BT");
-  const beeSweetItems = items.filter(i => i.product.businessId === "BS");
-  const canOrderAll = (bustersItems.length === 0 || bustersState.isOpen) && (beeSweetItems.length === 0 || beesweetState.isOpen);
+  const bustersItems = items.filter((i) => i.product.businessId === "BT");
+  const beeSweetItems = items.filter((i) => i.product.businessId === "BS");
+  const canOrderAll =
+    (bustersItems.length === 0 || bustersState.isOpen) &&
+    (beeSweetItems.length === 0 || beesweetState.isOpen);
 
+  //Verificar si la cafetería está abierta para confirmar el pedido
   const openConfirmModal = (scope: "all" | "busters" | "beesweet") => {
     if (items.length === 0) return;
-    
+
     if (scope === "all" && (!bustersState.isOpen || !beesweetState.isOpen)) {
-        Alert.alert("Cafetería cerrada", "No puedes pedir de ambas cafeterías juntas porque alguna está cerrada.");
-        return;
+      Alert.alert(
+        "Cafetería cerrada",
+        "No puedes pedir de ambas cafeterías porque alguna está cerrada",
+      );
+      return;
     }
     if (scope === "busters" && !bustersState.isOpen) {
-        Alert.alert("Cafetería cerrada", "Busters se encuentra cerrada.");
-        return;
+      Alert.alert("Cafetería cerrada", "Busters se encuentra cerrado");
+      return;
     }
     if (scope === "beesweet" && !beesweetState.isOpen) {
-        Alert.alert("Cafetería cerrada", "Bee Sweet se encuentra cerrada.");
-        return;
+      Alert.alert("Cafetería cerrada", "Bee Sweet se encuentra cerrado");
+      return;
     }
 
     setCheckoutScope(scope);
@@ -109,60 +141,87 @@ export default function CartScreen() {
     try {
       await fetchStatus();
       const status = useCafeteriaStatus.getState();
-      if (checkoutScope === "all" && (!status.busters.isOpen || !status.beesweet.isOpen)) {
-        Alert.alert("Cafetería cerrada", "Alguna de las cafeterías está cerrada.");
+      if (
+        checkoutScope === "all" &&
+        (!status.busters.isOpen || !status.beesweet.isOpen)
+      ) {
+        Alert.alert(
+          "Cafetería cerrada",
+          "Alguna de las cafeterías está cerrada",
+        );
         setIsSubmitting(false);
         return;
       }
       if (checkoutScope === "busters" && !status.busters.isOpen) {
-        Alert.alert("Cafetería cerrada", "Busters está cerrada.");
+        Alert.alert("Cafetería cerrada", "Busters está cerrado");
         setIsSubmitting(false);
         return;
       }
       if (checkoutScope === "beesweet" && !status.beesweet.isOpen) {
-        Alert.alert("Cafetería cerrada", "Bee Sweet está cerrada.");
+        Alert.alert("Cafetería cerrada", "Bee Sweet está cerrado");
         setIsSubmitting(false);
         return;
       }
 
       await fetchOrders();
-      const myOrders = useOrders.getState().orders.filter(o => {
+      const myOrders = useOrders.getState().orders.filter((o) => {
         return o.customerName === clientLabel(useUserStore.getState().clientId);
       });
-      
-      const activeCount = myOrders.filter(o => o.status !== "Entregado" && o.status !== "Cancelado").length;
+
+      const activeCount = myOrders.filter(
+        (o) => o.status !== "Entregado" && o.status !== "Cancelado",
+      ).length;
       if (activeCount >= 3) {
-         Alert.alert("Límite de pedidos", "Solo puedes tener un máximo de 3 pedidos activos al mismo tiempo.");
-         setIsSubmitting(false);
-         return;
+        Alert.alert(
+          "Límite de pedidos",
+          "Solo puedes tener un máximo de 3 pedidos activos al mismo tiempo.",
+        );
+        setIsSubmitting(false);
+        return;
       }
-      
+
       const thirtyMinsAgo = Date.now() - 30 * 60 * 1000;
-      const recentOrders = myOrders.filter(o => new Date(o.createdAt).getTime() > thirtyMinsAgo);
-      
-      // Determine how many orders we are about to create
-      const itemsToOrder = checkoutScope === "all" ? items : (checkoutScope === "busters" ? bustersItems : beeSweetItems);
+      const recentOrders = myOrders.filter(
+        (o) => new Date(o.createdAt).getTime() > thirtyMinsAgo,
+      );
+
+      const itemsToOrder =
+        checkoutScope === "all"
+          ? items
+          : checkoutScope === "busters"
+            ? bustersItems
+            : beeSweetItems;
       if (itemsToOrder.length === 0) {
         setIsSubmitting(false);
         return;
       }
 
-      const orderBusters = itemsToOrder.filter(i => i.product.businessId === "BT");
-      const orderBeeSweet = itemsToOrder.filter(i => i.product.businessId === "BS");
-      
+      const orderBusters = itemsToOrder.filter(
+        (i) => i.product.businessId === "BT",
+      );
+      const orderBeeSweet = itemsToOrder.filter(
+        (i) => i.product.businessId === "BS",
+      );
+
       let numNewOrders = 0;
       if (orderBusters.length > 0) numNewOrders++;
       if (orderBeeSweet.length > 0) numNewOrders++;
 
       if (recentOrders.length + numNewOrders > 2) {
-         Alert.alert("Límite de tiempo", "Has realizado muchos pedidos recientemente. Por favor espera 30 minutos antes de hacer otro pedido.");
-         setIsSubmitting(false);
-         return;
+        Alert.alert(
+          "Límite de tiempo",
+          "Has realizado muchos pedidos recientemente. Por favor espera 30 minutos antes de hacer otro pedido.",
+        );
+        setIsSubmitting(false);
+        return;
       }
 
       const sendOrder = async (orderItems: typeof items) => {
         if (orderItems.length === 0) return null;
-        const total = orderItems.reduce((sum: number, item: any) => sum + item.product.price * item.quantity, 0);
+        const total = orderItems.reduce(
+          (sum: number, item: any) => sum + item.product.price * item.quantity,
+          0,
+        );
         const orderData = {
           customerName: clientLabel(clientId),
           totalAmount: total,
@@ -190,7 +249,7 @@ export default function CartScreen() {
         if (!response.ok) {
           throw new Error("Error al enviar el pedido");
         }
-        
+
         return await response.json();
       };
 
@@ -203,7 +262,7 @@ export default function CartScreen() {
             lastResult = res;
           }
         }
-        
+
         if (orderBeeSweet.length > 0) {
           const res = await sendOrder(orderBeeSweet);
           if (res && isRealOrder(res)) {
@@ -211,19 +270,19 @@ export default function CartScreen() {
             lastResult = res;
           }
         }
-        
+
         if (checkoutScope === "all") {
           clearCart();
         } else {
-          itemsToOrder.forEach(i => removeItem(i.cartItemId));
+          itemsToOrder.forEach((i) => removeItem(i.cartItemId));
         }
-        
+
         fetchOrders();
-        
+
         // If we created two orders, we just go to the regular orders view to see both.
         // If one order, we go to preparing screen.
         if (numNewOrders > 1) {
-           router.push("/client/orders");
+          router.push("/client/orders");
         } else if (lastResult && isRealOrder(lastResult)) {
           router.push({
             pathname: "/client/preparing",
@@ -232,12 +291,14 @@ export default function CartScreen() {
         } else {
           router.push("/client/orders");
         }
-
       } catch (err: any) {
         if (err.message === "closed") {
-           Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
+          Alert.alert(
+            "Cafetería cerrada",
+            "Solo puedes pedir cuando la cafetería esté abierta.",
+          );
         } else {
-           throw err;
+          throw err;
         }
       }
     } catch (error) {
@@ -254,7 +315,11 @@ export default function CartScreen() {
   if (items.length === 0) {
     return (
       <SafeView edges={["top", "left", "right"]} style={styles.emptyContainer}>
-        <FillingCartIcon color={colors.accent} fill={colors.accentSoft} size={108} />
+        <FillingCartIcon
+          color={colors.accent}
+          fill={colors.accentSoft}
+          size={108}
+        />
         <Text style={styles.emptyTitle}>Tu carrito está vacío</Text>
         <Text style={styles.emptySubtitle}>
           Agrega productos desde las cafeterías para empezar tu pedido.
@@ -269,7 +334,7 @@ export default function CartScreen() {
     );
   }
 
-  const renderCartItem = (item: typeof items[0]) => (
+  const renderCartItem = (item: (typeof items)[0]) => (
     <View key={item.cartItemId} style={styles.cartItem}>
       <ProductImage
         contentFit="cover"
@@ -279,9 +344,7 @@ export default function CartScreen() {
       />
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>{item.product.name}</Text>
-        <Text style={styles.itemPrice}>
-          ${item.product.price.toFixed(2)}
-        </Text>
+        <Text style={styles.itemPrice}>${item.product.price.toFixed(2)}</Text>
 
         {item.modifications.length > 0 && (
           <Text style={styles.itemMods}>
@@ -321,7 +384,11 @@ export default function CartScreen() {
     <SafeView edges={["top", "left", "right"]} style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <FillingCartIcon color={colors.accent} fill={colors.accentSoft} size={42} />
+          <FillingCartIcon
+            color={colors.accent}
+            fill={colors.accentSoft}
+            size={42}
+          />
           <Text style={styles.title}>Tu Carrito</Text>
         </View>
         <Pressable
@@ -341,45 +408,69 @@ export default function CartScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       >
-        {bustersItems.length > 0 && (() => {
-          const subtotal = bustersItems.reduce((acc, i) => acc + i.product.price * i.quantity, 0);
-          return (
-          <View style={[styles.cafeteriaGroup, { backgroundColor: tone.bustersCard }]}>
-            <View style={styles.cafeteriaGroupHeader}>
-              <Text style={styles.cafeteriaGroupTitle}>BUSTERS</Text>
-              <Ionicons name="chevron-forward" size={18} color="#fff" />
-            </View>
-            <View style={styles.cafeteriaGroupContent}>
-              {bustersItems.map(renderCartItem)}
-            </View>
-            <Pressable
-              style={styles.orderOnlyButton}
-              onPress={() => openConfirmModal("busters")}
-            >
-              <Text style={styles.orderOnlyButtonText}>Ordenar solo Busters | ${subtotal.toFixed(2)}</Text>
-            </Pressable>
-          </View>
-        ); })()}
+        {bustersItems.length > 0 &&
+          (() => {
+            const subtotal = bustersItems.reduce(
+              (acc, i) => acc + i.product.price * i.quantity,
+              0,
+            );
+            return (
+              <View
+                style={[
+                  styles.cafeteriaGroup,
+                  { backgroundColor: tone.bustersCard },
+                ]}
+              >
+                <View style={styles.cafeteriaGroupHeader}>
+                  <Text style={styles.cafeteriaGroupTitle}>BUSTERS</Text>
+                  <Ionicons name="chevron-forward" size={18} color="#fff" />
+                </View>
+                <View style={styles.cafeteriaGroupContent}>
+                  {bustersItems.map(renderCartItem)}
+                </View>
+                <Pressable
+                  style={styles.orderOnlyButton}
+                  onPress={() => openConfirmModal("busters")}
+                >
+                  <Text style={styles.orderOnlyButtonText}>
+                    Ordenar solo Busters | ${subtotal.toFixed(2)}
+                  </Text>
+                </Pressable>
+              </View>
+            );
+          })()}
 
-        {beeSweetItems.length > 0 && (() => {
-          const subtotal = beeSweetItems.reduce((acc, i) => acc + i.product.price * i.quantity, 0);
-          return (
-          <View style={[styles.cafeteriaGroup, { backgroundColor: tone.beeSweetCard }]}>
-            <View style={styles.cafeteriaGroupHeader}>
-              <Text style={styles.cafeteriaGroupTitle}>BEE SWEET</Text>
-              <Ionicons name="chevron-forward" size={18} color="#fff" />
-            </View>
-            <View style={styles.cafeteriaGroupContent}>
-              {beeSweetItems.map(renderCartItem)}
-            </View>
-            <Pressable
-              style={styles.orderOnlyButton}
-              onPress={() => openConfirmModal("beesweet")}
-            >
-              <Text style={styles.orderOnlyButtonText}>Ordenar solo Bee Sweet | ${subtotal.toFixed(2)}</Text>
-            </Pressable>
-          </View>
-        ); })()}
+        {beeSweetItems.length > 0 &&
+          (() => {
+            const subtotal = beeSweetItems.reduce(
+              (acc, i) => acc + i.product.price * i.quantity,
+              0,
+            );
+            return (
+              <View
+                style={[
+                  styles.cafeteriaGroup,
+                  { backgroundColor: tone.beeSweetCard },
+                ]}
+              >
+                <View style={styles.cafeteriaGroupHeader}>
+                  <Text style={styles.cafeteriaGroupTitle}>BEE SWEET</Text>
+                  <Ionicons name="chevron-forward" size={18} color="#fff" />
+                </View>
+                <View style={styles.cafeteriaGroupContent}>
+                  {beeSweetItems.map(renderCartItem)}
+                </View>
+                <Pressable
+                  style={styles.orderOnlyButton}
+                  onPress={() => openConfirmModal("beesweet")}
+                >
+                  <Text style={styles.orderOnlyButtonText}>
+                    Ordenar solo Bee Sweet | ${subtotal.toFixed(2)}
+                  </Text>
+                </Pressable>
+              </View>
+            );
+          })()}
       </ScrollView>
 
       <View style={styles.footer}>
@@ -389,7 +480,9 @@ export default function CartScreen() {
         </View>
 
         {!canOrderAll ? (
-          <Text style={styles.closedNote}>La cafetería está cerrada. No se pueden enviar pedidos.</Text>
+          <Text style={styles.closedNote}>
+            La cafetería está cerrada. No se pueden enviar pedidos.
+          </Text>
         ) : null}
         <Pressable
           style={[
@@ -418,7 +511,9 @@ export default function CartScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>¿Enviar pedido?</Text>
-            <Text style={styles.modalMessage}>Por favor revisa que todo esté correcto antes de confirmar.</Text>
+            <Text style={styles.modalMessage}>
+              Por favor revisa que todo esté correcto antes de confirmar.
+            </Text>
             <View style={styles.modalActions}>
               <Pressable
                 style={[styles.modalButton, styles.modalButtonCancel]}
@@ -427,12 +522,18 @@ export default function CartScreen() {
                 <Text style={styles.modalButtonCancelText}>Cancelar</Text>
               </Pressable>
               <Pressable
-                style={[styles.modalButton, styles.modalButtonConfirm, confirmCountdown > 0 && styles.modalButtonDisabled]}
+                style={[
+                  styles.modalButton,
+                  styles.modalButtonConfirm,
+                  confirmCountdown > 0 && styles.modalButtonDisabled,
+                ]}
                 onPress={handleCheckout}
                 disabled={confirmCountdown > 0}
               >
                 <Text style={styles.modalButtonConfirmText}>
-                  {confirmCountdown > 0 ? `Confirmar (${confirmCountdown})` : "Confirmar"}
+                  {confirmCountdown > 0
+                    ? `Confirmar (${confirmCountdown})`
+                    : "Confirmar"}
                 </Text>
               </Pressable>
             </View>
@@ -451,278 +552,278 @@ export default function CartScreen() {
 
 function createStyles(colors: Palette) {
   return StyleSheet.create({
-  emptyContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
-  emptyTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: colors.text,
-    marginTop: 16,
-  },
-  emptySubtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: "center",
-    marginTop: 8,
-    lineHeight: 22,
-  },
-  browseButton: {
-    marginTop: 24,
-    backgroundColor: colors.accent,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: radii.pill,
-  },
-  browseButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  titleRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 8,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: colors.text,
-  },
-  clearButton: {
-    padding: 8,
-  },
-  clearButtonText: {
-    color: colors.danger,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  listContent: {
-    padding: 20,
-    paddingBottom: 40,
-    gap: 20,
-  },
-  cafeteriaGroup: {
-    borderRadius: radii.medium,
-    overflow: "hidden",
-  },
-  cafeteriaGroupHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  cafeteriaGroupTitle: {
-    fontSize: 16,
-    fontWeight: "800",
-    color: "#fff",
-    letterSpacing: 1.2,
-  },
-  cafeteriaGroupContent: {
-    backgroundColor: colors.surface,
-    padding: 12,
-    gap: 12,
-  },
-  orderOnlyButton: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  orderOnlyButtonText: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  cartItem: {
-    flexDirection: "row",
-    backgroundColor: colors.surface,
-    borderRadius: radii.medium,
-    padding: 12,
-    alignItems: "center",
-  },
-  itemImageContainer: {
-    width: 60,
-    height: 60,
-    backgroundColor: colors.surfaceMuted,
-    borderRadius: radii.small,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  itemInfo: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: colors.text,
-  },
-  itemPrice: {
-    fontSize: 15,
-    color: colors.accent,
-    marginTop: 2,
-  },
-  itemMods: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 4,
-  },
-  itemNotes: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 2,
-    fontStyle: "italic",
-  },
-  quantityControl: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  quantityBtn: {
-    padding: 6,
-    backgroundColor: colors.border,
-    borderRadius: radii.small,
-  },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-    marginHorizontal: 10,
-  },
-  deleteButton: {
-    padding: 8,
-    marginLeft: 8,
-  },
-  footer: {
-    padding: 20,
-    backgroundColor: colors.surface,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  totalRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  totalLabel: {
-    fontSize: 18,
-    color: colors.textSecondary,
-  },
-  totalValue: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: colors.text,
-  },
-  checkoutButton: {
-    backgroundColor: colors.accent,
-    borderRadius: radii.pill,
-    paddingVertical: 16,
-    alignItems: "center",
-  },
-  checkoutButtonDisabled: {
-    backgroundColor: colors.textSecondary,
-  },
-  closedNote: {
-    color: colors.danger,
-    fontSize: 13,
-    fontWeight: "700",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  checkoutButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: colors.surface,
-    padding: 24,
-    borderRadius: radii.large,
-    width: "80%",
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.text,
-    marginBottom: 8,
-  },
-  modalMessage: {
-    fontSize: 15,
-    color: colors.textSecondary,
-    textAlign: "center",
-    marginBottom: 24,
-  },
-  modalActions: {
-    flexDirection: "row",
-    gap: 12,
-    width: "100%",
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: radii.pill,
-    alignItems: "center",
-  },
-  modalButtonCancel: {
-    backgroundColor: colors.surfaceMuted,
-  },
-  modalButtonConfirm: {
-    backgroundColor: colors.accent,
-  },
-  modalButtonDisabled: {
-    backgroundColor: colors.textSecondary,
-    opacity: 0.7,
-  },
-  modalButtonCancelText: {
-    color: colors.text,
-    fontWeight: "600",
-  },
-  modalButtonConfirmText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  toastContainer: {
-    position: "absolute",
-    top: "50%",
-    left: "10%",
-    right: "10%",
-    backgroundColor: "rgba(0,0,0,0.75)",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: radii.large,
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-  },
-  toastText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
-  },
+    emptyContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 24,
+    },
+    emptyTitle: {
+      fontSize: 22,
+      fontWeight: "bold",
+      color: colors.text,
+      marginTop: 16,
+    },
+    emptySubtitle: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      textAlign: "center",
+      marginTop: 8,
+      lineHeight: 22,
+    },
+    browseButton: {
+      marginTop: 24,
+      backgroundColor: colors.accent,
+      paddingHorizontal: 24,
+      paddingVertical: 14,
+      borderRadius: radii.pill,
+    },
+    browseButtonText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    titleRow: {
+      alignItems: "center",
+      flexDirection: "row",
+      gap: 8,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      color: colors.text,
+    },
+    clearButton: {
+      padding: 8,
+    },
+    clearButtonText: {
+      color: colors.danger,
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    listContent: {
+      padding: 20,
+      paddingBottom: 40,
+      gap: 20,
+    },
+    cafeteriaGroup: {
+      borderRadius: radii.medium,
+      overflow: "hidden",
+    },
+    cafeteriaGroupHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    cafeteriaGroupTitle: {
+      fontSize: 16,
+      fontWeight: "800",
+      color: "#fff",
+      letterSpacing: 1.2,
+    },
+    cafeteriaGroupContent: {
+      backgroundColor: colors.surface,
+      padding: 12,
+      gap: 12,
+    },
+    orderOnlyButton: {
+      backgroundColor: "rgba(255,255,255,0.15)",
+      paddingVertical: 12,
+      alignItems: "center",
+    },
+    orderOnlyButtonText: {
+      color: "#fff",
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    cartItem: {
+      flexDirection: "row",
+      backgroundColor: colors.surface,
+      borderRadius: radii.medium,
+      padding: 12,
+      alignItems: "center",
+    },
+    itemImageContainer: {
+      width: 60,
+      height: 60,
+      backgroundColor: colors.surfaceMuted,
+      borderRadius: radii.small,
+      justifyContent: "center",
+      alignItems: "center",
+      marginRight: 12,
+    },
+    itemInfo: {
+      flex: 1,
+    },
+    itemName: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: colors.text,
+    },
+    itemPrice: {
+      fontSize: 15,
+      color: colors.accent,
+      marginTop: 2,
+    },
+    itemMods: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginTop: 4,
+    },
+    itemNotes: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginTop: 2,
+      fontStyle: "italic",
+    },
+    quantityControl: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    quantityBtn: {
+      padding: 6,
+      backgroundColor: colors.border,
+      borderRadius: radii.small,
+    },
+    quantityText: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: colors.text,
+      marginHorizontal: 10,
+    },
+    deleteButton: {
+      padding: 8,
+      marginLeft: 8,
+    },
+    footer: {
+      padding: 20,
+      backgroundColor: colors.surface,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    totalRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    totalLabel: {
+      fontSize: 18,
+      color: colors.textSecondary,
+    },
+    totalValue: {
+      fontSize: 24,
+      fontWeight: "bold",
+      color: colors.text,
+    },
+    checkoutButton: {
+      backgroundColor: colors.accent,
+      borderRadius: radii.pill,
+      paddingVertical: 16,
+      alignItems: "center",
+    },
+    checkoutButtonDisabled: {
+      backgroundColor: colors.textSecondary,
+    },
+    closedNote: {
+      color: colors.danger,
+      fontSize: 13,
+      fontWeight: "700",
+      marginBottom: 10,
+      textAlign: "center",
+    },
+    checkoutButtonText: {
+      color: "#fff",
+      fontSize: 18,
+      fontWeight: "bold",
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    modalContent: {
+      backgroundColor: colors.surface,
+      padding: 24,
+      borderRadius: radii.large,
+      width: "80%",
+      alignItems: "center",
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: colors.text,
+      marginBottom: 8,
+    },
+    modalMessage: {
+      fontSize: 15,
+      color: colors.textSecondary,
+      textAlign: "center",
+      marginBottom: 24,
+    },
+    modalActions: {
+      flexDirection: "row",
+      gap: 12,
+      width: "100%",
+    },
+    modalButton: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: radii.pill,
+      alignItems: "center",
+    },
+    modalButtonCancel: {
+      backgroundColor: colors.surfaceMuted,
+    },
+    modalButtonConfirm: {
+      backgroundColor: colors.accent,
+    },
+    modalButtonDisabled: {
+      backgroundColor: colors.textSecondary,
+      opacity: 0.7,
+    },
+    modalButtonCancelText: {
+      color: colors.text,
+      fontWeight: "600",
+    },
+    modalButtonConfirmText: {
+      color: "#fff",
+      fontWeight: "bold",
+    },
+    toastContainer: {
+      position: "absolute",
+      top: "50%",
+      left: "10%",
+      right: "10%",
+      backgroundColor: "rgba(0,0,0,0.75)",
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: radii.large,
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 1000,
+    },
+    toastText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "600",
+      textAlign: "center",
+    },
   });
 }

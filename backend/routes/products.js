@@ -5,11 +5,10 @@ const Product = require("../models/Product");
 //Ver todos los productos
 router.get("/", async (req, res) => {
   try {
-    //Solo se muestran los productos que están en stock, o todos si es el admin
     const { admin } = req.query;
     let query = {};
     if (admin !== "true") {
-      query.inStock = true; //Solo los productos disponibles
+      query.inStock = true;
     }
 
     const products = await Product.find(query);
@@ -31,7 +30,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//Crear un producto (Admin)
+//Crear un producto (Empleado)
 router.post("/", async (req, res) => {
   const product = new Product(req.body);
   try {
@@ -48,7 +47,7 @@ router.put("/:id", async (req, res) => {
     const updatedProduct = await Product.findOneAndUpdate(
       { id: req.params.id },
       req.body,
-      { new: true }, //Retornar el nuevo documento actualizado
+      { new: true }, //Retornar el nuevo producto actualizado
     );
     if (!updatedProduct)
       return res.status(404).json({ message: "Producto no encontrado" });

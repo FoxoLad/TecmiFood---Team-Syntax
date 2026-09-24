@@ -32,10 +32,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -138,19 +138,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Leche entera"
+        "name": "Para llevar"
       },
       {
-        "name": "Leche deslactosada"
-      },
-      {
-        "name": "Leche de almendra"
-      },
-      {
-        "name": "Con azúcar"
-      },
-      {
-        "name": "Sin azúcar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -165,10 +156,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -183,10 +174,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -200,9 +191,6 @@
     "status": "active",
     "category": "Otros",
     "modifications": [
-      {
-        "name": "Caliente"
-      },
       {
         "name": "Para llevar"
       }
@@ -219,9 +207,6 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
-      },
-      {
         "name": "Para llevar"
       }
     ]
@@ -237,19 +222,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Leche entera"
+        "name": "Para llevar"
       },
       {
-        "name": "Leche deslactosada"
-      },
-      {
-        "name": "Leche de almendra"
-      },
-      {
-        "name": "Con azúcar"
-      },
-      {
-        "name": "Sin azúcar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -264,10 +240,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -280,7 +256,11 @@
     "image": "Yogurt",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      }
+    ]
   },
   {
     "id": "BT-020",
@@ -293,10 +273,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -309,7 +289,11 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094829/macaron.jpg",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      }
+    ]
   },
   {
     "id": "BT-022",
@@ -320,7 +304,11 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789094823/conejo_turin.webp",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      }
+    ]
   },
   {
     "id": "BT-023",
@@ -333,10 +321,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -351,10 +339,10 @@
     "category": "Otros",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -463,7 +451,14 @@
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
+    ]
   },
   {
     "id": "BT-031",
@@ -475,7 +470,14 @@
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
+    ]
   },
   {
     "id": "BT-032",
@@ -525,7 +527,14 @@
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
+    ]
   },
   {
     "id": "BT-035",
@@ -594,7 +603,14 @@
     "status": "active",
     "category": "Bebidas",
     "subcategory": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
+    ]
   },
   {
     "id": "BT-040",
@@ -617,7 +633,26 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103783/banderrilla.jpg",
     "status": "active",
     "category": "Comidas",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin catsup"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin cebolla"
+      },
+      {
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Partida a la mitad"
+      }
+    ]
   },
   {
     "id": "BT-042",
@@ -630,19 +665,13 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
-      },
-      {
-        "name": "Caliente"
+        "name": "Bien dorado"
       },
       {
         "name": "Sin jalapeños"
+      },
+      {
+        "name": "Sin frijoles"
       }
     ]
   },
@@ -657,19 +686,28 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
+        "name": "Pan tostado"
       },
       {
         "name": "Caliente"
       },
       {
-        "name": "Sin jalapeños"
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin chiles/jalapeños"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -684,16 +722,7 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
-      },
-      {
-        "name": "Caliente"
+        "name": "Bien dorado"
       },
       {
         "name": "Sin jalapeños"
@@ -711,10 +740,10 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Caliente"
+        "name": "Para llevar"
       },
       {
-        "name": "Para llevar"
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -729,19 +758,28 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
+        "name": "Pan tostado"
       },
       {
         "name": "Caliente"
       },
       {
-        "name": "Sin jalapeños"
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin chiles/jalapeños"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -756,16 +794,7 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
-      },
-      {
-        "name": "Caliente"
+        "name": "Bien dorado"
       },
       {
         "name": "Sin jalapeños"
@@ -783,19 +812,28 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
+        "name": "Pan tostado"
       },
       {
         "name": "Caliente"
       },
       {
-        "name": "Sin jalapeños"
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin chiles/jalapeños"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -808,7 +846,14 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106287/D2Queso.jpg",
     "status": "active",
     "category": "Comidas",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
+    ]
   },
   {
     "id": "BT-050",
@@ -831,6 +876,12 @@
       },
       {
         "name": "Sin cebolla"
+      },
+      {
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -843,7 +894,14 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103455/Avena.jpg",
     "status": "active",
     "category": "Comidas",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Para llevar"
+      }
+    ]
   },
   {
     "id": "BT-052",
@@ -854,7 +912,32 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103456/bagel.jpg",
     "status": "active",
     "category": "Comidas",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Pan tostado"
+      },
+      {
+        "name": "Caliente"
+      },
+      {
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin chiles/jalapeños"
+      },
+      {
+        "name": "Partida a la mitad"
+      }
+    ]
   },
   {
     "id": "BT-053",
@@ -867,19 +950,28 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
+        "name": "Pan tostado"
       },
       {
         "name": "Caliente"
       },
       {
-        "name": "Sin jalapeños"
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin chiles/jalapeños"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -894,13 +986,22 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin cebolla"
-      },
-      {
         "name": "Sin crema"
       },
       {
+        "name": "Sin queso"
+      },
+      {
+        "name": "Sin cebolla"
+      },
+      {
+        "name": "Salsa aparte"
+      },
+      {
         "name": "Extra picante"
+      },
+      {
+        "name": "Poca salsa"
       }
     ]
   },
@@ -925,6 +1026,12 @@
       },
       {
         "name": "Sin cebolla"
+      },
+      {
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -939,19 +1046,28 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
+        "name": "Pan tostado"
       },
       {
         "name": "Caliente"
       },
       {
-        "name": "Sin jalapeños"
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin chiles/jalapeños"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -966,19 +1082,28 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin aderezos"
-      },
-      {
-        "name": "Sin tomate"
-      },
-      {
-        "name": "Sin lechuga"
+        "name": "Pan tostado"
       },
       {
         "name": "Caliente"
       },
       {
-        "name": "Sin jalapeños"
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Sin mostaza"
+      },
+      {
+        "name": "Sin lechuga"
+      },
+      {
+        "name": "Sin tomate"
+      },
+      {
+        "name": "Sin chiles/jalapeños"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -991,7 +1116,17 @@
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/ensalada.jpg",
     "status": "active",
     "category": "Comidas",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Sin aderezo"
+      },
+      {
+        "name": "Aderezo aparte"
+      },
+      {
+        "name": "Sin crutones"
+      }
+    ]
   },
   {
     "id": "BT-059",
@@ -1014,6 +1149,12 @@
       },
       {
         "name": "Sin cebolla"
+      },
+      {
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -1038,6 +1179,12 @@
       },
       {
         "name": "Sin cebolla"
+      },
+      {
+        "name": "Sin mayonesa"
+      },
+      {
+        "name": "Partida a la mitad"
       }
     ]
   },
@@ -1052,13 +1199,22 @@
     "category": "Comidas",
     "modifications": [
       {
-        "name": "Sin cebolla"
-      },
-      {
         "name": "Sin crema"
       },
       {
+        "name": "Sin queso"
+      },
+      {
+        "name": "Sin cebolla"
+      },
+      {
+        "name": "Salsa aparte"
+      },
+      {
         "name": "Extra picante"
+      },
+      {
+        "name": "Poca salsa"
       }
     ]
   },
@@ -1073,13 +1229,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
         "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Sin azúcar"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/cafefrap.jpg",
@@ -1098,13 +1263,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
-        "name": "Sin crema batida"
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106317/mochafrap.jpg",
@@ -1123,13 +1297,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
         "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Sin azúcar"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106248/CaraFrap.jpg",
@@ -1148,13 +1331,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
         "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Sin azúcar"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789103821/C_CFrap.jpg",
@@ -1168,20 +1360,7 @@
     "name": "Frappé Yogurt Fresa/Mango",
     "description": "Frappé de yogurt con fresa o mango.",
     "price": 64,
-    "modifications": [
-      {
-        "name": "Leche entera"
-      },
-      {
-        "name": "Leche deslactosada"
-      },
-      {
-        "name": "Leche de almendra"
-      },
-      {
-        "name": "Sin crema batida"
-      }
-    ],
+    "modifications": [],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
     "status": "active",
     "category": "Bebidas",
@@ -1198,13 +1377,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
         "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Sin azúcar"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106371/Smoothie.jpg",
@@ -1220,16 +1408,19 @@
     "price": 64,
     "modifications": [
       {
-        "name": "Leche entera"
+        "name": "Caliente"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Frío"
       },
       {
-        "name": "Leche de almendra"
+        "name": "Sin azúcar"
       },
       {
-        "name": "Sin crema batida"
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106256/ChaiFrap.jpg",
@@ -1245,16 +1436,19 @@
     "price": 64,
     "modifications": [
       {
-        "name": "Leche entera"
+        "name": "Caliente"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Frío"
       },
       {
-        "name": "Leche de almendra"
+        "name": "Sin azúcar"
       },
       {
-        "name": "Sin crema batida"
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106369/YogurtFrap.jpg",
@@ -1273,13 +1467,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
         "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Sin azúcar"
       }
     ],
     "image": "C&CFrap",
@@ -1298,13 +1501,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
         "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Sin azúcar"
       }
     ],
     "image": "C&CFrap",
@@ -1323,13 +1535,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
-        "name": "Sin crema batida"
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "C&CFrap",
@@ -1348,13 +1569,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
-        "name": "Sin crema batida"
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Con azúcar"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "C&CFrap",
@@ -1370,16 +1600,19 @@
     "price": 74,
     "modifications": [
       {
-        "name": "Leche entera"
+        "name": "Caliente"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Frío"
       },
       {
-        "name": "Leche de almendra"
+        "name": "Sin azúcar"
       },
       {
-        "name": "Sin crema batida"
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "TisanaFrap",
@@ -1398,13 +1631,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
       },
       {
         "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Sin azúcar"
       }
     ],
     "image": "Smoothie",
@@ -1423,16 +1665,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
       },
       {
         "name": "Con azúcar"
       },
       {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "Latte",
@@ -1451,16 +1699,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
       },
       {
         "name": "Con azúcar"
       },
       {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "Espresso",
@@ -1479,16 +1733,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
       },
       {
         "name": "Con azúcar"
       },
       {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "Espresso",
@@ -1507,16 +1767,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
       },
       {
         "name": "Con azúcar"
       },
       {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106325/Latte.png",
@@ -1535,16 +1801,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
       },
       {
         "name": "Con azúcar"
       },
       {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106318/Mocha.png",
@@ -1558,23 +1830,7 @@
     "name": "Café Caramelo",
     "description": "Café sabor caramelo.",
     "price": 65,
-    "modifications": [
-      {
-        "name": "Leche entera"
-      },
-      {
-        "name": "Leche deslactosada"
-      },
-      {
-        "name": "Leche de almendra"
-      },
-      {
-        "name": "Con azúcar"
-      },
-      {
-        "name": "Sin azúcar"
-      }
-    ],
+    "modifications": [],
     "image": "Mocha",
     "status": "active",
     "category": "Bebidas",
@@ -1591,16 +1847,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
       },
       {
         "name": "Con azúcar"
       },
       {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "https://res.cloudinary.com/rtrggojd/image/upload/v1789106303/Espresso.png",
@@ -1614,7 +1876,17 @@
     "name": "Pink Lemonade",
     "description": "Limonada rosa.",
     "price": 41,
-    "modifications": [],
+    "modifications": [
+      {
+        "name": "Poco hielo"
+      },
+      {
+        "name": "Fría"
+      },
+      {
+        "name": "Al tiempo"
+      }
+    ],
     "image": "Arizona",
     "status": "active",
     "category": "Bebidas",
@@ -1631,16 +1903,22 @@
         "name": "Leche entera"
       },
       {
-        "name": "Leche deslactosada"
+        "name": "Deslactosada"
       },
       {
         "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
       },
       {
         "name": "Con azúcar"
       },
       {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Mitad de café (Suave)"
       }
     ],
     "image": "Mocha",
@@ -1656,13 +1934,19 @@
     "price": 35,
     "modifications": [
       {
-        "name": "Frío"
-      },
-      {
         "name": "Caliente"
       },
       {
+        "name": "Frío"
+      },
+      {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "ChaiFrap",
@@ -1678,13 +1962,19 @@
     "price": 59,
     "modifications": [
       {
-        "name": "Frío"
-      },
-      {
         "name": "Caliente"
       },
       {
+        "name": "Frío"
+      },
+      {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "TisanaFrap",
@@ -1700,13 +1990,19 @@
     "price": 70,
     "modifications": [
       {
-        "name": "Frío"
-      },
-      {
         "name": "Caliente"
       },
       {
+        "name": "Frío"
+      },
+      {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "ChaiFrap",
@@ -1722,13 +2018,19 @@
     "price": 70,
     "modifications": [
       {
-        "name": "Frío"
-      },
-      {
         "name": "Caliente"
       },
       {
+        "name": "Frío"
+      },
+      {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "Latte",
@@ -1744,13 +2046,19 @@
     "price": 76,
     "modifications": [
       {
-        "name": "Frío"
-      },
-      {
         "name": "Caliente"
       },
       {
+        "name": "Frío"
+      },
+      {
         "name": "Sin azúcar"
+      },
+      {
+        "name": "Cargado"
+      },
+      {
+        "name": "Poca agua"
       }
     ],
     "image": "CaraFrap",
@@ -1789,23 +2097,7 @@
     "image": "Latte",
     "status": "active",
     "category": "Extras y Desechables",
-    "modifications": [
-      {
-        "name": "Leche entera"
-      },
-      {
-        "name": "Leche deslactosada"
-      },
-      {
-        "name": "Leche de almendra"
-      },
-      {
-        "name": "Con azúcar"
-      },
-      {
-        "name": "Sin azúcar"
-      }
-    ]
+    "modifications": []
   },
   {
     "id": "BT-094",
@@ -1915,7 +2207,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1000",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-002",
@@ -1928,13 +2233,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -1947,7 +2264,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1002",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-004",
@@ -1958,7 +2288,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1003",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-005",
@@ -1971,16 +2314,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -1993,7 +2345,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1005",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-007",
@@ -2006,16 +2371,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2028,7 +2402,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1007",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-009",
@@ -2041,13 +2428,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2062,16 +2461,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2089,10 +2497,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -2107,16 +2518,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2129,7 +2549,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1012",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-014",
@@ -2140,7 +2573,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1013",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-015",
@@ -2156,10 +2602,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -2174,13 +2626,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2195,16 +2659,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2222,10 +2695,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -2243,10 +2719,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -2264,10 +2743,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -2280,7 +2762,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1020",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-022",
@@ -2293,16 +2788,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2315,7 +2819,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1022",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-024",
@@ -2331,10 +2848,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -2349,16 +2872,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2373,16 +2905,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2397,13 +2938,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2416,7 +2969,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1027",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-029",
@@ -2429,16 +2995,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2453,13 +3028,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2477,10 +3064,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -2495,16 +3088,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2519,13 +3121,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2540,16 +3154,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2562,7 +3185,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1034",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-036",
@@ -2575,13 +3211,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2596,16 +3244,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2620,16 +3277,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2644,16 +3310,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2668,16 +3343,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2692,16 +3376,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2714,7 +3407,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1041",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-043",
@@ -2727,13 +3433,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2751,10 +3469,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -2769,13 +3490,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2788,7 +3521,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1045",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-047",
@@ -2799,7 +3545,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1046",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-048",
@@ -2812,13 +3571,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2833,16 +3604,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2855,7 +3635,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1049",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-051",
@@ -2871,10 +3664,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -2889,16 +3685,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -2911,7 +3716,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1052",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-054",
@@ -2927,10 +3745,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -2945,13 +3769,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2966,13 +3802,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -2987,16 +3835,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3011,16 +3868,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3035,13 +3901,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -3056,16 +3934,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3083,10 +3970,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -3104,10 +3994,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -3125,10 +4018,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -3143,16 +4042,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3165,7 +4073,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1064",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-066",
@@ -3181,10 +4102,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -3197,7 +4121,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1066",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-068",
@@ -3210,13 +4147,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -3231,13 +4180,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -3252,16 +4213,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3279,10 +4249,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -3297,16 +4270,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3321,16 +4303,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3348,10 +4339,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -3364,7 +4361,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1074",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-076",
@@ -3377,16 +4387,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3401,13 +4420,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -3422,13 +4453,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -3446,10 +4489,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -3464,16 +4513,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3486,7 +4544,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1080",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "En cono"
+      },
+      {
+        "name": "En vaso"
+      },
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con cuchara"
+      }
+    ]
   },
   {
     "id": "BS-082",
@@ -3499,13 +4570,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -3520,16 +4603,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3547,10 +4639,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -3565,16 +4660,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3589,16 +4693,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3616,10 +4729,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -3634,13 +4750,25 @@
     "category": "Comidas",
     "modifications": [
       {
+        "name": "Cajeta extra"
+      },
+      {
+        "name": "Lechera extra"
+      },
+      {
+        "name": "Nutella extra"
+      },
+      {
+        "name": "Plátano extra"
+      },
+      {
+        "name": "Fresa extra"
+      },
+      {
+        "name": "Partida a la mitad"
+      },
+      {
         "name": "Para llevar"
-      },
-      {
-        "name": "Con cubiertos"
-      },
-      {
-        "name": "Extra jarabe"
       }
     ]
   },
@@ -3655,16 +4783,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3677,7 +4814,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1089",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-091",
@@ -3688,7 +4838,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1090",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-092",
@@ -3704,10 +4867,13 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
       }
     ]
   },
@@ -3722,16 +4888,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3749,10 +4924,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -3767,16 +4948,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3789,7 +4979,20 @@
     "image": "https://loremflickr.com/320/240/candy,dessert?lock=1095",
     "status": "active",
     "category": "Otros",
-    "modifications": []
+    "modifications": [
+      {
+        "name": "Para llevar"
+      },
+      {
+        "name": "Con tenedor"
+      },
+      {
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      }
+    ]
   },
   {
     "id": "BS-097",
@@ -3802,16 +5005,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3829,10 +5041,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   },
@@ -3847,16 +5065,25 @@
     "category": "Bebidas",
     "modifications": [
       {
-        "name": "Sin azúcar"
-      },
-      {
-        "name": "Leche light"
-      },
-      {
         "name": "Deslactosada"
       },
       {
-        "name": "Extra hielo"
+        "name": "Leche de almendra"
+      },
+      {
+        "name": "Leche de avena"
+      },
+      {
+        "name": "Sin crema batida"
+      },
+      {
+        "name": "Extra jarabe"
+      },
+      {
+        "name": "Sin azúcar"
+      },
+      {
+        "name": "Poco hielo"
       }
     ]
   },
@@ -3874,10 +5101,16 @@
         "name": "Para llevar"
       },
       {
-        "name": "Con cubiertos"
+        "name": "Con tenedor"
       },
       {
-        "name": "Extra jarabe"
+        "name": "Con cuchara"
+      },
+      {
+        "name": "Para regalo"
+      },
+      {
+        "name": "Caliente (calentado en horno)"
       }
     ]
   }

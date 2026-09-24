@@ -94,65 +94,125 @@ export default function CartScreen() {
       await fetchStatus();
       if (!useCafeteriaStatus.getState().isOpen) {
         Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
+        setIsSubmitting(false);
         return;
       }
-      
-      const itemsToOrder = checkoutScope === "all" ? items : (checkoutScope === "busters" ? bustersItems : beeSweetItems);
-      if (itemsToOrder.length === 0) return;
-      
-      const orderTotal = itemsToOrder.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-      //Preparar los datos según el modelo Order.js en el backend
-      const orderData = {
-        customerName: clientLabel(clientId),
-        totalAmount: orderTotal,
-        items: itemsToOrder.map((item) => ({
-          productId: item.product.id,
-          name: item.product.name,
-          price: item.product.price,
-          quantity: item.quantity,
-          image: item.product.image,
-          modifications: item.modifications,
-          notes: item.notes,
-        })),
+      await fetchOrders();
+      const myOrders = useOrders.getState().orders.filter(o => {
+        return o.customerName === clientLabel(useUserStore.getState().clientId);
+      });
+      
+      const activeCount = myOrders.filter(o => o.status !== "Entregado" && o.status !== "Cancelado").length;
+      if (activeCount >= 3) {
+         Alert.alert("Límite de pedidos", "Solo puedes tener un máximo de 3 pedidos activos al mismo tiempo.");
+         setIsSubmitting(false);
+         return;
+      }
+      
+      const thirtyMinsAgo = Date.now() - 30 * 60 * 1000;
+      const recentOrders = myOrders.filter(o => new Date(o.createdAt).getTime() > thirtyMinsAgo);
+      
+      // Determine how many orders we are about to create
+      const itemsToOrder = checkoutScope === "all" ? items : (checkoutScope === "busters" ? bustersItems : beeSweetItems);
+      if (itemsToOrder.length === 0) {
+        setIsSubmitting(false);
+        return;
+      }
+
+      const orderBusters = itemsToOrder.filter(i => i.product.businessId === "BT");
+      const orderBeeSweet = itemsToOrder.filter(i => i.product.businessId === "BS");
+      
+      let numNewOrders = 0;
+      if (orderBusters.length > 0) numNewOrders++;
+      if (orderBeeSweet.length > 0) numNewOrders++;
+
+      if (recentOrders.length + numNewOrders > 2) {
+         Alert.alert("Límite de tiempo", "Has realizado muchos pedidos recientemente. Por favor espera 30 minutos antes de hacer otro pedido.");
+         setIsSubmitting(false);
+         return;
+      }
+
+      const sendOrder = async (orderItems: typeof items) => {
+        if (orderItems.length === 0) return null;
+        const total = orderItems.reduce((sum: number, item: any) => sum + item.product.price * item.quantity, 0);
+        const orderData = {
+          customerName: clientLabel(clientId),
+          totalAmount: total,
+          items: orderItems.map((item: any) => ({
+            productId: item.product.id,
+            name: item.product.name,
+            price: item.product.price,
+            quantity: item.quantity,
+            image: item.product.image,
+            modifications: item.modifications,
+            notes: item.notes,
+          })),
+        };
+
+        const response = await fetch(endpoints.orders, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderData),
+        });
+
+        if (response.status === 403) {
+          throw new Error("closed");
+        }
+
+        if (!response.ok) {
+          throw new Error("Error al enviar el pedido");
+        }
+        
+        return await response.json();
       };
 
-      const response = await fetch(endpoints.orders, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
+      try {
+        let lastResult = null;
+        if (orderBusters.length > 0) {
+          const res = await sendOrder(orderBusters);
+          if (res && isRealOrder(res)) {
+            rememberOrder(res);
+            lastResult = res;
+          }
+        }
+        
+        if (orderBeeSweet.length > 0) {
+          const res = await sendOrder(orderBeeSweet);
+          if (res && isRealOrder(res)) {
+            rememberOrder(res);
+            lastResult = res;
+          }
+        }
+        
+        if (checkoutScope === "all") {
+          clearCart();
+        } else {
+          itemsToOrder.forEach(i => removeItem(i.cartItemId));
+        }
+        
+        fetchOrders();
+        
+        // If we created two orders, we just go to the regular orders view to see both.
+        // If one order, we go to preparing screen.
+        if (numNewOrders > 1) {
+           router.push("/client/orders");
+        } else if (lastResult && isRealOrder(lastResult)) {
+          router.push({
+            pathname: "/client/preparing",
+            params: { id: lastResult._id || String(lastResult.orderNumber) },
+          });
+        } else {
+          router.push("/client/orders");
+        }
 
-      if (response.status === 403) {
-        Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
-        return;
+      } catch (err: any) {
+        if (err.message === "closed") {
+           Alert.alert("Cafetería cerrada", "Solo puedes pedir cuando la cafetería esté abierta.");
+        } else {
+           throw err;
+        }
       }
-
-      if (!response.ok) {
-        throw new Error("Error al enviar el pedido");
-      }
-
-      const result: unknown = await response.json();
-      if (isRealOrder(result)) {
-        rememberOrder(result);
-      }
-      
-      // Limpiar solo lo que se pidió
-      if (checkoutScope === "all") {
-        clearCart();
-      } else {
-        itemsToOrder.forEach(i => removeItem(i.cartItemId));
-      }
-      
-      fetchOrders();
-      if (isRealOrder(result)) {
-        router.push({
-          pathname: "/client/preparing",
-          params: { id: result._id || String(result.orderNumber) },
-        });
-        return;
-      }
-      router.push("/client/preparing");
     } catch (error) {
       console.error("Error al enviar orden:", error);
       Alert.alert(

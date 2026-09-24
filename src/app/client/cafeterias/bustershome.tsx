@@ -83,7 +83,7 @@ export default function HomeScreen() {
             
             const sortWeight = (s: string) => { 
                 const lower = s.toLowerCase(); 
-                if (lower.includes('frío') || lower.includes('frio')) return 1; 
+                if (lower.includes('frí') || lower.includes('fri') || lower.includes('fria')) return 1; 
                 if (lower.includes('caliente')) return 2; 
                 if (lower.includes('frappe') || lower.includes('frappé')) return 3; 
                 return 4; 

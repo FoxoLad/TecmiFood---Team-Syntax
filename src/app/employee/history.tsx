@@ -51,6 +51,8 @@ export default function EmployeeHistoryScreen() {
 
         periodOrders.forEach(order => {
             order.items.forEach(item => {
+                const prefix = employeeCafeteria === 'Busters' ? 'BT' : 'BS';
+                if (!item.productId.startsWith(prefix)) return;
                 const pName = item.name;
                 if (!productMap[pName]) {
                     productMap[pName] = { qty: 0, price: item.price, total: 0 };

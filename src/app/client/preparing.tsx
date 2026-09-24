@@ -1,15 +1,19 @@
 /** Seguimiento visual del pedido que el cliente acaba de enviar o abrió desde avisos. */
+import { useMemo } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../components/SafeView";
-import { colors, radii, spacing } from "../../constants/theme";
+import { radii, spacing, type Palette } from "../../constants/theme";
+import { useColors } from "../../stores/useTheme";
 import { useOrders } from "../../stores/useOrders";
 import { formatOrderNumber, getOrderStatusHint, getOrderStatusLabel } from "../../types/order";
 
 const STEPS = ["Pendiente", "En preparación", "Terminado"];
 
 export default function PreparingOrderScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { id } = useLocalSearchParams<{ id?: string }>();
   const orders = useOrders((state) => state.orders);
   const latestOrder = id
@@ -81,7 +85,8 @@ export default function PreparingOrderScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -189,4 +194,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
   },
-});
+  });
+}

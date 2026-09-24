@@ -17,7 +17,8 @@ import {
 
 import SafeView from "../../../../components/SafeView";
 import { ProductImage } from "../../../../components/ProductImage";
-import { colors, radii } from "../../../../constants/theme";
+import { radii, type Palette } from "../../../../constants/theme";
+import { useColors } from "../../../../stores/useTheme";
 import { useCafeteriaStatus } from "../../../../stores/useCafeteriaStatus";
 import { useCartStore } from "../../../../stores/useCartStore";
 import { useProductStore } from "../../../../stores/useProduct";
@@ -25,6 +26,8 @@ import { useFavoritesStore } from "../../../../stores/useFavorites";
 import { modificationLabels } from "../../../../types/product";
 
 export default function BustersProductScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
     const { id } = useLocalSearchParams<{ id?: string | string[] }>();
     const [modalType, setModalType] = useState<"confirm" | "success" | null>(null);
     const [selectedModifications, setSelectedModifications] = useState<string[]>([]);
@@ -336,7 +339,8 @@ export default function BustersProductScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
     container: {
         backgroundColor: colors.background,
         flex: 1,
@@ -542,4 +546,5 @@ const styles = StyleSheet.create({
         marginTop: 40,
         textAlign: "center",
     },
-});
+  });
+}

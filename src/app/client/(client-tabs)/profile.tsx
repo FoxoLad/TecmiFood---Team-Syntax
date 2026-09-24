@@ -1,7 +1,7 @@
 /** Perfil del cliente y acceso del empleado con un código local. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter, type Href } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
     Keyboard,
     KeyboardAvoidingView,
@@ -13,7 +13,8 @@ import {
     View,
 } from "react-native";
 import SafeView from "../../../components/SafeView";
-import { colors, radii } from "../../../constants/theme";
+import { employee, employeeOnDark, radii, type Palette } from "../../../constants/theme";
+import { useColors, useThemeStore } from "../../../stores/useTheme";
 
 import { useUserStore } from "../../../stores/useUserStore";
 
@@ -22,6 +23,10 @@ import { useUserStore } from "../../../stores/useUserStore";
 const EMPLOYEE_CODE = "12345";
 
 export default function ProfileScreen() {
+  const colors = useColors();
+  const mode = useThemeStore((state) => state.mode);
+  const kitchen = mode === "dark" ? employeeOnDark : employee;
+  const styles = useMemo(() => createStyles(colors, kitchen), [colors, kitchen]);
   const [employeeCode, setEmployeeCode] = useState("");
   const [codeError, setCodeError] = useState(false);
   const router = useRouter();
@@ -34,6 +39,8 @@ export default function ProfileScreen() {
   const openOrderHistory = () => router.push("/client/orders?view=history" as Href);
 
   const openFavorites = () => router.push("/client/favorites");
+
+  const openSettings = () => router.push("/client/settings" as Href);
 
   const accessEmployeeOrders = () => {
     if (employeeCode.trim() === EMPLOYEE_CODE) {
@@ -50,7 +57,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeView style={styles.safeArea}>
+    <SafeView edges={["top", "left", "right"]} style={styles.safeArea}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.keyboardAvoider}
@@ -104,6 +111,19 @@ export default function ProfileScreen() {
             <Text style={styles.cardDescription}>Tus productos guardados</Text>
           </Pressable>
 
+          <Pressable
+            accessibilityLabel="Abrir configuración"
+            accessibilityRole="button"
+            onPress={openSettings}
+            style={({ pressed }) => [styles.settingsButton, pressed && styles.pressed]}
+          >
+            <Ionicons color={colors.accent} name="settings-outline" size={22} />
+            <Text style={styles.settingsLabel}>Configuración</Text>
+            <Ionicons color={colors.textSecondary} name="chevron-forward" size={20} />
+          </Pressable>
+
+          <View style={styles.employeeCard}>
+          <Text style={styles.employeeKicker}>MODO COCINA</Text>
           <Text style={styles.employeeHint}>¿Eres de la cafetería? Ingresa tu código para ver y aceptar pedidos.</Text>
           <View style={styles.employeeCodeContainer}>
             <TextInput
@@ -115,7 +135,7 @@ export default function ProfileScreen() {
               }}
               onSubmitEditing={accessEmployeeOrders}
               placeholder="Código de empleado"
-              placeholderTextColor="#333333"
+              placeholderTextColor={kitchen.muted}
               returnKeyType="done"
               style={styles.employeeCodeInput}
               value={employeeCode}
@@ -131,6 +151,7 @@ export default function ProfileScreen() {
           </View>
 
           {codeError ? <Text style={styles.errorMessage}>Código de empleado inválido</Text> : null}
+          </View>
 
           <Text style={styles.version}>Versión 1.0.0</Text>
         </Pressable>
@@ -139,7 +160,8 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette, kitchen: typeof employee) {
+  return StyleSheet.create({
   safeArea: {
     backgroundColor: colors.background,
     flex: 1,
@@ -181,7 +203,7 @@ const styles = StyleSheet.create({
   smallCard: {
     alignItems: "center",
     backgroundColor: colors.surface,
-    borderColor: "#E7E2D8",
+    borderColor: colors.border,
     borderRadius: 20,
     borderWidth: 1,
     elevation: 3,
@@ -198,7 +220,7 @@ const styles = StyleSheet.create({
   favoritesCard: {
     alignItems: "center",
     backgroundColor: colors.surface,
-    borderColor: "#E7E2D8",
+    borderColor: colors.border,
     borderRadius: 20,
     borderWidth: 1,
     elevation: 3,
@@ -212,6 +234,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   cardTitle: {
+    color: colors.text,
     fontSize: 18,
     textAlign: "center",
   },
@@ -224,21 +247,53 @@ const styles = StyleSheet.create({
     width: 56,
   },
   cardDescription: {
+    color: colors.textSecondary,
     fontSize: 13,
     textAlign: "center",
   },
+  settingsButton: {
+    alignItems: "center",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 16,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  settingsLabel: {
+    color: colors.text,
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  employeeCard: {
+    backgroundColor: kitchen.background,
+    borderRadius: 22,
+    marginTop: "auto",
+    padding: 16,
+  },
+  employeeKicker: {
+    color: kitchen.accent,
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 1.4,
+    textAlign: "center",
+  },
   employeeHint: {
-    color: colors.textSecondary,
+    color: kitchen.muted,
     fontSize: 13,
     lineHeight: 18,
-    marginTop: "auto",
-    paddingBottom: 8,
+    paddingBottom: 10,
+    paddingTop: 6,
     textAlign: "center",
   },
   employeeCodeContainer: {
     alignItems: "center",
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    backgroundColor: kitchen.surface,
+    borderColor: kitchen.border,
     borderRadius: radii.pill,
     borderWidth: 1.3,
     flexDirection: "row",
@@ -246,6 +301,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   employeeCodeInput: {
+    color: kitchen.text,
     flex: 1,
     fontSize: 18,
     height: 50,
@@ -266,10 +322,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   version: {
-    color: "#666666",
+    color: colors.textSecondary,
     fontSize: 12,
     paddingBottom: 8,
     paddingTop: 8,
     textAlign: "center",
   },
-});
+  });
+}

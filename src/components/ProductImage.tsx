@@ -1,4 +1,4 @@
-/** Imagen de producto. Acepta URL, clave local o nombre y usa un respaldo si no hay foto. */
+/** Imagen de producto. Si la foto no corresponde al nombre, el espacio queda en blanco. */
 import { Image, type ImageContentFit, type ImageStyle } from "expo-image";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { resolveProductImageSource } from "../constants/images";
@@ -18,20 +18,25 @@ export function ProductImage({
   imageStyle,
   contentFit = "cover",
 }: ProductImageProps) {
+  const source = resolveProductImageSource({ image, name });
+
   return (
     <View style={[styles.frame, style]}>
-      <Image
-        contentFit={contentFit}
-        source={resolveProductImageSource({ image, name })}
-        style={[styles.image, imageStyle]}
-        transition={180}
-      />
+      {source ? (
+        <Image
+          contentFit={contentFit}
+          source={source}
+          style={[styles.image, imageStyle]}
+          transition={180}
+        />
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   frame: {
+    backgroundColor: "#FFFFFF",
     overflow: "hidden",
   },
   image: {

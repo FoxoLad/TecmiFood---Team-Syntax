@@ -13,7 +13,8 @@ import {
 
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii } from "../../../constants/theme";
+import { radii, type Palette } from "../../../constants/theme";
+import { useColors } from "../../../stores/useTheme";
 import { useProductStore } from "../../../stores/useProduct";
 import { isProductAvailable } from "../../../types/product";
 
@@ -26,6 +27,8 @@ const categorySources: Record<string, string[]> = {
 };
 
 export default function CategoryScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
     const { category } = useLocalSearchParams<{ category?: string | string[] }>();
     const [search, setSearch] = useState("");
     const categoryName = Array.isArray(category) ? category[0] : category;
@@ -122,7 +125,8 @@ export default function CategoryScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
     container: {
         backgroundColor: colors.background,
         flex: 1,
@@ -206,4 +210,5 @@ const styles = StyleSheet.create({
         textAlign: "center",
         width: "100%",
     },
-});
+  });
+}

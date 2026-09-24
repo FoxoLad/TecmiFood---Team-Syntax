@@ -1,4 +1,5 @@
 /** Lista de productos que el cliente marcó con el corazón. */
+import { useMemo } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import {
@@ -10,10 +11,13 @@ import {
 } from "react-native";
 import SafeView from "../../components/SafeView";
 import { ProductImage } from "../../components/ProductImage";
-import { colors, radii, spacing } from "../../constants/theme";
+import { radii, spacing, type Palette } from "../../constants/theme";
+import { useColors } from "../../stores/useTheme";
 import { useFavoritesStore } from "../../stores/useFavorites";
 
 export default function FavoritesScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const favorites = useFavoritesStore((state) => state.items);
   const removeFavorite = useFavoritesStore((state) => state.removeFavorite);
 
@@ -100,7 +104,8 @@ export default function FavoritesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -218,4 +223,5 @@ const styles = StyleSheet.create({
     maxWidth: 280,
     textAlign: "center",
   },
-});
+  });
+}

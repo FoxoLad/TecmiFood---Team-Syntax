@@ -1,10 +1,11 @@
 /** Avisos del cliente. Cada cambio de estado del pedido aparece aquí. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../../components/SafeView";
-import { colors, radii, spacing } from "../../../constants/theme";
+import { radii, spacing, type Palette } from "../../../constants/theme";
+import { useColors } from "../../../stores/useTheme";
 import { useOrders } from "../../../stores/useOrders";
 import { useUserStore } from "../../../stores/useUserStore";
 import { formatOrderNumber } from "../../../types/order";
@@ -25,6 +26,8 @@ const getStatusMessage = (status: string, orderNumber: string) => {
 };
 
 export default function NotificationsScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const clientId = useUserStore((state) => state.clientId);
   const notificationsClearedAt = useUserStore((state) => state.notificationsClearedAt);
   const clearNotifications = useUserStore((state) => state.clearNotifications);
@@ -52,7 +55,7 @@ export default function NotificationsScreen() {
     }));
 
   return (
-    <SafeView style={styles.container}>
+    <SafeView edges={["top", "left", "right"]} style={styles.container}>
       <View style={[styles.header, { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }]}>
         <View style={{ flex: 1, paddingRight: 10 }}>
           <Text style={styles.eyebrow}>ACTUALIZACIONES</Text>
@@ -117,7 +120,8 @@ export default function NotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -218,4 +222,5 @@ const styles = StyleSheet.create({
     maxWidth: 280,
     textAlign: "center",
   },
-});
+  });
+}

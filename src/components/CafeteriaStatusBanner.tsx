@@ -1,100 +1,75 @@
-/** Aviso visible para el cliente: círculo verde si está abierta y rojo si está cerrada. */
-import { StyleSheet, Text, View } from "react-native";
-import { colors, radii } from "../constants/theme";
+/** Punto de estado en Busters. El horario y el tiempo restante salen al tocarlo. */
+import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { colors } from "../constants/theme";
 import { useCafeteriaStatus } from "../stores/useCafeteriaStatus";
 
-type CafeteriaStatusBannerProps = {
-  contained?: boolean;
-};
+function minutesUntilClose(closesAt: string) {
+  const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(closesAt);
+  if (!match) {
+    return null;
+  }
+  const now = new Date();
+  const target = new Date(now);
+  target.setHours(Number(match[1]), Number(match[2]), 0, 0);
+  if (target.getTime() <= now.getTime()) {
+    target.setDate(target.getDate() + 1);
+  }
+  return Math.max(1, Math.ceil((target.getTime() - now.getTime()) / 60000));
+}
 
-export function CafeteriaStatusBanner({ contained = false }: CafeteriaStatusBannerProps) {
+function closingMessage(closesAt: string) {
+  const minutes = minutesUntilClose(closesAt);
+  if (minutes === null) {
+    return `Cierra a las ${closesAt}`;
+  }
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (hours === 0) {
+    return rest === 1 ? "Falta 1 min para que cierre" : `Faltan ${rest} min para que cierre`;
+  }
+  if (rest === 0) {
+    return hours === 1 ? "Falta 1 h para que cierre" : `Faltan ${hours} h para que cierre`;
+  }
+  const hourLabel = hours === 1 ? "1 h" : `${hours} h`;
+  const minuteLabel = rest === 1 ? "1 min" : `${rest} min`;
+  return `Faltan ${hourLabel} ${minuteLabel} para que cierre`;
+}
+
+export function CafeteriaStatusBanner() {
   const isOpen = useCafeteriaStatus((state) => state.isOpen);
   const opensAt = useCafeteriaStatus((state) => state.opensAt);
   const closesAt = useCafeteriaStatus((state) => state.closesAt);
 
+  const showSchedule = () => {
+    Alert.alert(
+      isOpen ? "Abierta" : "Cerrada",
+      `Horario: ${opensAt} a ${closesAt}\n${closingMessage(closesAt)}`,
+    );
+  };
+
   return (
-    <View
-      accessibilityLabel={isOpen ? "Cafetería abierta" : "Cafetería cerrada"}
-      style={[
-        styles.banner,
-        contained && styles.contained,
-        isOpen ? styles.bannerOpen : styles.bannerClosed,
-      ]}
+    <Pressable
+      accessibilityLabel={isOpen ? "Cafetería abierta. Ver horario" : "Cafetería cerrada. Ver horario"}
+      accessibilityRole="button"
+      hitSlop={8}
+      onPress={showSchedule}
+      style={styles.hit}
     >
-      <View style={[styles.halo, isOpen ? styles.haloOpen : styles.haloClosed]}>
-        <View style={[styles.core, isOpen ? styles.coreOpen : styles.coreClosed]} />
-      </View>
-      <View style={styles.copy}>
-        <Text style={styles.title}>{isOpen ? "Abierta" : "Cerrada"}</Text>
-        <Text style={styles.hours}>
-          {isOpen
-            ? `Horario de hoy: ${opensAt} a ${closesAt}`
-            : `Vuelve entre ${opensAt} y ${closesAt}`}
-        </Text>
-      </View>
-    </View>
+      <View style={[styles.dot, { backgroundColor: isOpen ? colors.success : colors.danger }]} />
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  banner: {
+  hit: {
     alignItems: "center",
-    borderRadius: radii.medium,
-    borderWidth: 1,
-    flexDirection: "row",
-    gap: 12,
-    marginHorizontal: 16,
-    marginBottom: 4,
-    marginTop: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-  },
-  bannerOpen: {
-    backgroundColor: "#F3FBF6",
-    borderColor: "#CFE8D8",
-  },
-  bannerClosed: {
-    backgroundColor: "#FFF6F5",
-    borderColor: "#F3D0CD",
-  },
-  contained: {
-    marginHorizontal: 0,
-  },
-  halo: {
-    alignItems: "center",
-    borderRadius: 16,
-    height: 32,
+    height: 44,
     justifyContent: "center",
-    width: 32,
+    width: 44,
   },
-  haloOpen: {
-    backgroundColor: "#E5F8EC",
-  },
-  haloClosed: {
-    backgroundColor: "#FDECEC",
-  },
-  core: {
-    borderRadius: 7,
-    height: 14,
-    width: 14,
-  },
-  coreOpen: {
-    backgroundColor: colors.success,
-  },
-  coreClosed: {
-    backgroundColor: colors.danger,
-  },
-  copy: {
-    flex: 1,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: "800",
-  },
-  hours: {
-    color: colors.textSecondary,
-    fontSize: 13,
-    marginTop: 2,
+  dot: {
+    borderRadius: 8,
+    height: 16,
+    width: 16,
   },
 });

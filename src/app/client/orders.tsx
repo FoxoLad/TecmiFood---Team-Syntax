@@ -5,7 +5,8 @@ import { useCallback, useMemo, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import SafeView from "../../components/SafeView";
 import { ProductImage } from "../../components/ProductImage";
-import { colors, radii, spacing } from "../../constants/theme";
+import { radii, spacing, type Palette } from "../../constants/theme";
+import { useColors } from "../../stores/useTheme";
 import { useCafeteriaStatus } from "../../stores/useCafeteriaStatus";
 import { useOrders, type RealOrder } from "../../stores/useOrders";
 import { useUserStore } from "../../stores/useUserStore";
@@ -17,13 +18,16 @@ import { isClientOrder } from "../../utils/client";
 
 type OrdersView = "active" | "history";
 
-const statusStyles: Record<string, { backgroundColor: string; color: string; label: string }> = {
-  "Pendiente": { backgroundColor: colors.accentSoft, color: colors.accent, label: ORDER_STATUS_LABELS["Pendiente"] },
-  "En preparación": { backgroundColor: "#E5F1FF", color: "#0A5FCC", label: ORDER_STATUS_LABELS["En preparación"] },
-  "Terminado": { backgroundColor: "#E3F6E8", color: "#15803d", label: ORDER_STATUS_LABELS["Terminado"] },
-  "Entregado": { backgroundColor: colors.surfaceMuted, color: colors.textSecondary, label: ORDER_STATUS_LABELS["Entregado"] },
-  "Cancelado": { backgroundColor: "#FFE5E5", color: "#CC0A0A", label: ORDER_STATUS_LABELS["Cancelado"] },
-};
+function statusStylesFor(colors: Palette) {
+  const statusStyles: Record<string, { backgroundColor: string; color: string; label: string }> = {
+    "Pendiente": { backgroundColor: colors.accentSoft, color: colors.accent, label: ORDER_STATUS_LABELS["Pendiente"] },
+    "En preparación": { backgroundColor: "#E5F1FF", color: "#0A5FCC", label: ORDER_STATUS_LABELS["En preparación"] },
+    "Terminado": { backgroundColor: "#E3F6E8", color: "#15803d", label: ORDER_STATUS_LABELS["Terminado"] },
+    "Entregado": { backgroundColor: colors.surfaceMuted, color: colors.textSecondary, label: ORDER_STATUS_LABELS["Entregado"] },
+    "Cancelado": { backgroundColor: "#FFE5E5", color: "#CC0A0A", label: ORDER_STATUS_LABELS["Cancelado"] },
+  };
+  return statusStyles;
+}
 
 const emptyStates: Record<OrdersView, { title: string; message: string; icon: "cart-outline" | "time-outline" }> = {
   active: {
@@ -39,6 +43,8 @@ const emptyStates: Record<OrdersView, { title: string; message: string; icon: "c
 };
 
 export default function ClientOrdersScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { view: viewParam } = useLocalSearchParams<{ view?: string }>();
   const paramView: OrdersView = viewParam === "history" ? "history" : "active";
   const [viewState, setViewState] = useState<{ source: string; view: OrdersView }>({
@@ -177,7 +183,7 @@ export default function ClientOrdersScreen() {
           keyExtractor={(order) => order._id}
           showsVerticalScrollIndicator={false}
           renderItem={({ item: order }) => {
-            const status = statusStyles[order.status] || { backgroundColor: "#ccc", color: "#000", label: order.status };
+            const status = statusStylesFor(colors)[order.status] || { backgroundColor: colors.surfaceMuted, color: colors.text, label: order.status };
 
             return (
               <View style={styles.orderCard}>
@@ -249,7 +255,8 @@ export default function ClientOrdersScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -442,4 +449,5 @@ const styles = StyleSheet.create({
     maxWidth: 280,
     textAlign: "center",
   },
-});
+  });
+}

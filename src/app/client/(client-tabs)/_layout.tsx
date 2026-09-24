@@ -1,15 +1,19 @@
 /** Barra inferior del cliente. Muestra cuántos productos hay en el carrito y cuántos avisos hay sin leer. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
+import { useMemo } from "react";
 import { StyleSheet, Text, View, type ColorValue } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "../../../constants/theme";
+import { type Palette } from "../../../constants/theme";
+import { useColors } from "../../../stores/useTheme";
 import { useCartStore } from "../../../stores/useCartStore";
 import { useOrders } from "../../../stores/useOrders";
 import { useUserStore } from "../../../stores/useUserStore";
 import { isAlertVisible, isClientOrder } from "../../../utils/client";
 
 export default function ClientTabsLayout() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const insets = useSafeAreaInsets();
   const cartItemCount = useCartStore((state) =>
     state.items.reduce((total, item) => total + item.quantity, 0),
@@ -55,6 +59,7 @@ export default function ClientTabsLayout() {
           paddingBottom: insets.bottom + 6,
           paddingTop: 8,
         },
+        freezeOnBlur: true,
         headerShown: false,
       }}
     >
@@ -82,7 +87,8 @@ export default function ClientTabsLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   cartIconWrapper: {
     height: 34,
     position: "relative",
@@ -112,4 +118,5 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     lineHeight: 13,
   },
-});
+  });
+}

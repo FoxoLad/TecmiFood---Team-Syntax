@@ -13,11 +13,14 @@ import {
 } from "react-native";
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
-import { colors, radii, shadows, spacing } from "../../../constants/theme";
+import { radii, shadows, spacing, type Palette } from "../../../constants/theme";
+import { useColors } from "../../../stores/useTheme";
 import { useProductStore } from "../../../stores/useProduct";
 import { isProductAvailable } from "../../../types/product";
 
 export default function ProductsScreen() {
+  const colors = useColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const products = useProductStore((state) => state.products);
   const isLoading = useProductStore((state) => state.isLoading);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
@@ -118,7 +121,8 @@ export default function ProductsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: Palette) {
+  return StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -230,4 +234,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: "center",
   },
-});
+  });
+}

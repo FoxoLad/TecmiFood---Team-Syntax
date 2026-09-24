@@ -1,4 +1,4 @@
-/** Fotos locales del menú y la función que elige cuál mostrar. */
+/** Fotos locales del menú. Solo se muestra la foto que corresponde al nombre. */
 export const productsImages = {
     "CJQ": require("../../assets/images/product-icons/CJQ.png"),
     "Latte": require("../../assets/images/product-icons/Latte.png"),
@@ -129,6 +129,8 @@ const bustersProductImages: Record<string, keyof typeof productsImages> = {
     "Frappé Chai": "ChaiFrap",
     "Tisana Frappé": "TisanaFrap",
     "Licuado Plátano / Fresa / Mango": "Smoothie",
+    "1pz de Fruta: Plátano o Manzana": "BanApp",
+    "Galletas Giorgio Kinder M&M": "GalletaKinder",
     "Capuchino Italiano": "Latte",
     "Café Americano": "Espresso",
     "Espresso Americano": "Espresso",
@@ -139,9 +141,82 @@ const bustersProductImages: Record<string, keyof typeof productsImages> = {
     Chai: "ChaiFrap",
 };
 
-export function getBustersProductImageSource(productName: string) {
-    const imageKey = bustersProductImages[productName];
+function normalize(value: string) {
+    return value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .toLowerCase()
+        .replace(/\b1\s*lt\b/g, "litro")
+        .replace(/&/g, " ")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+}
 
+function tokensOf(value: string) {
+    return normalize(value)
+        .split(" ")
+        .filter((token) => token.length >= 3 && token !== "pieza" && token !== "piezas" && !/^\d/.test(token));
+}
+
+function editDistance(left: string, right: string) {
+    const row = Array.from({ length: right.length + 1 }, (_, index) => index);
+    for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+        let previous = row[0];
+        row[0] = leftIndex;
+        for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+            const current = row[rightIndex];
+            const cost = left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1;
+            row[rightIndex] = Math.min(row[rightIndex] + 1, row[rightIndex - 1] + 1, previous + cost);
+            previous = current;
+        }
+    }
+    return row[right.length];
+}
+
+function tokensMatch(left: string, right: string) {
+    if (left === right) {
+        return true;
+    }
+    const difference = Math.abs(left.length - right.length);
+    if (difference <= 2 && (left.startsWith(right) || right.startsWith(left))) {
+        return true;
+    }
+    return left.length >= 5 && right.length >= 5 && difference <= 1 && editDistance(left, right) <= 1;
+}
+
+function sameTokens(left: string[], right: string[]) {
+    if (left.length === 0 || right.length === 0 || left.length !== right.length) {
+        return false;
+    }
+    const pending = [...right];
+    return left.every((token) => {
+        const index = pending.findIndex((other) => tokensMatch(token, other));
+        if (index < 0) {
+            return false;
+        }
+        pending.splice(index, 1);
+        return true;
+    });
+}
+
+function matchingImageKey(productName: string) {
+    const nameTokens = tokensOf(productName);
+    for (const [catalogName, imageKey] of Object.entries(bustersProductImages)) {
+        if (sameTokens(nameTokens, tokensOf(catalogName))) {
+            return imageKey;
+        }
+    }
+    return null;
+}
+
+function imageStem(image: string) {
+    const file = decodeURIComponent(image.split("?")[0]?.split("/").pop() ?? image);
+    return file.replace(/\.[a-z0-9]+$/i, "");
+}
+
+export function getBustersProductImageSource(productName: string) {
+    const imageKey = matchingImageKey(productName) ?? bustersProductImages[productName];
     return imageKey ? productsImages[imageKey] : null;
 }
 
@@ -151,24 +226,34 @@ type ProductImageInput = {
 };
 
 export function resolveProductImageSource({ image, name }: ProductImageInput) {
+    const productName = name?.trim() ?? "";
+    const agreedKey = productName ? matchingImageKey(productName) : null;
+    if (agreedKey) {
+        return productsImages[agreedKey];
+    }
+
     const imageValue = image?.trim() ?? "";
+    if (!imageValue || !productName) {
+        return null;
+    }
+
+    const stem = imageStem(imageValue);
+    if (!sameTokens(tokensOf(stem), tokensOf(productName))) {
+        return null;
+    }
+
+    const knownKey = (Object.keys(productsImages) as (keyof typeof productsImages)[]).find(
+        (key) => normalize(key) === normalize(stem),
+    );
+    if (knownKey) {
+        return productsImages[knownKey];
+    }
 
     if (imageValue.startsWith("http://") || imageValue.startsWith("https://")) {
         return { uri: imageValue };
     }
 
-    if (imageValue && imageValue in productsImages) {
-        return productsImages[imageValue as keyof typeof productsImages];
-    }
-
-    if (name) {
-        const byName = getBustersProductImageSource(name);
-        if (byName) {
-            return byName;
-        }
-    }
-
-    return productsImages.AguaMine;
+    return null;
 }
 
 export function getProductImageSource(image: string, name?: string) {

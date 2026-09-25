@@ -83,7 +83,7 @@ export default function ClientTabsLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="explore" options={{ href: null }} />
+      
       {/*Pestaña de Carrito*/}
       <Tabs.Screen
         name="cart"

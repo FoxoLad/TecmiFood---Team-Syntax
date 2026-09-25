@@ -211,9 +211,12 @@ export default function ClientOrdersScreen() {
             return (
               <View style={styles.orderCard}>
                 <View style={styles.orderHeader}>
-                  <Text style={styles.orderNumber}>
-                    Pedido #{formatOrderNumber(order.orderNumber)}
-                  </Text>
+                  <View style={{ flex: 1 }}>
+  <Text style={styles.orderNumber}>Pedido #{formatOrderNumber(order.orderNumber)}</Text>
+  <Text style={{ fontSize: 13, color: colors.accent, fontWeight: "700", marginTop: 2 }}>
+    {order.items.some(i => i.productId?.startsWith('BT')) ? "Busters" : (order.items.some(i => i.productId?.startsWith('BS')) ? "Bee Sweet" : "")}
+  </Text>
+</View>
                   
                   {view === "history" ? (
                     <Pressable

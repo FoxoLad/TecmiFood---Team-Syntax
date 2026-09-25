@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -23,22 +23,30 @@ import { useProductStore } from "../../stores/useProduct";
 import { useUserStore } from "../../stores/useUserStore";
 
 export default function ProductFormScreen() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const isEditing = !!id;
+
   const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
   const businessId = employeeCafeteria === "Busters" ? "BT" : "BS";
-
+  
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const products = useProductStore((state) => state.products);
-
+  
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("Comidas");
   const [subcategory, setSubcategory] = useState("");
-  const [modifications, setModifications] = useState("");
+  const [modifications, setModifications] = useState<string[]>([]);
   const [image, setImage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  
+  const currentSubcategories = useMemo(() => {
+    const subs = products
+      .filter(p => p.category === category && p.subcategory)
+      .map(p => p.subcategory!);
+    return Array.from(new Set(subs)) as string[];
+  }, [products, category]);
 
   useEffect(() => {
     if (isEditing) {
@@ -49,17 +57,15 @@ export default function ProductFormScreen() {
         setPrice(String(product.price));
         setCategory(product.category);
         setSubcategory(product.subcategory || "");
+        
         if (product.modifications) {
           if (Array.isArray(product.modifications)) {
-            setModifications(
-              product.modifications
-                .map((m) => (typeof m === "string" ? m : m.name))
-                .join(", "),
-            );
-          } else {
-            setModifications(product.modifications);
+            setModifications(product.modifications.map(m => typeof m === 'string' ? m : m.name));
+          } else if (typeof product.modifications === 'string') {
+            setModifications(product.modifications.split(",").map(m => m.trim()));
           }
         }
+        
         setImage(product.image);
       }
     }
@@ -67,11 +73,11 @@ export default function ProductFormScreen() {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
-      base64: true,
+      base64: true, // We will save the base64 string directly to DB
     });
 
     if (!result.canceled && result.assets[0].base64) {
@@ -81,16 +87,8 @@ export default function ProductFormScreen() {
   };
 
   const handleSave = async () => {
-    if (
-      !name.trim() ||
-      !description.trim() ||
-      !price.trim() ||
-      !category.trim()
-    ) {
-      Alert.alert(
-        "Campos incompletos",
-        "Por favor llena todos los campos obligatorios.",
-      );
+    if (!name.trim() || !description.trim() || !price.trim() || !category.trim()) {
+      Alert.alert("Campos incompletos", "Por favor llena todos los campos obligatorios.");
       return;
     }
 
@@ -104,20 +102,18 @@ export default function ProductFormScreen() {
         price: Number(price),
         category,
         subcategory,
-        modifications,
+        modifications: modifications.filter(m => m.trim()).map(m => ({ name: m.trim(), price: 0 })),
         image,
-        inStock: true,
+        inStock: true
       };
 
-      const url = isEditing
-        ? `${endpoints.products}/${id}`
-        : endpoints.products;
+      const url = isEditing ? `${endpoints.products}/${id}` : endpoints.products;
       const method = isEditing ? "PUT" : "POST";
 
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productData),
+        body: JSON.stringify(productData)
       });
 
       if (!res.ok) throw new Error("Error al guardar");
@@ -125,7 +121,7 @@ export default function ProductFormScreen() {
       await fetchProducts();
       router.back();
     } catch (e) {
-      Alert.alert("Error", "No se pudo guardar el producto.");
+      Alert.alert("Error", "No se pudo guardar el producto. Intenta con una imagen más pequeña.");
       console.error(e);
     } finally {
       setIsSaving(false);
@@ -135,9 +131,9 @@ export default function ProductFormScreen() {
   const handleDelete = () => {
     Alert.alert("Eliminar", "¿Estás seguro de eliminar este producto?", [
       { text: "Cancelar", style: "cancel" },
-      {
-        text: "Eliminar",
-        style: "destructive",
+      { 
+        text: "Eliminar", 
+        style: "destructive", 
         onPress: async () => {
           try {
             await fetch(`${endpoints.products}/${id}`, { method: "DELETE" });
@@ -146,8 +142,8 @@ export default function ProductFormScreen() {
           } catch (e) {
             Alert.alert("Error", "No se pudo eliminar el producto.");
           }
-        },
-      },
+        }
+      }
     ]);
   };
 
@@ -161,175 +157,122 @@ export default function ProductFormScreen() {
         />
       </SafeAreaView>
       <SafeAreaView edges={["bottom"]} style={styles.container}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
           <ScrollView contentContainerStyle={styles.content}>
+            
             <View style={styles.imagePickerContainer}>
-              <Pressable style={styles.imagePicker} onPress={pickImage}>
-                {image ? (
-                  <ProductImage
-                    image={image}
-                    name={name}
-                    style={styles.previewImage}
-                    contentFit="cover"
-                  />
-                ) : (
-                  <View style={styles.placeholderImage}>
-                    <Ionicons
-                      name="camera-outline"
-                      size={32}
-                      color={colors.textSecondary}
-                    />
-                    <Text style={styles.placeholderText}>Añadir Imagen</Text>
-                  </View>
-                )}
-              </Pressable>
-              {image ? (
-                <Pressable
-                  onPress={() => setImage("")}
-                  style={{ marginTop: 8 }}
-                >
-                  <Text style={{ color: colors.danger }}>Quitar imagen</Text>
-                </Pressable>
-              ) : null}
+               <Pressable style={styles.imagePicker} onPress={pickImage}>
+                 {image ? (
+                   <ProductImage image={image} name={name} style={styles.previewImage} contentFit="cover" />
+                 ) : (
+                   <View style={styles.placeholderImage}>
+                     <Ionicons name="camera-outline" size={32} color={colors.textSecondary} />
+                     <Text style={styles.placeholderText}>Añadir Imagen</Text>
+                   </View>
+                 )}
+               </Pressable>
+               {image ? (
+                  <Pressable onPress={() => setImage("")} style={{ marginTop: 8 }}>
+                      <Text style={{ color: colors.danger }}>Quitar imagen</Text>
+                  </Pressable>
+               ) : null}
             </View>
 
             <View style={styles.field}>
               <Text style={styles.label}>URL de la Imagen (opcional)</Text>
-              <TextInput
-                style={styles.input}
-                value={image}
-                onChangeText={setImage}
-                placeholder="https://..."
-              />
+              <TextInput style={styles.input} value={image} onChangeText={setImage} placeholder="https://..." />
             </View>
 
             <View style={styles.field}>
               <Text style={styles.label}>Nombre</Text>
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="Ej. Hamburguesa doble"
-              />
+              <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Ej. Hamburguesa doble" />
             </View>
 
             <View style={styles.field}>
               <Text style={styles.label}>Descripción</Text>
-              <TextInput
-                style={[styles.input, { height: 80 }]}
-                value={description}
-                onChangeText={setDescription}
-                placeholder="Ingredientes y detalles"
-                multiline
-              />
+              <TextInput style={[styles.input, { height: 80 }]} value={description} onChangeText={setDescription} placeholder="Ingredientes y detalles" multiline />
             </View>
 
             <View style={styles.field}>
               <Text style={styles.label}>Precio</Text>
-              <TextInput
-                style={styles.input}
-                value={price}
-                onChangeText={setPrice}
-                onBlur={() => {
-                  if (price && !price.includes(".")) setPrice(price + ".00");
-                }}
-                placeholder="0.00"
-                keyboardType="numeric"
-              />
+              <TextInput style={styles.input} value={price} onChangeText={setPrice} onBlur={() => { if (price && !price.includes('.')) setPrice(price + '.00'); }} placeholder="0.00" keyboardType="numeric" />
             </View>
-
+            
             <View style={styles.field}>
               <Text style={styles.label}>Categoría</Text>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-                {["Comidas", "Bebidas", "Postres", "Snacks", "Promociones"].map(
-                  (cat) => (
-                    <Pressable
-                      key={cat}
-                      onPress={() => setCategory(cat)}
-                      style={[
-                        styles.categoryChip,
-                        category === cat && styles.categoryChipActive,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.categoryChipText,
-                          category === cat && styles.categoryChipTextActive,
-                        ]}
-                      >
-                        {cat}
-                      </Text>
-                    </Pressable>
-                  ),
-                )}
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {["Comidas", "Bebidas", "Otros"].map(cat => (
+                  <Pressable 
+                    key={cat} 
+                    onPress={() => setCategory(cat)}
+                    style={[styles.categoryChip, category === cat && styles.categoryChipActive]}
+                  >
+                    <Text style={[styles.categoryChipText, category === cat && styles.categoryChipTextActive]}>{cat}</Text>
+                  </Pressable>
+                ))}
               </View>
             </View>
 
-            {category === "Bebidas" && (
+            {currentSubcategories.length > 0 && (
               <View style={styles.field}>
-                <Text style={styles.label}>
-                  Subcategoría (ej: Frías, Calientes)
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    gap: 8,
-                    marginBottom: 8,
-                  }}
-                >
-                  {["Frías", "Calientes"].map((sub) => (
-                    <Pressable
-                      key={sub}
+                <Text style={styles.label}>Subcategoría</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
+                  {currentSubcategories.map((sub) => (
+                    <Pressable 
+                      key={sub} 
                       onPress={() => setSubcategory(sub)}
-                      style={[
-                        styles.categoryChip,
-                        subcategory === sub && styles.categoryChipActive,
-                      ]}
+                      style={[styles.categoryChip, subcategory === sub && styles.categoryChipActive]}
                     >
-                      <Text
-                        style={[
-                          styles.categoryChipText,
-                          subcategory === sub && styles.categoryChipTextActive,
-                        ]}
-                      >
-                        {sub}
-                      </Text>
+                      <Text style={[styles.categoryChipText, subcategory === sub && styles.categoryChipTextActive]}>{sub}</Text>
                     </Pressable>
                   ))}
                 </View>
-                <TextInput
-                  style={styles.input}
-                  value={subcategory}
-                  onChangeText={setSubcategory}
-                  placeholder="Otra subcategoría (Ej. Frappés)"
-                />
+                <TextInput style={styles.input} value={subcategory} onChangeText={setSubcategory} placeholder="Otra subcategoría (Ej. Frappés)" />
+              </View>
+            )}
+            
+            {currentSubcategories.length === 0 && (
+              <View style={styles.field}>
+                <Text style={styles.label}>Subcategoría (opcional)</Text>
+                <TextInput style={styles.input} value={subcategory} onChangeText={setSubcategory} placeholder="Ej. Frías, Calientes" />
               </View>
             )}
 
             <View style={styles.field}>
               <Text style={styles.label}>Modificaciones (opcional)</Text>
-              <TextInput
-                style={styles.input}
-                value={modifications}
-                onChangeText={setModifications}
-                placeholder="Ej. Sin cebolla, Extra queso (separadas por coma)"
-              />
+              {modifications.map((mod, index) => (
+                <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, gap: 8 }}>
+                  <TextInput
+                    style={[styles.input, { flex: 1, marginBottom: 0 }]}
+                    value={mod}
+                    onChangeText={(val) => {
+                      const newMods = [...modifications];
+                      newMods[index] = val;
+                      setModifications(newMods);
+                    }}
+                    placeholder="Ej. Sin cebolla"
+                  />
+                  <Pressable onPress={() => {
+                    const newMods = [...modifications];
+                    newMods.splice(index, 1);
+                    setModifications(newMods);
+                  }} style={{ padding: 8 }}>
+                    <Ionicons name="trash-outline" size={24} color={colors.danger} />
+                  </Pressable>
+                </View>
+              ))}
+              <Pressable onPress={() => setModifications([...modifications, ""])} style={{ padding: 12, backgroundColor: employee.accent + '20', borderRadius: 8, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 }}>
+                <Ionicons name="add" size={20} color={employee.accent} />
+                <Text style={{ color: employee.accent, fontWeight: "600" }}>Añadir modificación</Text>
+              </Pressable>
             </View>
 
-            <Pressable
-              style={[styles.saveButton, isSaving && { opacity: 0.7 }]}
+            <Pressable 
+              style={[styles.saveButton, isSaving && { opacity: 0.7 }]} 
               onPress={handleSave}
               disabled={isSaving}
             >
-              {isSaving ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
-                <Text style={styles.saveButtonText}>Guardar</Text>
-              )}
+              {isSaving ? <ActivityIndicator color="#FFF" /> : <Text style={styles.saveButtonText}>Guardar</Text>}
             </Pressable>
 
             {isEditing && (
@@ -345,21 +288,22 @@ export default function ProductFormScreen() {
 }
 
 const styles = StyleSheet.create({
+
   categoryChip: {
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 16,
-    backgroundColor: "#EEEEEE",
+    backgroundColor: '#EEEEEE',
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: 'transparent',
   },
   categoryChipActive: {
-    backgroundColor: employee.accent + "20",
+    backgroundColor: employee.accent + '20',
     borderColor: employee.accent,
   },
   categoryChipText: {
     color: colors.textSecondary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   categoryChipTextActive: {
     color: employee.accent,
@@ -450,5 +394,5 @@ const styles = StyleSheet.create({
     color: "#CC0A0A",
     fontWeight: "bold",
     fontSize: 16,
-  },
+  }
 });

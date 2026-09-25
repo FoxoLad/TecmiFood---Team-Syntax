@@ -115,7 +115,7 @@ export default function EmployeeOrderDetailsScreen() {
   }).map((product, idx) => (
           <View key={`${product.productId}-${idx}`} style={styles.productCard}>
             <ProductImage
-              contentFit="contain"
+              contentFit="cover"
               image={product.image}
               name={product.name}
               style={styles.productImage}

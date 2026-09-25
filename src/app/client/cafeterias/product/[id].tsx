@@ -188,7 +188,7 @@ export default function BustersProductScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <ProductImage
-                    contentFit="contain"
+                    contentFit="cover"
                     image={product.image}
                     name={product.name}
                     style={styles.imageBox}

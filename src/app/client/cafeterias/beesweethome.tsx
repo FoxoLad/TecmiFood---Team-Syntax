@@ -114,7 +114,7 @@ export default function HomeScreen() {
             style={styles.gridItem}
         >
             <ProductImage
-                contentFit="contain"
+                contentFit="cover"
                 image={product.image}
                 name={product.name}
                 style={styles.gridImage}

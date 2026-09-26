@@ -11,6 +11,7 @@ import {
     View,
 } from "react-native";
 
+import { CafeteriaSplash } from "../../../components/CafeteriaSplash";
 import { CafeteriaStatusBanner } from "../../../components/CafeteriaStatusBanner";
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
@@ -130,7 +131,9 @@ export default function HomeScreen() {
     );
 
     return (
-        <SafeView style={styles.container}>
+        <View style={styles.screen}>
+            <CafeteriaSplash variant="busters" />
+            <SafeView style={styles.container}>
             <View style={styles.topBar}>
                 <Pressable
                     accessibilityLabel="Volver a cafeterías"
@@ -207,12 +210,14 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
                 windowSize={7}
             />
-        </SafeView>
+            </SafeView>
+        </View>
     );
 }
 
 function createStyles(colors: Palette) {
   return StyleSheet.create({
+    screen: { flex: 1, backgroundColor: colors.background },
     container: { flex: 1, backgroundColor: colors.background, paddingHorizontal: 16 },
     topBar: { alignItems: "center", flexDirection: "row", marginBottom: 16, marginTop: 4 },
     backButton: { alignItems: "center", height: 44, justifyContent: "center", width: 44 },

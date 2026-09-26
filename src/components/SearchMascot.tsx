@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { colors } from "../constants/theme";
 
-const useNativeDriver = Platform.OS !== "web";
+const USE_NATIVE = Platform.OS !== "web";
 
 type SearchMascotProps = {
   query: string;
@@ -49,26 +49,24 @@ export function SearchMascot({ query }: SearchMascotProps) {
         toValue: 1,
         duration: 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver,
+        useNativeDriver: USE_NATIVE,
       }),
       Animated.timing(progress, {
         toValue: 0,
         duration: 320,
         easing: Easing.inOut(Easing.quad),
-        useNativeDriver,
+        useNativeDriver: USE_NATIVE,
       }),
     ]);
     gesture.start();
 
     return () => {
       gesture.stop();
+      progress.stopAnimation();
     };
   }, [progress, query, reduceMotion]);
 
-  const hop = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -4],
-  });
+  const hop = progress.interpolate({ inputRange: [0, 1], outputRange: [0, -4] });
   const wag = progress.interpolate({
     inputRange: [0, 1],
     outputRange: ["-12deg", "24deg"],
@@ -90,6 +88,7 @@ export function SearchMascot({ query }: SearchMascotProps) {
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
+      pointerEvents="none"
       style={styles.scene}
     >
       <Animated.View style={[styles.dog, { transform: [{ translateY: hop }] }]}>

@@ -1,4 +1,4 @@
-/** Menú de Busters con búsqueda y filtros de comida, bebida y otros. */
+/** Menú de Bee Sweet con búsqueda y filtros de comida, bebida y otros. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
@@ -11,10 +11,11 @@ import {
     View,
 } from "react-native";
 
+import { BeeSearchMascot } from "../../../components/BeeSearchMascot";
+import { CafeteriaSplash } from "../../../components/CafeteriaSplash";
 import { CafeteriaStatusBanner } from "../../../components/CafeteriaStatusBanner";
 import SafeView from "../../../components/SafeView";
 import { ProductImage } from "../../../components/ProductImage";
-import { SearchMascot } from "../../../components/SearchMascot";
 import { radii, type Palette } from "../../../constants/theme";
 import { useColors } from "../../../stores/useTheme";
 import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
@@ -130,7 +131,9 @@ export default function HomeScreen() {
     );
 
     return (
-        <SafeView style={styles.container}>
+        <View style={styles.screen}>
+            <CafeteriaSplash variant="beesweet" />
+            <SafeView style={styles.container}>
             <View style={styles.topBar}>
                 <Pressable
                     accessibilityLabel="Volver a cafeterías"
@@ -153,7 +156,7 @@ export default function HomeScreen() {
                     placeholderTextColor={colors.textSecondary}
                     style={styles.searchInput}
                 />
-                {search.length > 0 ? <SearchMascot query={search} /> : null}
+                {search.length > 0 ? <BeeSearchMascot query={search} /> : null}
                 {search.length > 0 ? (
                     <Pressable accessibilityLabel="Limpiar búsqueda" onPress={() => setSearch("")}>
                         <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
@@ -207,12 +210,14 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
                 windowSize={7}
             />
-        </SafeView>
+            </SafeView>
+        </View>
     );
 }
 
 function createStyles(colors: Palette) {
   return StyleSheet.create({
+    screen: { flex: 1, backgroundColor: colors.background },
     container: { flex: 1, backgroundColor: colors.background, paddingHorizontal: 16 },
     topBar: { alignItems: "center", flexDirection: "row", marginBottom: 16, marginTop: 4 },
     backButton: { alignItems: "center", height: 44, justifyContent: "center", width: 44 },

@@ -43,6 +43,7 @@ El proyecto está construido sobre el ecosistema **MERN adaptado a Mobile** (Mon
 
 - **Node.js y Express.js:** El motor de ejecución y framework minimalista para levantar el servidor web y enrutar las peticiones (`GET`, `POST`, `PUT`, `DELETE`).
 - **MongoDB y Mongoose:** Base de datos NoSQL en la nube (MongoDB Atlas). _Mongoose_ actúa como "Object Data Modeling" para obligar a que los datos cumplan con un esquema (Ej. evitar que una orden no tenga precio).
+- **Render.com (Despliegue en la Nube):** La API en producción se encuentra alojada de manera gratuita y segura en [Render](https://render.com). El frontend móvil consume los endpoints directamente desde `https://tecmifood-team-syntax.onrender.com`. Esto permite que la aplicación funcione en cualquier celular sin necesidad de correr el servidor localmente.
 
 ---
 
@@ -63,6 +64,7 @@ A continuación se explica el por qué y para qué de las carpetas y archivos m�
   - `useUserStore.ts`: Guarda quién está usando la app y su rol (Cliente o Empleado).
 - **`constants/`**: Archivos de configuración general que evitan repetir código.
   - `theme.ts`: Es el manual de diseño. Contiene paletas de colores (Claro y Oscuro), sombras, tamaños de letra y bordes. Si queremos cambiar el color de la app, se puede hacer en este único archivo.
+  - `api.ts`: Archivo central que guarda la URL base de nuestro servidor (**Render**), para evitar escribirla manualmente en cada llamada a red (fetch).
   - `productsImages.ts`: Archivo con inteligencia propia. Utiliza un algoritmo de "Distancia de Levenshtein" para leer el nombre de un producto de la base de datos (incluso si está mal escrito) y asignarle la mejor foto disponible del menú local.
 - **`components/`**: Pequeñas piezas visuales reciclables.
   - `ProductCard.tsx`: La tarjeta genérica donde se pinta cada producto.
@@ -93,7 +95,7 @@ _El Frontend no manipula bases de datos; utiliza `fetch` o hooks personalizados 
 
 ## Guía de Instalación y Configuración
 
-Pasos para clonar, configurar y correr el proyecto en tu entorno local:
+Dado que la aplicación ya está conectada al backend productivo en **Render** (`https://tecmifood-team-syntax.onrender.com`), **sólo necesitas levantar el entorno móvil (Frontend) para probar la app**. Sin embargo, a continuación se listan ambos procesos por si se desea modificar código del servidor localmente.
 
 ### Pre-requisitos
 
@@ -101,32 +103,9 @@ Pasos para clonar, configurar y correr el proyecto en tu entorno local:
 - Instalar la herramienta Expo CLI (`npm install -g expo-cli`).
 - Tener la app _Expo Go_ descargada en tu dispositivo móvil (iOS/Android), o tener instalado Android Studio para emulación local.
 
-### Paso 1: Configurar y levantar el Backend (Servidor)
+### Paso 1: Levantar el Frontend (Aplicación Móvil con Expo)
 
 Abre tu terminal y ubícate en la raíz del proyecto.
-
-```bash
-#1. Entra a la carpeta del servidor
-cd backend
-
-#2. Instala los paquetes necesarios de Node
-npm install
-
-#3. Configura las variables de Entorno
-#Crea un archivo llamado .env dentro de la carpeta 'backend'
-#Dentro de este, agrega la conexión a tu base de datos MongoDB Atlas y el puerto:
-#MONGO_URI=mongodb+srv://<usuario>:<password>@cluster.mongodb.net/tecmifood
-#PORT=5000
-
-#4. Inicia el servidor
-npm run dev
-```
-
-_(Si todo sale bien, la terminal indicará: `Servidor corriendo en http://localhost:5000`)_
-
-### Paso 2: Configurar y levantar el Frontend (App Expo)
-
-Abre una nueva pestaña o ventana en tu terminal (sin cerrar el servidor backend) y ubícate nuevamente en la raíz del proyecto.
 
 ```bash
 #1. Instala todas las dependencias de React Native / Expo
@@ -136,13 +115,29 @@ npm install
 npx expo start
 ```
 
-### Paso 3: Visualizar la Aplicación
+_Al correr `npx expo start`, aparecerá un código QR en tu terminal. Escanéalo con la aplicación Expo Go en tu teléfono._
 
-Al correr `npx expo start`, aparecerá un código QR en tu terminal y en el navegador. Tienes varias opciones:
+### Paso 2 (Opcional): Configurar Backend para Pruebas Locales
 
-- **En tu teléfono físico (Recomendado):** Escanea el código QR con la cámara (iOS) o desde la app Expo Go (Android).
-- **Emulador Android:** Presiona la tecla `a` en tu teclado dentro de la terminal si tienes Android Studio abierto.
-- **En Web (Para desarrollo rápido):** Presiona la tecla `w` en la terminal.
+Si necesitas hacer cambios en el servidor (en la carpeta `backend/`) y no quieres afectar la aplicación en producción alojada en Render:
+
+```bash
+#1. Entra a la carpeta del servidor
+cd backend
+
+#2. Instala los paquetes necesarios de Node
+npm install
+
+#3. Configura tus variables locales
+#Crea un archivo .env en la carpeta 'backend' con la info de la Base de Datos:
+#MONGO_URI=mongodb+srv://<usuario>:<password>@cluster.mongodb.net/tecmifood
+#PORT=5000
+
+#4. Inicia el servidor de prueba
+npm run dev
+```
+
+**Nota Importante:** Si levantas el servidor localmente, asegúrate de ir al archivo `/src/constants/api.ts` de la aplicación móvil y cambiar temporalmente la URL de Render por `http://localhost:5000` para que la app se comunique con tu computadora.
 
 ### Notas para Windows (Problemas de Scripts)
 

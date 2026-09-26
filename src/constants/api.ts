@@ -1,4 +1,4 @@
-/** Direcciones del API compartidas por las tiendas de Zustand. */
+// Direcciones del API compartidas con Zustand
 export const API_BASE_URL = "https://tecmifood-team-syntax.onrender.com";
 
 export const endpoints = {

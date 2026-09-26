@@ -1,4 +1,6 @@
-/** Fotos locales del menú. Solo se muestra la foto que corresponde al nombre. */
+//Diccionario para Mapeo de Nombres / Limpieza de Texto / Tolerancia de Errores / Resolución de Imágenes
+
+//Mostrar la imagen correspondiente al nombre
 export const productsImages = {
   CJQ: require("../../assets/images/product-icons/CJQ.png"),
   Latte: require("../../assets/images/product-icons/Latte.png"),
@@ -141,6 +143,7 @@ const bustersProductImages: Record<string, keyof typeof productsImages> = {
   Chai: "ChaiFrap",
 };
 
+//Función que normaliza el texto
 function normalize(value: string) {
   return value
     .normalize("NFD")
@@ -153,6 +156,7 @@ function normalize(value: string) {
     .trim();
 }
 
+//Función que divide el texto en piezas para la búsqueda de imágenes por similitud de texto
 function tokensOf(value: string) {
   return normalize(value)
     .split(" ")
@@ -165,6 +169,7 @@ function tokensOf(value: string) {
     );
 }
 
+//Función para verificar la similitud entre dos textos
 function editDistance(left: string, right: string) {
   const row = Array.from({ length: right.length + 1 }, (_, index) => index);
   for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
@@ -184,6 +189,7 @@ function editDistance(left: string, right: string) {
   return row[right.length];
 }
 
+//Función que verifica si dos textos son iguales
 function tokensMatch(left: string, right: string) {
   if (left === right) {
     return true;
@@ -200,6 +206,7 @@ function tokensMatch(left: string, right: string) {
   );
 }
 
+//Función que verifica si dos conjuntos de piezas son iguales para encontrar la imagen correspondiente al producto
 function sameTokens(left: string[], right: string[]) {
   if (left.length === 0 || right.length === 0 || left.length !== right.length) {
     return false;
@@ -215,6 +222,7 @@ function sameTokens(left: string[], right: string[]) {
   });
 }
 
+//Función que encuentra la imagen correspondiente al producto
 function matchingImageKey(productName: string) {
   const nameTokens = tokensOf(productName);
   for (const [catalogName, imageKey] of Object.entries(bustersProductImages)) {
@@ -225,6 +233,7 @@ function matchingImageKey(productName: string) {
   return null;
 }
 
+//Función que extrae el nombre del archivo de una imagen
 function imageStem(image: string) {
   const file = decodeURIComponent(
     image.split("?")[0]?.split("/").pop() ?? image,
@@ -232,21 +241,24 @@ function imageStem(image: string) {
   return file.replace(/\.[a-z0-9]+$/i, "");
 }
 
+//Función que obtiene la imagen correspondiente al producto
 export function getBustersProductImageSource(productName: string) {
   const imageKey =
     matchingImageKey(productName) ?? bustersProductImages[productName];
   return imageKey ? productsImages[imageKey] : null;
 }
 
+//Tipos de entrada para la función resolveProductImageSource -->
 type ProductImageInput = {
   image?: string | null;
   name?: string | null;
 };
 
+//Función que resuelve la imagen del producto
 export function resolveProductImageSource({ image, name }: ProductImageInput) {
   const imageValue = image?.trim() ?? "";
 
-  // Si la imagen es Base64 o un URL (http/https), se usa directamente sin validaciones de nombre.
+  //Si la imagen es Base64 o un URL (http/https), se usa directamente sin validaciones de nombre
   if (
     imageValue.startsWith("data:image") ||
     imageValue.startsWith("http://") ||

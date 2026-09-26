@@ -1,139 +1,149 @@
 # TecmiFood - Team Syntax
 
-Expo/React Native app to view products and orders from two flows: client and employee.
+**TecmiFood** es una aplicación móvil desarrollada en **React Native con Expo** diseñada para modernizar y optimizar la experiencia de compra en las cafeterías del campus de la Universidad Tecmilenio (en específico, **Beesweet** y **Busters**).
 
-## Project structure
+El objetivo principal de este proyecto es evitar las largas filas durante los recesos, permitiendo a los **clientes (principalmente alumnos)** realizar pedidos desde su celular, personalizar sus alimentos y recibir notificaciones cuando la comida esté lista. Que a su vez, otorga a los **empleados** una herramienta robusta (Panel de Cocina e Inventario) para gestionar el flujo de las órdenes y mantener actualizado el menú.
 
-```text
-src/
-  app/          Expo Router screens and layouts
-  components/   Reusable React Native components
-  constants/    Static configuration such as product image maps
-  data/         Local JSON data used by the app
-  stores/       Zustand state stores
-  types/        Shared TypeScript types
-assets/         Images and app assets
-```
+---
 
-Keep route files inside `src/app`. Files that are shared by multiple screens belong
-in `src/components`, `src/constants`, `src/data`, `src/stores`, or `src/types`.
+## Funcionalidades Principales
 
-## Requirements
+La aplicación se divide en dos experiencias de usuario totalmente personalizadas según su rol:
 
-- Node.js
-- npm
-- Expo CLI
-- Android Studio with an emulator configured (optional if you want to view the app on Android)
+### Lado del Cliente
 
-## 1. Install dependencies
+- **Navegación por Cafeterías:** Acceso a los menús de _Beesweet_ y _Busters_ categorizados (Comidas, Bebidas, Otros).
+- **Personalización de Pedidos:** Capacidad para ajustar cantidades y añadir notas especiales o modificaciones a cada producto (ej. "Sin mayonesa", "Leche deslactosada").
+- **Carrito de Compras Inteligente:** Un sistema de validación que impide acaparar productos y saturar de órdenes para mitigar malos usos de la aplicación (Límite máximo de **3 productos idénticos** y **8 productos en total** por orden (Maximo **3 órdenes al mismo tiempo**)).
+- **Seguimiento de Órdenes (Tracking):** El alumno puede monitorear su orden en tiempo real (_Pendiente ➝ En Preparación ➝ Terminado ➝ Entregado_).
+- **Favoritos y Perfil:** Opción de guardar comidas recurrentes y modificar preferencias (como el tema Claro/Oscuro).
+
+### Lado del Empleado (Administración de Cafetería)
+
+- **Dashboard de Órdenes:** Visualización en tiempo real de los pedidos entrantes mediante tarjetas de fácil lectura.
+- **Gestión de Estatus:** Flujo de trabajo para mover un pedido desde la cola de espera hacia la cocina, y finalmente notificar al cliente que su plato está listo para recoger y pagar en el mostrador.
+- **Historial de Ventas:** Registro de órdenes durante la jornada.
+- **Manejo de Inventario:** CRUD (Crear, Leer, Actualizar, Borrar) para dar de alta nuevos platillos o desactivar (marcar como agotado) productos cuando falten insumos.
+
+---
+
+## Tecnologías Utilizadas y Arquitectura
+
+El proyecto está construido sobre el ecosistema **MERN adaptado a Mobile** (MongoDB, Express, React Native, Node.js). La arquitectura separa el Front-End del Back-End comunicándose a través de una API RESTful.
+
+### Frontend (App Móvil)
+
+- **React Native + Expo (v57):** Permite programar con JavaScript/TypeScript y exportar una aplicación nativa para iOS, Android e incluso Web.
+- **Expo Router:** Enrutamiento basado en archivos (`src/app`), similar a la web, lo cual facilita la navegación y la organización de pantallas.
+- **TypeScript:** Añade tipado estático, reduciendo drásticamente los errores durante el desarrollo y autocompletando propiedades de los modelos.
+- **Zustand:** Un gestor de estado global superrápido y minimalista que reemplaza a Redux. Maneja el carrito (`useCartStore`), la sesión del usuario (`useUserStore`) y las alertas en toda la app.
+- **React Native Paper:** Librería de componentes que implementa "Material Design", acelerando el maquetado visual y garantizando accesibilidad y consistencia.
+
+### Backend (Servidor y API)
+
+- **Node.js y Express.js:** El motor de ejecución y framework minimalista para levantar el servidor web y enrutar las peticiones (`GET`, `POST`, `PUT`, `DELETE`).
+- **MongoDB y Mongoose:** Base de datos NoSQL en la nube (MongoDB Atlas). _Mongoose_ actúa como "Object Data Modeling" para obligar a que los datos cumplan con un esquema (Ej. evitar que una orden no tenga precio).
+
+---
+
+## Estructura del Proyecto e Importancia de sus Archivos
+
+En este proyecto optamos por utilizar una organización modular y escalable.
+A continuación se explica el por qué y para qué de las carpetas y archivos más relevantes del proyecto:
+
+### Estructura Frontend (`/src`)
+
+- **`app/`**: Contiene la navegación. Al usar _Expo Router_, cada archivo aquí es literalmente una pantalla.
+  - `_layout.tsx`: Es el archivo maestro de navegación. Configura barras superiores, menús y temas globales de la app.
+  - `(tabs)/`: Contiene los menús de la barra de navegación inferior del cliente (`home.tsx`, `cart.tsx`, `profile.tsx`).
+  - `employee/`: Rutas protegidas exclusivas para el staff (`orders.tsx`, `preparing.tsx`, `inventory.tsx`). Separa la lógica administrativa de la vista del consumidor o cliente.
+  - `cafeteria/`: Pantallas dinámicas (como `[category].tsx`) que reciclan un mismo diseño visual pero cargan diferentes productos dependiendo si abres "Beesweet" o "Busters".
+- **`stores/`**: Donde "vive" la memoria global de la app.
+  - `useCartStore.ts`: Aquí se ejecuta la regla de negocio del carrito. Contiene funciones que evalúan la cantidad de productos añadidos y bloquean la acción si superas el límite por estudiante (3 iguales / 8 total y el límite de ordenes al mismo tiempo (3)).
+  - `useUserStore.ts`: Guarda quién está usando la app y su rol (Cliente o Empleado).
+- **`constants/`**: Archivos de configuración general que evitan repetir código.
+  - `theme.ts`: Es el manual de diseño. Contiene paletas de colores (Claro y Oscuro), sombras, tamaños de letra y bordes. Si queremos cambiar el color de la app, se puede hacer en este único archivo.
+  - `productsImages.ts`: Archivo con inteligencia propia. Utiliza un algoritmo de "Distancia de Levenshtein" para leer el nombre de un producto de la base de datos (incluso si está mal escrito) y asignarle la mejor foto disponible del menú local.
+- **`components/`**: Pequeñas piezas visuales reciclables.
+  - `ProductCard.tsx`: La tarjeta genérica donde se pinta cada producto.
+  - `ThemeReveal.tsx`: Maneja la animación que se muestra cuando el usuario cambia entre el Modo Claro y Oscuro.
+
+### Estructura Backend (`/backend`)
+
+- **`index.js`**: El archivo que levanta el servidor, conecta con la base de datos Atlas y activa los CORS.
+- **`models/`**: Definen "Cómo lucen los datos".
+  - `Order.js`: Define la estructura de un pedido. Requiere estrictamente los IDs de producto y asigna el estado inicial de una orden como `Pendiente`.
+  - `Product.js` y `User.js`: Definen colecciones del catálogo e información de inicio de sesión de los usuarios.
+- **`routes/`**: Archivos controladores que procesan la comunicación de red.
+  - `orders.js` y `products.js`: Exponen los "endpoints" (ej. `/api/orders`) para que el frontend envíe JSON y estos lo guarden en MongoDB de forma asíncrona.
+
+---
+
+## Almacenamiento de Datos (Base de Datos)
+
+Todo el flujo dinámico se guarda en **MongoDB Atlas**. Hemos dividido los registros en distintas Colecciones:
+
+1.  **`Products` (Productos):** Almacena los productos del menú (`businessId`, `name`, `price`, `category`, `status`).
+2.  **`Orders` (Órdenes):** Almacena el historial de ventas. Cada orden guarda un arreglo de productos, modificaciones en formato de texto, precio total y un estado transicional (`Pendiente` -> `Terminado`).
+3.  **`Cafeterias`:** Colección para controlar variables de entorno, como activar un "Modo Cerrado/Abierto" si la cafetería ya cerró operaciones ese día.
+
+_El Frontend no manipula bases de datos; utiliza `fetch` o hooks personalizados como `useOrders.ts` para pedir al backend que haga las consultas y devuelva JSON._
+
+---
+
+## Guía de Instalación y Configuración
+
+Pasos para clonar, configurar y correr el proyecto en tu entorno local:
+
+### Pre-requisitos
+
+- Tener instalado [Node.js](https://nodejs.org/es/).
+- Instalar la herramienta Expo CLI (`npm install -g expo-cli`).
+- Tener la app _Expo Go_ descargada en tu dispositivo móvil (iOS/Android), o tener instalado Android Studio para emulación local.
+
+### Paso 1: Configurar y levantar el Backend (Servidor)
+
+Abre tu terminal y ubícate en la raíz del proyecto.
 
 ```bash
+#1. Entra a la carpeta del servidor
+cd backend
+
+#2. Instala los paquetes necesarios de Node
 npm install
+
+#3. Configura las variables de Entorno
+#Crea un archivo llamado .env dentro de la carpeta 'backend'
+#Dentro de este, agrega la conexión a tu base de datos MongoDB Atlas y el puerto:
+#MONGO_URI=mongodb+srv://<usuario>:<password>@cluster.mongodb.net/tecmifood
+#PORT=5000
+
+#4. Inicia el servidor
+npm run dev
 ```
 
-## 2. Start the project
+_(Si todo sale bien, la terminal indicará: `Servidor corriendo en http://localhost:5000`)_
+
+### Paso 2: Configurar y levantar el Frontend (App Expo)
+
+Abre una nueva pestaña o ventana en tu terminal (sin cerrar el servidor backend) y ubícate nuevamente en la raíz del proyecto.
 
 ```bash
+#1. Instala todas las dependencias de React Native / Expo
+npm install
+
+#2. Inicia la aplicación móvil
 npx expo start
 ```
 
-## 3. View the web app
+### Paso 3: Visualizar la Aplicación
 
-To view the app in the browser:
+Al correr `npx expo start`, aparecerá un código QR en tu terminal y en el navegador. Tienes varias opciones:
 
-```bash
-npx expo start --web
-```
+- **En tu teléfono físico (Recomendado):** Escanea el código QR con la cámara (iOS) o desde la app Expo Go (Android).
+- **Emulador Android:** Presiona la tecla `a` en tu teclado dentro de la terminal si tienes Android Studio abierto.
+- **En Web (Para desarrollo rápido):** Presiona la tecla `w` en la terminal.
 
-Then open the URL shown by Expo, usually something like:
+### Notas para Windows (Problemas de Scripts)
 
-```text
-http://localhost:8081
-```
-
-And in the browser you can go to these routes:
-
-- Client:
-  ```text
-  http://localhost:8081/client/products
-  ```
-
-- Employee:
-  ```text
-  http://localhost:8081/employee/orders
-  ```
-
-## 4. View it from Android
-
-### Option A: Android emulator
-
-1. Open Android Studio.
-2. Start an Android emulator.
-3. In the project terminal run:
-
-```bash
-npx expo start --android
-```
-
-This will open the app in the emulator if it is configured correctly.
-
-### Option B: Expo Go on a physical device
-
-1. Install Expo Go on your Android phone.
-2. Run:
-
-```bash
-npx expo start
-```
-3. Scan the QR code from your phone.
-
-### Routes inside the app
-
-The default flow goes to the client view:
-
-```text
-/client/home
-```
-
-The employee view is at:
-
-```text
-/employee/orders
-```
-
-## 5. Current screen flow
-
-- Client: products and product detail
-- Employee: orders
-
-## 6. Useful commands
-
-```bash
-npx expo start
-npx expo start --web
-npx expo start --android
-npx tsc --noEmit
-```
-
-## 7. Note
-
-If the project does not start because of script restrictions on Windows, you can use:
-
-```powershell
-powershell -ExecutionPolicy Bypass -NoLogo -Command "Set-Location 'path\to\project'; npx expo start --web"
-```
-
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Es preferible hacer esto desde una terminal cmd, ya que aveces PowerShell bloquea la ejecución de Expo por directivas de seguridad.

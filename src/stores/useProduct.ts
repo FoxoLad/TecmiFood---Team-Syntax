@@ -56,7 +56,30 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         return;
       }
 
-      set({ products: list.map(normalizeProduct), isLoading: false });
+      const localById = new Map(
+        (productsData as Product[]).map((product) => [product.id, product]),
+      );
+
+      set({
+        products: list.map((product, index) => {
+          const normalized = normalizeProduct(product, index);
+          const local = localById.get(normalized.id);
+          const remoteImage = normalized.image?.trim() ?? "";
+          const isPlaceholder =
+            !remoteImage || remoteImage.includes("ImagenTestParaProductos");
+
+          if (
+            local?.image &&
+            isPlaceholder &&
+            (normalized.businessId === "BS" || local.businessId === "BS")
+          ) {
+            return { ...normalized, image: local.image };
+          }
+
+          return normalized;
+        }),
+        isLoading: false,
+      });
     } catch (error) {
       console.error("Error fetching products from API:", error);
       set({ isLoading: false });

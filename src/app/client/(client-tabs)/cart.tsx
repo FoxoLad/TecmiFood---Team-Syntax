@@ -17,6 +17,8 @@ import {
 } from "react-native";
 import { FillingCartIcon } from "../../../components/FillingCartIcon";
 import { ProductImage } from "../../../components/ProductImage";
+import { useProductStore } from "../../../stores/useProduct";
+import { isProductAvailable } from "../../../types/product";
 import SafeView from "../../../components/SafeView";
 import { endpoints } from "../../../constants/api";
 import {
@@ -33,6 +35,7 @@ import { clientLabel } from "../../../utils/client";
 
 //Zustand
 export default function CartScreen() {
+  const products = useProductStore((state) => state.products || []);
   const colors = useColors();
   const mode = useThemeStore((state) => state.mode);
   const tone = cafeteriaOptionColors[mode];
@@ -106,9 +109,14 @@ export default function CartScreen() {
 
   const bustersItems = items.filter((i) => i.product.businessId === "BT");
   const beeSweetItems = items.filter((i) => i.product.businessId === "BS");
+  const hasUnavailableItems = items.some(item => {
+    const catProduct = products.find(p => p.id === item.product.id) || item.product;
+    return !isProductAvailable(catProduct);
+  });
+
   const canOrderAll =
     (bustersItems.length === 0 || bustersState.isOpen) &&
-    (beeSweetItems.length === 0 || beesweetState.isOpen);
+    (beeSweetItems.length === 0 || beesweetState.isOpen) && !hasUnavailableItems;
 
   //Verificar si la cafeter√≠a est√° abierta para confirmar el pedido
   const openConfirmModal = (scope: "all" | "busters" | "beesweet") => {
@@ -334,7 +342,10 @@ export default function CartScreen() {
     );
   }
 
-  const renderCartItem = (item: (typeof items)[0]) => (
+  const renderCartItem = (item: (typeof items)[0]) => {
+    const catalogProduct = products.find(p => p.id === item.product.id) || item.product;
+    const available = isProductAvailable(catalogProduct);
+    return (
     <View key={item.cartItemId} style={styles.cartItem}>
       <ProductImage
         contentFit="cover"
@@ -344,6 +355,7 @@ export default function CartScreen() {
       />
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>{item.product.name}</Text>
+          {!available && <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 12 }}>AGOTADO</Text>}
         <Text style={styles.itemPrice}>${item.product.price.toFixed(2)}</Text>
 
         {item.modifications.length > 0 && (
@@ -376,10 +388,9 @@ export default function CartScreen() {
         >
           <Ionicons name="trash-outline" size={20} color={colors.danger} />
         </Pressable>
-      </View>
-    </View>
-  );
-
+      </View>      </View>
+    );
+  };
   return (
     <SafeView edges={["top", "left", "right"]} style={styles.container}>
       <View style={styles.header}>
@@ -479,11 +490,15 @@ export default function CartScreen() {
           <Text style={styles.totalValue}>${getTotal().toFixed(2)}</Text>
         </View>
 
-        {!canOrderAll ? (
-          <Text style={styles.closedNote}>
-            La cafeter√≠a est√° cerrada. No se pueden enviar pedidos.
-          </Text>
-        ) : null}
+        {!canOrderAll && hasUnavailableItems ? (
+            <Text style={styles.closedNote}>
+              Tienes productos agotados en tu carrito. Por favor elimÌnalos para continuar.
+            </Text>
+          ) : !canOrderAll ? (
+            <Text style={styles.closedNote}>
+              La cafeterÌa est· cerrada. No se pueden enviar pedidos.
+            </Text>
+          ) : null}
         <Pressable
           style={[
             styles.checkoutButton,
@@ -496,7 +511,7 @@ export default function CartScreen() {
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.checkoutButtonText}>
-              {canOrderAll ? "CONFIRMAR PEDIDO" : "CAFETER√çA CERRADA"}
+              {canOrderAll ? "CONFIRMAR PEDIDO" : (hasUnavailableItems ? "PRODUCTOS AGOTADOS" : "CAFETERÕA CERRADA")}
             </Text>
           )}
         </Pressable>
@@ -827,3 +842,9 @@ function createStyles(colors: Palette) {
     },
   });
 }
+
+
+
+
+
+

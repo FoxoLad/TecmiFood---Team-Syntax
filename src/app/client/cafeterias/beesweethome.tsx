@@ -21,6 +21,7 @@ import { useColors } from "../../../stores/useTheme";
 import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
 import { useProductStore } from "../../../stores/useProduct";
 import { isProductAvailable, Product } from "../../../types/product";
+import { useFavoritesStore } from "../../../stores/useFavorites";
 
 type QuickFilter = "Comidas" | "Bebidas" | "Otros";
 
@@ -63,7 +64,7 @@ export default function HomeScreen() {
     );
 
     const beeSweetProducts = useMemo(
-        () => products.filter((product) => product.businessId === "BS" && isProductAvailable(product)),
+        () => products.filter((product) => product.businessId === "BS"),
         [products],
     );
 
@@ -105,14 +106,20 @@ export default function HomeScreen() {
         return pairProducts(source, selectedFilter);
     }, [filteredProducts, search, selectedFilter]);
 
-    const renderProduct = (product: Product) => (
+    const favoriteItems = useFavoritesStore((state) => state.items);
+
+    const renderProduct = (product: Product) => {
+        const isFav = favoriteItems.some((f) => f.id === product.id);
+        const available = isProductAvailable(product);
+        return (
         <Pressable
             key={product.id}
-            onPress={() => router.push({
+            onPress={() => available && router.push({
                 pathname: "/client/cafeterias/product/[id]",
                 params: { id: product.id },
             })}
-            style={styles.gridItem}
+            style={[styles.gridItem, !available && { opacity: 0.5 }]}
+            disabled={!available}
         >
             <ProductImage
                 contentFit="cover"
@@ -120,15 +127,27 @@ export default function HomeScreen() {
                 name={product.name}
                 style={styles.gridImage}
             />
+            {isFav && (
+                <View style={{ position: 'absolute', top: 16, right: 16, backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: 12, padding: 4 }}>
+                    <Ionicons name="heart" size={18} color="red" />
+                </View>
+            )}
+            {!available && (
+                <View style={{ position: 'absolute', top: 16, left: 16, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                    <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>AGOTADO</Text>
+                </View>
+            )}
             <View style={styles.gridContent}>
                 <Text numberOfLines={2} style={styles.gridName}>{product.name}</Text>
                 <Text style={styles.gridPrice}>${product.price.toFixed(2)}</Text>
             </View>
-            <View style={styles.plusIcon}>
-                <Ionicons color={colors.text} name="add" size={20} />
-            </View>
-        </Pressable>
-    );
+            {available && (
+                <View style={styles.plusIcon}>
+                    <Ionicons color={colors.text} name="add" size={20} />
+                </View>
+            )}        </Pressable>
+        );
+    };
 
     return (
         <View style={styles.screen}>
@@ -272,3 +291,4 @@ function createStyles(colors: Palette) {
     emptyText: { color: "#555555", fontSize: 18, textAlign: "center", marginTop: 20 },
   });
 }
+

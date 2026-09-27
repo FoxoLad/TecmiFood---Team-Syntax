@@ -17,8 +17,6 @@ import {
 } from "react-native";
 import { FillingCartIcon } from "../../../components/FillingCartIcon";
 import { ProductImage } from "../../../components/ProductImage";
-import { useProductStore } from "../../../stores/useProduct";
-import { isProductAvailable } from "../../../types/product";
 import SafeView from "../../../components/SafeView";
 import { endpoints } from "../../../constants/api";
 import {
@@ -29,8 +27,10 @@ import {
 import { useCafeteriaStatus } from "../../../stores/useCafeteriaStatus";
 import { useCartStore } from "../../../stores/useCartStore";
 import { isRealOrder, useOrders } from "../../../stores/useOrders";
+import { useProductStore } from "../../../stores/useProduct";
 import { useColors, useThemeStore } from "../../../stores/useTheme";
 import { useUserStore } from "../../../stores/useUserStore";
+import { isProductAvailable } from "../../../types/product";
 import { clientLabel } from "../../../utils/client";
 
 //Zustand
@@ -109,14 +109,16 @@ export default function CartScreen() {
 
   const bustersItems = items.filter((i) => i.product.businessId === "BT");
   const beeSweetItems = items.filter((i) => i.product.businessId === "BS");
-  const hasUnavailableItems = items.some(item => {
-    const catProduct = products.find(p => p.id === item.product.id) || item.product;
+  const hasUnavailableItems = items.some((item) => {
+    const catProduct =
+      products.find((p) => p.id === item.product.id) || item.product;
     return !isProductAvailable(catProduct);
   });
 
   const canOrderAll =
     (bustersItems.length === 0 || bustersState.isOpen) &&
-    (beeSweetItems.length === 0 || beesweetState.isOpen) && !hasUnavailableItems;
+    (beeSweetItems.length === 0 || beesweetState.isOpen) &&
+    !hasUnavailableItems;
 
   //Verificar si la cafeterÃ­a estÃ¡ abierta para confirmar el pedido
   const openConfirmModal = (scope: "all" | "busters" | "beesweet") => {
@@ -343,52 +345,60 @@ export default function CartScreen() {
   }
 
   const renderCartItem = (item: (typeof items)[0]) => {
-    const catalogProduct = products.find(p => p.id === item.product.id) || item.product;
+    const catalogProduct =
+      products.find((p) => p.id === item.product.id) || item.product;
     const available = isProductAvailable(catalogProduct);
     return (
-    <View key={item.cartItemId} style={[styles.cartItem, !available && { opacity: 0.6 }]}>
-      <ProductImage
-        contentFit="cover"
-        image={item.product.image}
-        name={item.product.name}
-        style={styles.itemImageContainer}
-      />
-      <View style={styles.itemInfo}>
-        <Text style={styles.itemName}>{item.product.name}</Text>
-          {!available ? <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 12 }}>AGOTADO</Text> : null}
-        <Text style={styles.itemPrice}>${item.product.price.toFixed(2)}</Text>
+      <View
+        key={item.cartItemId}
+        style={[styles.cartItem, !available && { opacity: 0.6 }]}
+      >
+        <ProductImage
+          contentFit="cover"
+          image={item.product.image}
+          name={item.product.name}
+          style={styles.itemImageContainer}
+        />
+        <View style={styles.itemInfo}>
+          <Text style={styles.itemName}>{item.product.name}</Text>
+          {!available ? (
+            <Text style={{ color: "red", fontWeight: "bold", fontSize: 12 }}>
+              AGOTADO
+            </Text>
+          ) : null}
+          <Text style={styles.itemPrice}>${item.product.price.toFixed(2)}</Text>
 
-        {item.modifications.length > 0 && (
-          <Text style={styles.itemMods}>
-            Mods: {item.modifications.join(", ")}
-          </Text>
-        )}
-        {item.notes ? (
-          <Text style={styles.itemNotes}>Nota: {item.notes}</Text>
-        ) : null}
-      </View>
-
-      <View style={styles.quantityControl}>
-        <Pressable
-          onPress={() => handleUpdateQuantity(item.cartItemId, -1)}
-          style={styles.quantityBtn}
-        >
-          <Ionicons name="remove" size={18} color={colors.text} />
-        </Pressable>
-        <Text style={styles.quantityText}>{item.quantity}</Text>
-        <Pressable
-          onPress={() => handleUpdateQuantity(item.cartItemId, 1)}
-          style={styles.quantityBtn}
-        >
-          <Ionicons name="add" size={18} color={colors.text} />
-        </Pressable>
-        <Pressable
-          style={styles.deleteButton}
-          onPress={() => removeItem(item.cartItemId)}
-        >
-          <Ionicons name="trash-outline" size={20} color={colors.danger} />
-        </Pressable>
-      </View>      </View>
+          {item.modifications.length > 0 ? (
+            <Text style={styles.itemMods}>
+              Mods: {item.modifications.join(", ")}
+            </Text>
+          ) : null}
+          {item.notes ? (
+            <Text style={styles.itemNotes}>Nota: {item.notes}</Text>
+          ) : null}
+        </View>
+        <View style={styles.quantityControl}>
+          <Pressable
+            onPress={() => handleUpdateQuantity(item.cartItemId, -1)}
+            style={styles.quantityBtn}
+          >
+            <Ionicons name="remove" size={18} color={colors.text} />
+          </Pressable>
+          <Text style={styles.quantityText}>{item.quantity}</Text>
+          <Pressable
+            onPress={() => handleUpdateQuantity(item.cartItemId, 1)}
+            style={styles.quantityBtn}
+          >
+            <Ionicons name="add" size={18} color={colors.text} />
+          </Pressable>
+          <Pressable
+            style={styles.deleteButton}
+            onPress={() => removeItem(item.cartItemId)}
+          >
+            <Ionicons name="trash-outline" size={20} color={colors.danger} />
+          </Pressable>
+        </View>
+        </View>
     );
   };
   return (
@@ -491,14 +501,15 @@ export default function CartScreen() {
         </View>
 
         {!canOrderAll && hasUnavailableItems ? (
-            <Text style={styles.closedNote}>
-              Tienes productos agotados en tu carrito. Por favor elimínalos para continuar.
-            </Text>
-          ) : !canOrderAll ? (
-            <Text style={styles.closedNote}>
-              La cafetería está cerrada. No se pueden enviar pedidos.
-            </Text>
-          ) : null}
+          <Text style={styles.closedNote}>
+            Tienes productos agotados en tu carrito. Por favor elimï¿½nalos para
+            continuar.
+          </Text>
+        ) : !canOrderAll ? (
+          <Text style={styles.closedNote}>
+            La cafeterï¿½a estï¿½ cerrada. No se pueden enviar pedidos.
+          </Text>
+        ) : null}
         <Pressable
           style={[
             styles.checkoutButton,
@@ -511,7 +522,11 @@ export default function CartScreen() {
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.checkoutButtonText}>
-              {canOrderAll ? "CONFIRMAR PEDIDO" : (hasUnavailableItems ? "PRODUCTOS AGOTADOS" : "CAFETERÍA CERRADA")}
+              {canOrderAll
+                ? "CONFIRMAR PEDIDO"
+                : hasUnavailableItems
+                  ? "PRODUCTOS AGOTADOS"
+                  : "CAFETERï¿½A CERRADA"}
             </Text>
           )}
         </Pressable>
@@ -842,11 +857,4 @@ function createStyles(colors: Palette) {
     },
   });
 }
-
-
-
-
-
-
-
 

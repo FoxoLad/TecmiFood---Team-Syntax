@@ -346,7 +346,7 @@ export default function CartScreen() {
     const catalogProduct = products.find(p => p.id === item.product.id) || item.product;
     const available = isProductAvailable(catalogProduct);
     return (
-    <View key={item.cartItemId} style={styles.cartItem}>
+    <View key={item.cartItemId} style={[styles.cartItem, !available && { opacity: 0.6 }]}>
       <ProductImage
         contentFit="cover"
         image={item.product.image}
@@ -355,7 +355,7 @@ export default function CartScreen() {
       />
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>{item.product.name}</Text>
-          {!available && <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 12 }}>AGOTADO</Text>}
+          {!available ? <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 12 }}>AGOTADO</Text> : null}
         <Text style={styles.itemPrice}>${item.product.price.toFixed(2)}</Text>
 
         {item.modifications.length > 0 && (
@@ -842,6 +842,8 @@ function createStyles(colors: Palette) {
     },
   });
 }
+
+
 
 
 

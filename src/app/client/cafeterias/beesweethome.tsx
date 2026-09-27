@@ -112,13 +112,13 @@ export default function HomeScreen() {
         const isFav = favoriteItems.some((f) => f.id === product.id);
         const available = isProductAvailable(product);
         return (
-        <Pressable
+                <Pressable
             key={product.id}
-            onPress={() => available && router.push({
+            onPress={() => available ? router.push({
                 pathname: "/client/cafeterias/product/[id]",
                 params: { id: product.id },
-            })}
-            style={[styles.gridItem, !available && { opacity: 0.5 }]}
+            }) : null}
+            style={[styles.gridItem, !available ? { opacity: 0.5 } : {}]}
             disabled={!available}
         >
             <ProductImage
@@ -127,25 +127,26 @@ export default function HomeScreen() {
                 name={product.name}
                 style={styles.gridImage}
             />
-            {isFav && (
+            {isFav ? (
                 <View style={{ position: 'absolute', top: 16, right: 16, backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: 12, padding: 4 }}>
                     <Ionicons name="heart" size={18} color="red" />
                 </View>
-            )}
-            {!available && (
+            ) : null}
+            {!available ? (
                 <View style={{ position: 'absolute', top: 16, left: 16, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
                     <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>AGOTADO</Text>
                 </View>
-            )}
+            ) : null}
             <View style={styles.gridContent}>
                 <Text numberOfLines={2} style={styles.gridName}>{product.name}</Text>
                 <Text style={styles.gridPrice}>${product.price.toFixed(2)}</Text>
             </View>
-            {available && (
+            {available ? (
                 <View style={styles.plusIcon}>
                     <Ionicons color={colors.text} name="add" size={20} />
                 </View>
-            )}        </Pressable>
+            ) : null}
+        </Pressable>
         );
     };
 
@@ -291,4 +292,5 @@ function createStyles(colors: Palette) {
     emptyText: { color: "#555555", fontSize: 18, textAlign: "center", marginTop: 20 },
   });
 }
+
 

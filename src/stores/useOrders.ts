@@ -25,7 +25,7 @@ export type RealOrder = {
 interface OrderStore {
   orders: RealOrder[];
   isLoading: boolean;
-  fetchOrders: () => Promise<void>;
+  fetchOrders: (background?: boolean) => Promise<void>;
   rememberOrder: (order: RealOrder) => void;
   updateOrderStatus: (orderNumber: number, status: string) => Promise<void>;
   deleteOrder: (orderNumber: number) => Promise<void>;
@@ -44,8 +44,8 @@ export function isRealOrder(value: unknown): value is RealOrder {
 export const useOrders = create<OrderStore>((set, get) => ({
   orders: [],
   isLoading: false,
-  fetchOrders: async () => {
-    set({ isLoading: true });
+  fetchOrders: async (background = false) => {
+    if (!background) set({ isLoading: true });
     try {
       const res = await fetch(endpoints.orders);
       if (!res.ok) {
@@ -103,3 +103,5 @@ export const useOrders = create<OrderStore>((set, get) => ({
     }
   },
 }));
+
+

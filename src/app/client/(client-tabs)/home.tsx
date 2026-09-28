@@ -87,8 +87,12 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchOrders();
+      fetchOrders(true);
       fetchProducts();
+      const interval = setInterval(() => {
+        fetchOrders(true);
+      }, 5000);
+      return () => clearInterval(interval);
     }, [fetchOrders, fetchProducts]),
   );
 

@@ -67,8 +67,10 @@ export default function ClientOrdersScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchOrders();
+      fetchOrders(true);
       fetchStatus();
+      const interval = setInterval(() => fetchOrders(true), 5000);
+      return () => clearInterval(interval);
     }, [fetchOrders, fetchStatus]),
   );
 
@@ -508,3 +510,4 @@ function createStyles(colors: Palette) {
   },
   });
 }
+

@@ -1,5 +1,5 @@
 /** Seguimiento visual del pedido que el cliente acaba de enviar o abrió desde avisos. */
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -16,6 +16,7 @@ export default function PreparingOrderScreen() {
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { id } = useLocalSearchParams<{ id?: string }>();
   const orders = useOrders((state) => state.orders);
+  const fetchOrders = useOrders((state) => state.fetchOrders);
   const latestOrder = id
     ? orders.find((order) => order._id === id || String(order.orderNumber) === id)
     : undefined;
@@ -24,6 +25,12 @@ export default function PreparingOrderScreen() {
   const stepStatus = status === "Entregado" ? "Terminado" : status;
   const stepIndex = STEPS.indexOf(stepStatus);
   const currentIndex = stepIndex < 0 ? 0 : stepIndex;
+
+  useEffect(() => {
+    fetchOrders(true);
+    const interval = setInterval(() => fetchOrders(true), 5000);
+    return () => clearInterval(interval);
+  }, [fetchOrders]);
 
   return (
     <SafeView style={styles.container}>
@@ -212,3 +219,4 @@ function createStyles(colors: Palette) {
   },
   });
 }
+

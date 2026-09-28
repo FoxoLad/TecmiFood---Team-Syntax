@@ -234,6 +234,7 @@ export default function CartScreen() {
         );
         const orderData = {
           customerName: clientLabel(clientId),
+          pushToken: useUserStore.getState().pushToken,
           totalAmount: total,
           items: orderItems.map((item: any) => ({
             productId: item.product.id,
@@ -857,4 +858,5 @@ function createStyles(colors: Palette) {
     },
   });
 }
+
 

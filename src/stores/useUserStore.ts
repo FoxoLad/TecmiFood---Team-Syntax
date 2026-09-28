@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { endpoints } from "../constants/api";
+import { registerForPushNotificationsAsync } from "../utils/notifications";
 
 type UserStore = {
   clientId: string | null;
@@ -8,6 +9,7 @@ type UserStore = {
   notificationsClearedAt: number | null;
   deletedNotificationIds: string[];
   employeeCafeteria: string | null;
+  pushToken: string | null;
   initializeUser: () => Promise<void>;
   clearNotifications: () => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
@@ -31,19 +33,30 @@ export const useUserStore = create<UserStore>((set, get) => ({
   notificationsClearedAt: null,
   deletedNotificationIds: [],
   employeeCafeteria: null,
+  pushToken: null,
   initializeUser: async () => {
     try {
       const storedId = await AsyncStorage.getItem(CLIENT_ID_KEY);
       const clearedAtStr = await AsyncStorage.getItem(CLEARED_AT_KEY);
-      const notificationsClearedAt = clearedAtStr ? parseInt(clearedAtStr, 10) : null;
-      
+      const notificationsClearedAt = clearedAtStr
+        ? parseInt(clearedAtStr, 10)
+        : null;
+
       const deletedStr = await AsyncStorage.getItem(DELETED_NOTIFS_KEY);
       const deletedNotificationIds = deletedStr ? JSON.parse(deletedStr) : [];
-      
+
       const employeeCafeteria = await AsyncStorage.getItem(EMPLOYEE_CAFE_KEY);
+      const pushToken = await registerForPushNotificationsAsync();
 
       if (storedId) {
-        set({ clientId: storedId, isInitialized: true, notificationsClearedAt, deletedNotificationIds, employeeCafeteria });
+        set({
+          clientId: storedId,
+          isInitialized: true,
+          notificationsClearedAt,
+          deletedNotificationIds,
+          employeeCafeteria,
+          pushToken,
+        });
         return;
       }
 
@@ -55,14 +68,21 @@ export const useUserStore = create<UserStore>((set, get) => ({
       const data: { clientId?: string } = await res.json();
       const clientId = data.clientId || createFallbackId();
       await AsyncStorage.setItem(CLIENT_ID_KEY, clientId);
-      set({ clientId, isInitialized: true, notificationsClearedAt, deletedNotificationIds, employeeCafeteria });
+      set({
+        clientId,
+        isInitialized: true,
+        notificationsClearedAt,
+        deletedNotificationIds,
+        employeeCafeteria,
+        pushToken,
+      });
     } catch (error) {
       console.error("Error al inicializar el usuario:", error);
       const clientId = createFallbackId();
       try {
         await AsyncStorage.setItem(CLIENT_ID_KEY, clientId);
       } catch {
-        // Sin almacenamiento el id solo vive en esta sesión.
+        //Sin almacenamiento el id solo vive en esta sesión.
       }
       set({ clientId, isInitialized: true });
     }
@@ -88,5 +108,5 @@ export const useUserStore = create<UserStore>((set, get) => ({
       await AsyncStorage.removeItem(EMPLOYEE_CAFE_KEY);
     }
     set({ employeeCafeteria: cafeteria });
-  }
+  },
 }));

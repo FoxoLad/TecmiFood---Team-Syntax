@@ -3,7 +3,7 @@ const router = express.Router();
 const Order = require("../models/Order");
 const Cafeteria = require("../models/Cafeteria");
 
-//Generar un número de orden único de 4 dígitos
+//Generar un n�mero de orden �nico de 4 d�gitos
 const generateOrderNumber = async () => {
   let isUnique = false;
   let orderNumber;
@@ -15,10 +15,49 @@ const generateOrderNumber = async () => {
   return orderNumber;
 };
 
+//Enviar notificaci�n Push
+const sendPushNotification = async (expoPushToken, title, body, data) => {
+  if (
+    !expoPushToken ||
+    (!expoPushToken.startsWith("ExponentPushToken") &&
+      !expoPushToken.startsWith("ExpoPushToken"))
+  ) {
+    return; //Token inv�lido o nulo
+  }
+
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title: title,
+    body: body,
+    data: data,
+  };
+
+  try {
+    const response = await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+    console.log(
+      "Notificaci�n enviada a",
+      expoPushToken,
+      "Status:",
+      response.status,
+    );
+  } catch (error) {
+    console.error("Error al enviar notificaci�n push:", error);
+  }
+};
+
 //1.- Crear nuevo pedido (POST /api/orders)
 router.post("/", async (req, res) => {
   try {
-    const { items, totalAmount, customerName } = req.body;
+    const { items, totalAmount, customerName, pushToken } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ error: "El pedido no tiene productos" });
@@ -26,7 +65,7 @@ router.post("/", async (req, res) => {
 
     const cafeteria = await Cafeteria.findOne({ key: "busters" });
     if (cafeteria && cafeteria.isOpen === false) {
-      return res.status(403).json({ error: "La cafetería está cerrada" });
+      return res.status(403).json({ error: "La cafeter�a est� cerrada" });
     }
 
     const orderNumber = await generateOrderNumber();
@@ -37,6 +76,7 @@ router.post("/", async (req, res) => {
       items,
       totalAmount,
       status: "Pendiente",
+      pushToken: pushToken || "",
     });
 
     const savedOrder = await newOrder.save();
@@ -50,7 +90,6 @@ router.post("/", async (req, res) => {
 //2.- Obtener todos los pedidos (GET /api/orders)
 router.get("/", async (req, res) => {
   try {
-    //Retornar las órdenes por fecha de creación (más recientes primero)
     const orders = await Order.find().sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
@@ -58,7 +97,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//3.- Estadísticas. Va antes de /:id para que "metrics" no se interprete como número de orden.
+//3.- Estadísticas
 router.get("/metrics/stats", async (req, res) => {
   try {
     const now = new Date();
@@ -74,10 +113,10 @@ router.get("/metrics/stats", async (req, res) => {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const deliveredOrders = await Order.find({ status: "Entregado" });
 
-    let todayTotal = 0;
-    let weekTotal = 0;
-    let monthTotal = 0;
-    let allTimeTotal = 0;
+    let todayTotal = 0,
+      weekTotal = 0,
+      monthTotal = 0,
+      allTimeTotal = 0;
 
     deliveredOrders.forEach((order) => {
       const orderDate = new Date(order.createdAt);
@@ -137,13 +176,39 @@ router.patch("/:id/status", async (req, res) => {
     if (!updatedOrder)
       return res.status(404).json({ error: "Orden no encontrada" });
 
+    //Enviar notificaci�n Push si hay token
+    if (updatedOrder.pushToken) {
+      let title = "Actualización de Pedido";
+      let body = `El estado de tu pedido #${updatedOrder.orderNumber} cambió a: ${status}`;
+
+      if (status === "En preparación") {
+        title = "¡Tu pedido está en cocina! ?????";
+        body = `Tu pedido #${updatedOrder.orderNumber} esta en preparación.`;
+      } else if (status === "Terminado") {
+        title = "¡Pedido listo! ??";
+        body = `Tu pedido #${updatedOrder.orderNumber} ya está listo, puedes recogerlo y pagar en el mostrador.`;
+      } else if (status === "Entregado") {
+        title = "¡Pedido entregado! ??";
+        body = `Tu pedido ha sido entregado, esperamos que disfrutes tu comida.`;
+      } else if (status === "Cancelado") {
+        title = "Pedido Cancelado ?";
+        body = `Tu pedido #${updatedOrder.orderNumber} ha sido cancelado.`;
+      }
+
+      await sendPushNotification(updatedOrder.pushToken, title, body, {
+        orderNumber: updatedOrder.orderNumber,
+        status,
+      });
+    }
+
     res.json(updatedOrder);
   } catch (error) {
+    console.error("Error al actualizar el estado:", error);
     res.status(500).json({ error: "Error al actualizar el estado" });
   }
 });
 
-//Eliminar un pedido
+// Eliminar un pedido
 router.delete("/:orderNumber", async (req, res) => {
   try {
     const order = await Order.findOneAndDelete({

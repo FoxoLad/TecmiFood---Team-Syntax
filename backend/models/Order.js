@@ -15,6 +15,7 @@ const OrderSchema = new mongoose.Schema(
   {
     orderNumber: { type: Number, required: true, unique: true },
     customerName: { type: String, default: "Cliente" },
+    pushToken: { type: String, default: "" },
     items: [OrderItemSchema],
     totalAmount: { type: Number, required: true },
     status: {
@@ -33,3 +34,4 @@ const OrderSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Order", OrderSchema);
+

@@ -17,6 +17,7 @@ const HOLD_MS = 2200;
 const FADE_MS = 480;
 const useNativeDriver = Platform.OS !== "web";
 
+// Animación de entrada: un grano de café flota y luego la pantalla se desvanece.
 export function CoffeeSplash() {
   const [visible, setVisible] = useState(true);
   const [opacity] = useState(() => new Animated.Value(1));

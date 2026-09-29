@@ -22,6 +22,7 @@ import { colors, employee } from "../../constants/theme";
 import { useProductStore } from "../../stores/useProduct";
 import { useUserStore } from "../../stores/useUserStore";
 
+// Formulario del empleado para crear o editar un producto: datos, foto, modificaciones y borrado.
 export default function ProductFormScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const isEditing = !!id;
@@ -71,6 +72,7 @@ export default function ProductFormScreen() {
     }
   }, [id, isEditing, products]);
 
+  // Abre la galería, recorta la foto a cuadrado y la guarda como base64 para subirla con el producto.
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
@@ -86,6 +88,7 @@ export default function ProductFormScreen() {
     }
   };
 
+  // Valida nombre, descripción, precio y categoría, y hace POST (nuevo) o PUT (editar).
   const handleSave = async () => {
     if (!name.trim() || !description.trim() || !price.trim() || !category.trim()) {
       Alert.alert("Campos incompletos", "Por favor llena todos los campos obligatorios.");
@@ -128,6 +131,7 @@ export default function ProductFormScreen() {
     }
   };
 
+  // Pide confirmación y, si aceptan, borra el producto con DELETE y regresa al inventario.
   const handleDelete = () => {
     Alert.alert("Eliminar", "¿Estás seguro de eliminar este producto?", [
       { text: "Cancelar", style: "cancel" },

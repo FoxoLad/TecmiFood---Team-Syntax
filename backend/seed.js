@@ -11,9 +11,11 @@ const Product = require("./models/Product");
 //cd backend
 //node seed.js
 
-const dataPath = path.join(__dirname, "../src/data/products.json");
+const dataPath = path.join(__dirname, "../frontend/src/data/products.json");
 const productsJson = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
+// Borra el menú actual y vuelve a cargar todos los productos desde frontend/src/data/products.json.
+// Se corre a mano con: cd backend && node seed.js
 async function seedDatabase() {
   try {
     console.log("Conectando a MongoDB...");

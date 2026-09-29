@@ -12,12 +12,14 @@ import { useUserStore } from '../../stores/useUserStore';
 
 type Period = 'Hoy' | 'Semana' | 'Mes' | 'Histórico';
 
+// Ventas del empleado: suma lo ya entregado por hoy, semana, mes o un mes del histórico.
 export default function EmployeeHistoryScreen() {
     const orders = useOrders((state) => state.orders);
     const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
     const [period, setPeriod] = useState<Period>('Hoy');
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
+    // Suma ventas entregadas del periodo elegido (hoy, semana, mes o un mes del histórico) y las agrupa por producto.
     const { products, grandTotal, count, periodOrders, availableMonths } = useMemo(() => {
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -81,6 +83,7 @@ export default function EmployeeHistoryScreen() {
         return { products, grandTotal, count: periodOrders.length, periodOrders, availableMonths };
     }, [orders, period, selectedMonth, employeeCafeteria]);
 
+    // Convierte "2026-09" en "SEPTIEMBRE DE 2026" para el título del histórico.
     const formatMonth = (m: string) => {
         const [y, mth] = m.split('-');
         const date = new Date(parseInt(y), parseInt(mth) - 1, 1);

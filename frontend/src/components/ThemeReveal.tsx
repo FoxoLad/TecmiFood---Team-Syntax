@@ -4,6 +4,7 @@ import { Animated, Easing, Platform, StyleSheet, useWindowDimensions, View } fro
 import { darkColors, lightColors } from "../constants/theme";
 import { useThemeStore } from "../stores/useTheme";
 
+// Círculo que crece desde el centro y cubre la app justo antes de cambiar a claro u oscuro.
 export function ThemeReveal() {
   const phase = useThemeStore((state) => state.phase);
   const target = useThemeStore((state) => state.target);

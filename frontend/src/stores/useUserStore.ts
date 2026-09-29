@@ -22,6 +22,8 @@ const DELETED_NOTIFS_KEY = "deletedNotificationIds";
 
 const EMPLOYEE_CAFE_KEY = "employeeCafeteria";
 
+// Arma un id local tipo #482913 cuando el servidor no responde.
+// Sirve para que el cliente igual pueda usar la app en esa sesión.
 function createFallbackId() {
   return `#${Math.floor(100000 + Math.random() * 900000)}`;
 }
@@ -34,6 +36,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
   deletedNotificationIds: [],
   employeeCafeteria: null,
   pushToken: null,
+  // Arranca la sesión al abrir la app.
+  // Si ya hay un id guardado en el teléfono, lo reutiliza. Si no, pide uno nuevo al servidor
+  // y también pide permiso para las notificaciones push.
   initializeUser: async () => {
     try {
       const storedId = await AsyncStorage.getItem(CLIENT_ID_KEY);
@@ -87,12 +92,15 @@ export const useUserStore = create<UserStore>((set, get) => ({
       set({ clientId, isInitialized: true });
     }
   },
+  // Marca "ahora" como el momento en que el usuario limpió los avisos.
+  // Todo lo anterior deja de mostrarse en la campana.
   clearNotifications: async () => {
     const now = Date.now();
     await AsyncStorage.setItem(CLEARED_AT_KEY, now.toString());
     await AsyncStorage.setItem(DELETED_NOTIFS_KEY, JSON.stringify([]));
     set({ notificationsClearedAt: now, deletedNotificationIds: [] });
   },
+  // Oculta un aviso concreto y recuerda ese id en el teléfono para que no vuelva a salir.
   deleteNotification: async (id: string) => {
     const current = get().deletedNotificationIds;
     if (!current.includes(id)) {
@@ -101,6 +109,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
       set({ deletedNotificationIds: updated });
     }
   },
+  // Guarda en qué cafetería entró el empleado (Busters o Bee Sweet) para filtrar sus pedidos.
+  // Si recibe null, cierra esa sesión de empleado.
   setEmployeeCafeteria: async (cafeteria: string | null) => {
     if (cafeteria) {
       await AsyncStorage.setItem(EMPLOYEE_CAFE_KEY, cafeteria);

@@ -3,6 +3,7 @@ import { colors } from "../constants/theme";
 import { useCafeteriaStatus } from "../stores/useCafeteriaStatus";
 import { useColors } from "../stores/useTheme";
 
+// Calcula cuántos minutos faltan para la hora de cierre. Si ya pasó hoy, cuenta hasta mañana.
 function minutesUntilClose(closesAt: string) {
   const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(closesAt);
   if (!match) {
@@ -17,6 +18,7 @@ function minutesUntilClose(closesAt: string) {
   return Math.max(1, Math.ceil((target.getTime() - now.getTime()) / 60000));
 }
 
+// Convierte esos minutos en una frase: "Faltan 1 h 20 min para que cierre".
 function closingMessage(closesAt: string) {
   const minutes = minutesUntilClose(closesAt);
   if (minutes === null) {
@@ -35,10 +37,12 @@ function closingMessage(closesAt: string) {
   return `Faltan ${hourLabel} ${minuteLabel} para que cierre`;
 }
 
+// Franja que muestra si la cafetería está abierta y, al tocarla, el horario completo.
 export function CafeteriaStatusBanner({ cafeteriaKey }: { cafeteriaKey: "busters" | "beesweet" }) {
   const status = useCafeteriaStatus((state) => state[cafeteriaKey]);
   const themeColors = useColors();
 
+  // Abre una alerta con el horario y cuánto falta para cerrar.
   const showSchedule = () => {
     Alert.alert(
       status.isOpen ? "Abierta" : "Cerrada",

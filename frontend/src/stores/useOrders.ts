@@ -31,6 +31,8 @@ interface OrderStore {
   deleteOrder: (orderNumber: number) => Promise<void>;
 }
 
+// Comprueba que lo que llegó del servidor sí es un pedido: tiene número y una lista de productos.
+// Evita guardar en memoria una respuesta vacía o un mensaje de error.
 export function isRealOrder(value: unknown): value is RealOrder {
   if (!value || typeof value !== "object") {
     return false;
@@ -44,6 +46,8 @@ export function isRealOrder(value: unknown): value is RealOrder {
 export const useOrders = create<OrderStore>((set, get) => ({
   orders: [],
   isLoading: false,
+  // Pide al servidor la lista completa de pedidos y la deja en memoria.
+  // Si background es true, actualiza en silencio, sin mostrar el indicador de carga.
   fetchOrders: async (background = false) => {
     if (!background) set({ isLoading: true });
     try {
@@ -59,12 +63,16 @@ export const useOrders = create<OrderStore>((set, get) => ({
       set({ isLoading: false });
     }
   },
+  // Mete un pedido recién creado al inicio de la lista, sin esperar el siguiente refresco.
+  // Si ya estaba, lo reemplaza para no duplicarlo.
   rememberOrder: (order) => {
     set((state) => ({
       orders: [order, ...state.orders.filter((current) => current._id !== order._id)],
     }));
   },
   
+  // Quita el pedido de la pantalla al instante y luego lo borra en el servidor.
+  // Si el servidor falla, vuelve a mostrar la lista como estaba.
   deleteOrder: async (orderNumber: number) => {
     const previous = get().orders;
     set({ orders: previous.filter(o => o.orderNumber !== orderNumber) });
@@ -78,6 +86,8 @@ export const useOrders = create<OrderStore>((set, get) => ({
       set({ orders: previous });
     }
   },
+  // Cambia el estado en pantalla de inmediato y lo confirma con PATCH al servidor.
+  // Si el servidor lo rechaza, restaura el estado anterior y vuelve a descargar los pedidos.
   updateOrderStatus: async (orderNumber, status) => {
     const previous = get().orders;
     // El cambio se ve de inmediato; si el servidor lo rechaza, se restaura la lista.

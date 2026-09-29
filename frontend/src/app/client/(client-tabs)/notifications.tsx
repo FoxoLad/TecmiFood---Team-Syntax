@@ -18,6 +18,7 @@ import { useUserStore } from "../../../stores/useUserStore";
 import { formatOrderNumber } from "../../../types/order";
 import { isAlertVisible, isClientOrder } from "../../../utils/client";
 
+// Elige el ícono de la campana según el estado del pedido.
 const getStatusIcon = (status: string): keyof typeof Ionicons.glyphMap => {
   if (status === "Pendiente") return "receipt-outline";
   if (status === "En preparación") return "restaurant-outline";
@@ -25,6 +26,7 @@ const getStatusIcon = (status: string): keyof typeof Ionicons.glyphMap => {
   return "checkmark-done-outline";
 };
 
+// Arma el texto del aviso: recibido, en preparación, listo o entregado.
 const getStatusMessage = (status: string, orderNumber: string) => {
   if (status === "Pendiente")
     return `Hemos recibido tu pedido #${orderNumber}.`;
@@ -35,6 +37,7 @@ const getStatusMessage = (status: string, orderNumber: string) => {
   return `Tu pedido #${orderNumber} ha sido entregado.`;
 };
 
+// Campana de avisos. Cada cambio de estado de un pedido de este cliente aparece aquí.
 export default function NotificationsScreen() {
   const colors = useColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -177,6 +180,7 @@ export default function NotificationsScreen() {
   );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     container: {

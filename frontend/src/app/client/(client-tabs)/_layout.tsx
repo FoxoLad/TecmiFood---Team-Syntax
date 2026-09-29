@@ -12,7 +12,7 @@ import { useColors } from "../../../stores/useTheme";
 import { useUserStore } from "../../../stores/useUserStore";
 import { isAlertVisible, isClientOrder } from "../../../utils/client";
 
-//Zustand
+// Barra inferior: Inicio, Carrito, Avisos y Perfil. El número del carrito y de avisos sale de las tiendas de Zustand.
 export default function ClientTabsLayout() {
   const colors = useColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -125,6 +125,7 @@ export default function ClientTabsLayout() {
   );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     cartIconWrapper: {

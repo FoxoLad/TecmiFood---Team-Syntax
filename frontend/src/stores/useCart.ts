@@ -24,6 +24,7 @@ type CartStore = {
 
 export const useCartStore = create<CartStore>()((set) => ({
   items: [],
+  // Versión anterior del carrito. Las pantallas actuales usan useCartStore.ts.
   addItem: (item) =>
     set((state) => ({
       items: [
@@ -31,6 +32,7 @@ export const useCartStore = create<CartStore>()((set) => ({
         { ...item, quantity: Math.min(MAX_PRODUCT_QUANTITY, Math.max(1, item.quantity)) },
       ],
     })),
+  // Cambia la cantidad de un renglón, siempre entre 1 y MAX_PRODUCT_QUANTITY (4).
   updateQuantity: (index, quantity) =>
     set((state) => ({
       items: state.items.map((item, itemIndex) =>
@@ -42,9 +44,11 @@ export const useCartStore = create<CartStore>()((set) => ({
           : item,
       ),
     })),
+  // Elimina el renglón que está en esa posición de la lista.
   removeItem: (index) =>
     set((state) => ({
       items: state.items.filter((_, itemIndex) => itemIndex !== index),
     })),
+  // Deja el carrito sin productos.
   clearCart: () => set({ items: [] }),
 }));

@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 
-//Ver todos los productos
+// GET /api/productos — Lista el menú.
+// El cliente solo ve productos con existencias. El empleado pasa ?admin=true y ve también los agotados.
 router.get("/", async (req, res) => {
   try {
     const { admin } = req.query;
@@ -18,7 +19,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//Obtener producto por ID
+// GET /api/productos/:id — Devuelve un producto por su id de negocio (por ejemplo BT-12), no por el de Mongo.
 router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findOne({ id: req.params.id });
@@ -30,7 +31,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//Crear un producto (Empleado)
+// POST /api/productos — El empleado da de alta un producto nuevo con los datos del formulario.
 router.post("/", async (req, res) => {
   const product = new Product(req.body);
   try {
@@ -41,13 +42,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-//Actualizar un producto (Editar o cambiar inStock)
+// PUT /api/productos/:id — Actualiza un producto: nombre, precio, foto o si está en existencia.
+// { new: true } hace que la respuesta sea el documento ya modificado.
 router.put("/:id", async (req, res) => {
   try {
     const updatedProduct = await Product.findOneAndUpdate(
       { id: req.params.id },
       req.body,
-      { new: true }, //Retornar el nuevo producto actualizado
+      { new: true }, // Devolver el producto ya actualizado, no el anterior.
     );
     if (!updatedProduct)
       return res.status(404).json({ message: "Producto no encontrado" });
@@ -57,7 +59,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-//Eliminar un producto
+// DELETE /api/productos/:id — Quita un producto del menú de forma permanente.
 router.delete("/:id", async (req, res) => {
   try {
     const product = await Product.findOneAndDelete({ id: req.params.id });

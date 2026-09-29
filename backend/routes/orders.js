@@ -3,7 +3,8 @@ const router = express.Router();
 const Order = require("../models/Order");
 const Cafeteria = require("../models/Cafeteria");
 
-//Generar un n�mero de orden �nico de 4 d�gitos
+// Crea un folio de 4 dígitos (entre 1000 y 9999) que no exista en MongoDB.
+// Se llama al registrar un pedido nuevo. Si el número ya está usado, intenta otro.
 const generateOrderNumber = async () => {
   let isUnique = false;
   let orderNumber;
@@ -15,14 +16,16 @@ const generateOrderNumber = async () => {
   return orderNumber;
 };
 
-//Enviar notificaci�n Push
+// Manda un aviso al celular del cliente usando el servicio de notificaciones de Expo.
+// Solo actúa si el token empieza con ExponentPushToken o ExpoPushToken.
+// Se usa cuando el empleado cambia el estado del pedido (en cocina, listo, entregado, cancelado).
 const sendPushNotification = async (expoPushToken, title, body, data) => {
   if (
     !expoPushToken ||
     (!expoPushToken.startsWith("ExponentPushToken") &&
       !expoPushToken.startsWith("ExpoPushToken"))
   ) {
-    return; //Token inv�lido o nulo
+    return; // Sin token válido no hay a quién avisar.
   }
 
   const message = {
@@ -54,7 +57,9 @@ const sendPushNotification = async (expoPushToken, title, body, data) => {
   }
 };
 
-//1.- Crear nuevo pedido (POST /api/orders)
+// POST /api/orders — El cliente confirma el carrito y aquí se guarda el pedido.
+// Rechaza la petición si no hay productos o si Busters está cerrada.
+// Responde 201 con el pedido ya guardado, incluido su número de orden.
 router.post("/", async (req, res) => {
   try {
     const { items, totalAmount, customerName, pushToken } = req.body;
@@ -87,7 +92,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-//2.- Obtener todos los pedidos (GET /api/orders)
+// GET /api/orders — Devuelve todos los pedidos, del más reciente al más antiguo.
+// Lo usan la pantalla del cliente y la del empleado para refrescar la lista.
 router.get("/", async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 });
@@ -97,7 +103,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-//3.- Estadísticas
+// GET /api/orders/metrics/stats — Suma las ventas de los pedidos ya entregados.
+// Separa el total de hoy, de esta semana (lunes a domingo), del mes y el histórico.
 router.get("/metrics/stats", async (req, res) => {
   try {
     const now = new Date();
@@ -140,7 +147,8 @@ router.get("/metrics/stats", async (req, res) => {
   }
 });
 
-//4.- Obtener una orden específica (GET /api/orders/:id)
+// GET /api/orders/:id — Busca un solo pedido por su número de orden (no por el id de Mongo).
+// Responde 404 si ese folio no existe.
 router.get("/:id", async (req, res) => {
   try {
     const order = await Order.findOne({ orderNumber: req.params.id });
@@ -151,7 +159,9 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//5.- Actualizar estado de un pedido (PATCH /api/orders/:id/status)
+// PATCH /api/orders/:id/status — El empleado (o el cliente al cancelar) cambia el estado.
+// Solo acepta: Pendiente, En preparación, Terminado, Entregado o Cancelado.
+// Si el pedido tiene token push, avisa al celular del cliente con un texto según el estado.
 router.patch("/:id/status", async (req, res) => {
   try {
     const { status } = req.body;
@@ -176,7 +186,7 @@ router.patch("/:id/status", async (req, res) => {
     if (!updatedOrder)
       return res.status(404).json({ error: "Orden no encontrada" });
 
-    //Enviar notificaci�n Push si hay token
+    // Avisa al cliente en su celular si guardamos su token al crear el pedido.
     if (updatedOrder.pushToken) {
       let title = "Actualización de Pedido";
       let body = `El estado de tu pedido #${updatedOrder.orderNumber} cambió a: ${status}`;
@@ -208,7 +218,8 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
-// Eliminar un pedido
+// DELETE /api/orders/:orderNumber — Borra un pedido de la base de datos.
+// Lo usa el empleado para quitar un pedido de la lista. Responde 404 si no existe.
 router.delete("/:orderNumber", async (req, res) => {
   try {
     const order = await Order.findOneAndDelete({

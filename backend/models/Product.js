@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+// Producto del menú. id es el identificador de la app (BT-... o BS-...), distinto del _id de Mongo.
+// inStock en false significa agotado y el cliente deja de poder pedirlo.
 const productSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true },

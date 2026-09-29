@@ -143,7 +143,7 @@ const bustersProductImages: Record<string, keyof typeof productsImages> = {
   Chai: "ChaiFrap",
 };
 
-//Función que normaliza el texto
+// Quita acentos, mayúsculas y símbolos para poder comparar nombres de productos con nombres de archivos.
 function normalize(value: string) {
   return value
     .normalize("NFD")
@@ -156,7 +156,7 @@ function normalize(value: string) {
     .trim();
 }
 
-//Función que divide el texto en piezas para la búsqueda de imágenes por similitud de texto
+// Parte el nombre en palabras útiles (de 3 letras o más) e ignora "pieza" y números.
 function tokensOf(value: string) {
   return normalize(value)
     .split(" ")
@@ -169,7 +169,8 @@ function tokensOf(value: string) {
     );
 }
 
-//Función para verificar la similitud entre dos textos
+// Cuenta cuántos cambios hacen falta para convertir una palabra en otra (distancia de Levenshtein).
+// Sirve para tolerar un error de dedo, por ejemplo "mocca" y "mocha".
 function editDistance(left: string, right: string) {
   const row = Array.from({ length: right.length + 1 }, (_, index) => index);
   for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
@@ -189,7 +190,7 @@ function editDistance(left: string, right: string) {
   return row[right.length];
 }
 
-//Función que verifica si dos textos son iguales
+// Decide si dos palabras son la misma: iguales, una empieza como la otra, o difieren en una sola letra.
 function tokensMatch(left: string, right: string) {
   if (left === right) {
     return true;
@@ -206,7 +207,7 @@ function tokensMatch(left: string, right: string) {
   );
 }
 
-//Función que verifica si dos conjuntos de piezas son iguales para encontrar la imagen correspondiente al producto
+// Compara dos listas de palabras sin importar el orden. Todas deben encontrar pareja.
 function sameTokens(left: string[], right: string[]) {
   if (left.length === 0 || right.length === 0 || left.length !== right.length) {
     return false;
@@ -222,7 +223,7 @@ function sameTokens(left: string[], right: string[]) {
   });
 }
 
-//Función que encuentra la imagen correspondiente al producto
+// Busca en el catálogo de Busters qué archivo de imagen corresponde al nombre del producto.
 function matchingImageKey(productName: string) {
   const nameTokens = tokensOf(productName);
   for (const [catalogName, imageKey] of Object.entries(bustersProductImages)) {
@@ -233,7 +234,7 @@ function matchingImageKey(productName: string) {
   return null;
 }
 
-//Función que extrae el nombre del archivo de una imagen
+// Saca el nombre del archivo sin la carpeta ni la extensión. "Latte.png" queda en "Latte".
 function imageStem(image: string) {
   const file = decodeURIComponent(
     image.split("?")[0]?.split("/").pop() ?? image,
@@ -241,7 +242,7 @@ function imageStem(image: string) {
   return file.replace(/\.[a-z0-9]+$/i, "");
 }
 
-//Función que obtiene la imagen correspondiente al producto
+// Devuelve la imagen local de un producto de Busters a partir de su nombre.
 export function getBustersProductImageSource(productName: string) {
   const imageKey =
     matchingImageKey(productName) ?? bustersProductImages[productName];
@@ -254,7 +255,7 @@ type ProductImageInput = {
   name?: string | null;
 };
 
-//Función que resuelve la imagen del producto
+// Elige qué mostrar: una foto subida (base64 o URL), la imagen del catálogo, o nada si no coincide el nombre.
 export function resolveProductImageSource({ image, name }: ProductImageInput) {
   const imageValue = image?.trim() ?? "";
 
@@ -292,6 +293,7 @@ export function resolveProductImageSource({ image, name }: ProductImageInput) {
   return null;
 }
 
+// Atajo de resolveProductImageSource para cuando ya se tienen la ruta y el nombre por separado.
 export function getProductImageSource(image: string, name?: string) {
   return resolveProductImageSource({ image, name });
 }

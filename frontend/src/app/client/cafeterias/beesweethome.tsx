@@ -29,6 +29,7 @@ type MenuRow =
     | { id: string; type: "title"; title: string }
     | { id: string; type: "pair"; products: Product[] };
 
+// Acomoda los productos de dos en dos para la cuadrícula del menú.
 function pairProducts(products: Product[], prefix: string): MenuRow[] {
     const rows: MenuRow[] = [];
     for (let index = 0; index < products.length; index += 2) {
@@ -43,6 +44,7 @@ function pairProducts(products: Product[], prefix: string): MenuRow[] {
     return rows;
 }
 
+// Menú de Bee Sweet: búsqueda, filtros de comidas/bebidas/otros y cuadrícula de productos.
 export default function HomeScreen() {
   const colors = useColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -83,6 +85,7 @@ export default function HomeScreen() {
             const drinks = filteredProducts.filter((product) => product.category === "Bebidas");
             let subcategories = Array.from(new Set(drinks.map((product) => product.subcategory || "Otros")));
             
+            // Ordena bebidas: frías, calientes, frappés y al final el resto.
             const sortWeight = (s: string) => { 
                 const lower = s.toLowerCase(); 
                 if (lower.includes('frí') || lower.includes('fri') || lower.includes('fria')) return 1; 
@@ -108,6 +111,7 @@ export default function HomeScreen() {
 
     const favoriteItems = useFavoritesStore((state) => state.items);
 
+    // Dibuja una tarjeta del menú. Si está agotado, se ve opaca y no se puede abrir.
     const renderProduct = (product: Product) => {
         const isFav = favoriteItems.some((f) => f.id === product.id);
         const available = isProductAvailable(product);
@@ -235,6 +239,7 @@ export default function HomeScreen() {
     );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     screen: { flex: 1, backgroundColor: colors.background },

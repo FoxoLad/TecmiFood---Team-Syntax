@@ -14,6 +14,7 @@ export type Product = {
   inStock?: boolean;
 };
 
+// Un producto se puede pedir si no está marcado como agotado, inactivo o sin existencias.
 export function isProductAvailable(product: Pick<Product, "inStock" | "status">) {
   if (product.inStock === false) {
     return false;

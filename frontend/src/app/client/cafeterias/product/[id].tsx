@@ -26,6 +26,7 @@ import { useProductStore } from "../../../../stores/useProduct";
 import { useFavoritesStore } from "../../../../stores/useFavorites";
 import { modificationLabels } from "../../../../types/product";
 
+// Ficha del producto: foto, precio, modificaciones y botón para agregarlo al carrito.
 export default function BustersProductScreen() {
   const colors = useColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -74,6 +75,7 @@ export default function BustersProductScreen() {
     const [toastMessage, setToastMessage] = useState<string | null>(null);
     const fadeAnim = useState(new Animated.Value(0))[0];
 
+    // Muestra un aviso corto cuando no se pudo agregar al carrito por el límite de 3 o de 8.
     const showToast = (msg: string) => {
         setToastMessage(msg);
         Animated.sequence([
@@ -83,6 +85,7 @@ export default function BustersProductScreen() {
         ]).start(() => setToastMessage(null));
     };
 
+    // Mete el producto al carrito con las modificaciones y notas elegidas, si la cafetería está abierta.
     const handleConfirmOrder = () => {
         if (!product) return;
         if (!isOpen) {
@@ -102,6 +105,7 @@ export default function BustersProductScreen() {
         setModalType("success");
     };
 
+    // Abre el modal de confirmación. No hace nada si el producto no cargó o la cafetería está cerrada.
     const orderProduct = () => {
         if (!product || !isOpen) {
             return;
@@ -110,6 +114,7 @@ export default function BustersProductScreen() {
         setModalType("confirm");
     };
 
+    // Abre el menú de compartir del teléfono con el nombre, la descripción y el precio.
     const shareProduct = () => {
         if (!product) {
             return;
@@ -121,6 +126,7 @@ export default function BustersProductScreen() {
         });
     };
 
+    // Marca o desmarca una modificación (sin hielo, sin salsa, etc.) antes de agregar al carrito.
     const toggleModification = (modification: string) => {
         setSelectedModifications((current) =>
             current.includes(modification)
@@ -343,6 +349,7 @@ export default function BustersProductScreen() {
     );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     container: {

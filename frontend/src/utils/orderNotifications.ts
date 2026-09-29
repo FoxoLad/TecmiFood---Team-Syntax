@@ -20,6 +20,7 @@ export const ORDER_NOTIFICATIONS: Record<OrderStatus, { title: string; body: (or
   },
 };
 
+// Rellena el número de pedido con ceros a la izquierda para mostrarlo como 007.
 function pad(orderNumber: number) {
   return String(orderNumber).padStart(3, "0");
 }

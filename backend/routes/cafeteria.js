@@ -4,6 +4,8 @@ const Cafeteria = require("../models/Cafeteria");
 const router = express.Router();
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 
+// Lee el horario de una cafetería (busters o beesweet).
+// Si todavía no existe en la base, la crea abierta de 08:00 a 17:00.
 async function getStatus(key) {
   return Cafeteria.findOneAndUpdate(
     { key },
@@ -19,6 +21,7 @@ async function getStatus(key) {
   );
 }
 
+// Arma la respuesta que ve la app: solo si está abierta y a qué hora abre y cierra.
 function publicStatus(status) {
   return {
     isOpen: status.isOpen,
@@ -27,6 +30,7 @@ function publicStatus(status) {
   };
 }
 
+// GET /api/cafeteria — Devuelve el estado de Busters y de Bee Sweet en una sola respuesta.
 router.get("/", async (req, res) => {
   try {
     const busters = await getStatus("busters");
@@ -43,6 +47,8 @@ router.get("/", async (req, res) => {
   }
 });
 
+// PATCH /api/cafeteria/:key — El empleado abre o cierra la cafetería y cambia el horario.
+// Solo guarda isOpen si es booleano y las horas si tienen formato HH:MM (00:00 a 23:59).
 router.patch("/:key", async (req, res) => {
   try {
     const update = {};

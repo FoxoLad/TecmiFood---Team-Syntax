@@ -32,6 +32,9 @@ type CartStore = {
 
 export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
+  // Agrega un producto al carrito.
+  // Límites: máximo 3 del mismo producto y 8 piezas en total.
+  // Si ya hay uno igual (mismas modificaciones y notas), solo suma la cantidad.
   addItem: (product, quantity, modifications, notes) => {
     let response: CartActionResponse = { success: true };
     set((state) => {
@@ -86,6 +89,8 @@ export const useCartStore = create<CartStore>((set, get) => ({
     });
     return response;
   },
+  // Suma o resta 1 a un renglón del carrito.
+  // Al restar, si llega a 0 se elimina. Al sumar, respeta los mismos límites de 3 y de 8.
   updateQuantity: (cartItemId: string, delta: number) => {
     let response: CartActionResponse = { success: true };
     set((state) => {
@@ -129,14 +134,17 @@ export const useCartStore = create<CartStore>((set, get) => ({
     });
     return response;
   },
+  // Quita por completo un renglón del carrito, sin importar la cantidad.
   removeItem: (cartItemId) => {
     set((state) => ({
       items: state.items.filter((item) => item.cartItemId !== cartItemId),
     }));
   },
+  // Vacía el carrito. Se llama después de enviar el pedido de ambas cafeterías.
   clearCart: () => {
     set({ items: [] });
   },
+  // Suma precio por cantidad de cada renglón y devuelve el total a pagar.
   getTotal: () => {
     return get().items.reduce(
       (total, item) => total + item.product.price * item.quantity,

@@ -17,6 +17,8 @@ type CafeteriaStatusStore = {
   setHours: (key: "busters" | "beesweet", opensAt: string, closesAt: string) => void;
 };
 
+// Convierte lo que escribe el empleado en una hora con formato HH:MM.
+// "830" se vuelve "8:30" y "1730" se vuelve "17:30". Solo deja 4 dígitos.
 export function maskTime(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 4);
   if (digits.length <= 2) {
@@ -25,14 +27,18 @@ export function maskTime(value: string) {
   return `${digits.slice(0, 2)}:${digits.slice(2)}`;
 }
 
+// Revisa que el texto sea una hora real de 00:00 a 23:59. Si no, no se guarda el horario.
 export function isValidTime(value: string) {
   return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
 }
 
+// Si ya pasó la hora de cierre, marca la cafetería como cerrada aunque el interruptor siga en abierto.
+// También cubre horarios que cruzan medianoche (por ejemplo abre 18:00 y cierra 02:00).
 function computeAutoClose(status: CafeteriaState): CafeteriaState {
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
     
+    // Pasa "17:30" a minutos desde medianoche (17 * 60 + 30) para poder comparar con la hora actual.
     const parseMinutes = (time: string) => {
         const [h, m] = time.split(':').map(Number);
         return h * 60 + m;
@@ -53,6 +59,7 @@ function computeAutoClose(status: CafeteriaState): CafeteriaState {
     return status;
 }
 
+// Publica en el servidor el cambio de abierto/cerrado o de horario para que los demás teléfonos lo vean.
 async function pushStatus(key: string, status: Partial<CafeteriaState>) {
   try {
     await fetch(`${endpoints.cafeteria}/${key}`, {
@@ -72,12 +79,14 @@ export const useCafeteriaStatus = create<CafeteriaStatusStore>()(
     (set, get) => ({
       busters: { ...defaultState },
       beesweet: { ...defaultState },
+      // Lee del servidor si Busters y Bee Sweet están abiertas y aplica el cierre automático si ya es hora.
       fetchStatus: async () => {
         try {
           const response = await fetch(endpoints.cafeteria);
           if (!response.ok) return;
           const data = await response.json();
           
+          // Mezcla lo que llegó del servidor con lo que ya teníamos y cierra la cafetería si el horario ya venció.
           const processData = (key: "busters" | "beesweet", remote: Partial<CafeteriaState> | undefined) => {
               if (!remote) return get()[key];
               const newState = {
@@ -100,10 +109,12 @@ export const useCafeteriaStatus = create<CafeteriaStatusStore>()(
           console.error("No se pudo leer el estado de la cafetería:", error);
         }
       },
+      // El empleado enciende o apaga la cafetería y ese cambio se manda al servidor.
       setOpen: (key, isOpen) => {
         set({ [key]: { ...get()[key], isOpen } });
         pushStatus(key, { isOpen, opensAt: get()[key].opensAt, closesAt: get()[key].closesAt });
       },
+      // Guarda el nuevo horario solo si ambas horas son válidas, y lo publica en el servidor.
       setHours: (key, opensAt, closesAt) => {
         if (!isValidTime(opensAt) || !isValidTime(closesAt)) return;
         set({ [key]: { ...get()[key], opensAt, closesAt } });

@@ -33,7 +33,8 @@ import { useUserStore } from "../../../stores/useUserStore";
 import { isProductAvailable } from "../../../types/product";
 import { clientLabel } from "../../../utils/client";
 
-//Zustand
+// Pantalla del carrito: muestra lo agregado, calcula el total y envía el pedido.
+// Si hay productos de Busters y de Bee Sweet, crea una orden independiente para cada una.
 export default function CartScreen() {
   const products = useProductStore((state) => state.products || []);
   const colors = useColors();
@@ -68,7 +69,7 @@ export default function CartScreen() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const fadeAnim = useState(new Animated.Value(0))[0];
 
-  //Función para mostrar un mensaje en la pantalla
+  // Muestra un mensaje flotante unos segundos (por ejemplo, cuando se llega al límite del carrito).
   const showToast = (msg: string) => {
     setToastMessage(msg);
     Animated.sequence([
@@ -86,7 +87,7 @@ export default function CartScreen() {
     ]).start(() => setToastMessage(null));
   };
 
-  //Función para limitar la cantidad de productos en el carrito
+  // Suma o resta cantidad. Si el store rechaza el cambio, explica el límite de 3 o de 8.
   const handleUpdateQuantity = (cartItemId: string, delta: number) => {
     const res = updateQuantity(cartItemId, delta);
     if (!res.success) {
@@ -120,7 +121,8 @@ export default function CartScreen() {
     (beeSweetItems.length === 0 || beesweetState.isOpen) &&
     !hasUnavailableItems;
 
-  //Verificar si la cafetería está abierta para confirmar el pedido
+  // Abre el modal de confirmación solo si la cafetería de ese pedido está abierta.
+  // scope puede ser "all", "busters" o "beesweet" para pedir solo una de las dos.
   const openConfirmModal = (scope: "all" | "busters" | "beesweet") => {
     if (items.length === 0) return;
 
@@ -145,6 +147,9 @@ export default function CartScreen() {
     setShowConfirmModal(true);
   };
 
+  // Confirma y envía el pedido al servidor.
+  // Vuelve a checar que la cafetería siga abierta, que no haya más de 3 pedidos activos
+  // y que no se hayan hecho más de 2 pedidos en los últimos 30 minutos.
   const handleCheckout = async () => {
     setShowConfirmModal(false);
     setIsSubmitting(true);
@@ -226,6 +231,8 @@ export default function CartScreen() {
         return;
       }
 
+      // Arma el JSON de una cafetería y lo manda con POST /api/orders.
+      // Devuelve el pedido guardado, o null si esa cafetería no tenía productos.
       const sendOrder = async (orderItems: typeof items) => {
         if (orderItems.length === 0) return null;
         const total = orderItems.reduce(
@@ -345,6 +352,7 @@ export default function CartScreen() {
     );
   }
 
+  // Dibuja una fila del carrito: foto, nombre, cantidad y si el producto ya se agotó.
   const renderCartItem = (item: (typeof items)[0]) => {
     const catalogProduct =
       products.find((p) => p.id === item.product.id) || item.product;
@@ -581,6 +589,7 @@ export default function CartScreen() {
   );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     emptyContainer: {

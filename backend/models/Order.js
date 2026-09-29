@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Cada renglón del pedido: qué producto, cuántos, a qué precio y con qué notas.
 const OrderItemSchema = new mongoose.Schema({
   productId: { type: String, required: true },
   name: { type: String, required: true },
@@ -10,7 +11,8 @@ const OrderItemSchema = new mongoose.Schema({
   notes: { type: String, default: "" },
 });
 
-//Esquema principal de una orden
+// Pedido completo. orderNumber es el folio que ve el cliente.
+// timestamps guarda createdAt y updatedAt de forma automática.
 const OrderSchema = new mongoose.Schema(
   {
     orderNumber: { type: Number, required: true, unique: true },

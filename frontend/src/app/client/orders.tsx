@@ -18,6 +18,7 @@ import { isClientOrder } from "../../utils/client";
 
 type OrdersView = "active" | "history";
 
+// Colores de la etiqueta según el estado: ámbar pendiente, azul en cocina, verde listo, rojo cancelado.
 function statusStylesFor(colors: Palette) {
   const statusStyles: Record<string, { backgroundColor: string; color: string; label: string }> = {
     "Pendiente": { backgroundColor: colors.accentSoft, color: colors.accent, label: ORDER_STATUS_LABELS["Pendiente"] },
@@ -42,6 +43,7 @@ const emptyStates: Record<OrdersView, { title: string; message: string; icon: "c
   },
 };
 
+// Pantalla de pedidos del cliente: activos arriba e historial de entregados y cancelados.
 export default function ClientOrdersScreen() {
   const colors = useColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -86,6 +88,7 @@ export default function ClientOrdersScreen() {
   const emptyState = emptyStates[view];
 
   
+  // Pregunta antes de cancelar. Si confirma, manda el estado "Cancelado" al servidor.
   const handleCancel = (order: RealOrder) => {
     Alert.alert(
       "Cancelar pedido",
@@ -104,6 +107,8 @@ export default function ClientOrdersScreen() {
     );
   };
 
+  // Vuelve a meter los productos de un pedido anterior al carrito, si la cafetería está abierta.
+  // Respeta el tope de 8 piezas y 3 del mismo producto.
   const handleReorder = (order: RealOrder) => {
     const state = useCafeteriaStatus.getState();
     const hasBusters = order.items.some(i => i.productId?.startsWith("BT"));
@@ -141,6 +146,7 @@ export default function ClientOrdersScreen() {
     router.push("/client/cart");
   };
 
+  // Regresa a la pantalla anterior, o al perfil si no hay historial de navegación.
   const goBack = () => {
     if (router.canGoBack()) {
       router.back();
@@ -314,6 +320,7 @@ export default function ClientOrdersScreen() {
   );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
   container: {

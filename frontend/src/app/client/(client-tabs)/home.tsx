@@ -63,6 +63,7 @@ const BEE_SWEET_PRODUCTS: Product[] = [
   },
 ];
 
+// Inicio del cliente: banners, pedido activo y carruseles de Busters y Bee Sweet.
 export default function HomeScreen() {
   const colors = useColors();
   const mode = useThemeStore((state) => state.mode);
@@ -104,6 +105,7 @@ export default function HomeScreen() {
     return () => clearInterval(bannerTimer);
   }, []);
 
+  // Abre el detalle del producto al tocarlo en el inicio.
   const openProduct = useCallback((product: Product) => {
     router.push({
       pathname: "/client/cafeterias/product/[id]",
@@ -111,6 +113,7 @@ export default function HomeScreen() {
     });
   }, []);
 
+  // Devuelve solo los productos que ya se pueden ver en el carrusel. El resto se carga al deslizar.
   const getVisibleProducts = useCallback(
     (section: CafeteriaSection) => {
       const visibleCount = visibleProducts[section.businessId] ?? BATCH_SIZE;
@@ -119,6 +122,7 @@ export default function HomeScreen() {
     [visibleProducts],
   );
 
+  // Si el usuario llegó al final del carrusel, muestra el siguiente bloque de productos.
   const loadMoreProducts = useCallback(
     (
       section: CafeteriaSection,
@@ -418,6 +422,7 @@ export default function HomeScreen() {
   );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     safeArea: {

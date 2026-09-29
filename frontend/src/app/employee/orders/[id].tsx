@@ -24,6 +24,7 @@ type OrderAction = {
   nextStatus: string;
 };
 
+// Detalle de un pedido. El empleado avanza el estado: a cocina, listo para recoger o entregado.
 export default function EmployeeOrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { orders, updateOrderStatus } = useOrders();
@@ -70,6 +71,7 @@ export default function EmployeeOrderDetailsScreen() {
     };
   }
 
+  // Confirma el siguiente paso del pedido: a cocina, listo o entregado.
   const confirmStatusChange = () => {
     if (action && action.nextStatus) {
       updateOrderStatus(orderNumber, action.nextStatus);

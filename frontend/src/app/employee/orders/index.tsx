@@ -35,6 +35,7 @@ const statusStyles: Record<string, { backgroundColor: string; color: string; lab
   "Cancelado": { backgroundColor: "#FFE5E5", color: "#CC0A0A", label: ORDER_STATUS_LABELS["Cancelado"] },
 };
 
+// Lista de pedidos del empleado, filtrada por su cafetería, con búsqueda y refresco automático cada 10 segundos.
 export default function EmployeeOrdersScreen() {
   const { orders, isLoading, fetchOrders } = useOrders();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -65,6 +66,7 @@ export default function EmployeeOrdersScreen() {
     });
   }
 
+  // Guarda el horario escrito solo si ambas horas tienen formato HH:MM válido.
   const saveHours = () => {
     if (isValidTime(hourDraft.opensAt) && isValidTime(hourDraft.closesAt)) {
       setHours(cafeteriaKey, hourDraft.opensAt, hourDraft.closesAt);
@@ -89,6 +91,7 @@ export default function EmployeeOrdersScreen() {
     return () => clearInterval(interval);
   }, [fetchOrders, fetchStatus]);
 
+  // Al jalar la lista hacia abajo, vuelve a pedir los pedidos al servidor.
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchOrders();
@@ -96,6 +99,7 @@ export default function EmployeeOrdersScreen() {
   }, [fetchOrders]);
 
   
+  // Deja solo los pedidos de esta cafetería que coinciden con la búsqueda y el filtro (pendientes, entregados o todos).
   const filteredOrders = orders.filter((order) => {
     // If the employee is logged in to a specific cafeteria, only show orders containing items from that cafeteria.
     if (employeeCafeteria === "Busters") {
@@ -129,10 +133,12 @@ export default function EmployeeOrdersScreen() {
 
   const updateOrderStatus = useOrders((state) => state.updateOrderStatus);
   const deleteOrder = useOrders((state) => state.deleteOrder);
+  // Abre el aviso de "¿salir del modo empleado?" antes de volver a la app del cliente.
   const confirmReturnToClient = () => {
     setShowReturnConfirmation(true);
   };
 
+  // Cierra el aviso y regresa a la pantalla de inicio del cliente.
   const returnToClient = () => {
     setShowReturnConfirmation(false);
     router.replace("/client/home");

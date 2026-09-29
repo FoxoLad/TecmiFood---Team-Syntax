@@ -10,6 +10,7 @@ type FillingCartIconProps = {
   fill: string;
 };
 
+// Icono del carrito vacío: los productos caen dentro y la animación se repite.
 export function FillingCartIcon({ size = 88, color, fill }: FillingCartIconProps) {
   const [progress] = useState(() => new Animated.Value(0));
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -94,6 +95,7 @@ export function FillingCartIcon({ size = 88, color, fill }: FillingCartIconProps
   );
 }
 
+// Dibuja un cuadrito que cae dentro del carrito. delay desfasa cada producto para que no caigan juntos.
 function DroppingItem({
   progress,
   delay,

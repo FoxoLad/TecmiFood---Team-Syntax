@@ -40,6 +40,7 @@ const THEME = {
   },
 } as const;
 
+// Pantalla de carga al entrar a una cafetería: perrito en Busters, abeja en Bee Sweet.
 export function CafeteriaSplash({ variant }: CafeteriaSplashProps) {
   const colors = useColors();
   const mode = useThemeStore((state) => state.mode);
@@ -239,6 +240,7 @@ export function CafeteriaSplash({ variant }: CafeteriaSplashProps) {
   );
 }
 
+// Logo del perrito que se muestra mientras carga el menú de Busters.
 function BustersMark({ accent }: { accent: string }) {
   return (
     <View style={styles.dogScene}>
@@ -273,6 +275,7 @@ function BustersMark({ accent }: { accent: string }) {
   );
 }
 
+// Logo de la abeja que se muestra mientras carga el menú de Bee Sweet.
 function BeeSweetMark() {
   return (
     <View style={styles.beeScene}>

@@ -22,6 +22,7 @@ import {
 import { useColors, useThemeStore } from "../../../stores/useTheme";
 import { useUserStore } from "../../../stores/useUserStore";
 
+// Perfil del cliente: su id, accesos a pedidos, favoritos, ajustes y entrada de empleado.
 export default function ProfileScreen() {
   const colors = useColors();
   const mode = useThemeStore((state) => state.mode);
@@ -35,11 +36,15 @@ export default function ProfileScreen() {
   const router = useRouter();
   const clientId = useUserStore((state) => state.clientId);
 
+  // Abre los pedidos que todavía no se entregan ni se cancelan.
   const openActiveOrders = () =>
     router.push("/client/orders?view=active" as Href);
+  // Abre el historial de pedidos ya entregados o cancelados.
   const openOrderHistory = () =>
     router.push("/client/orders?view=history" as Href);
+  // Abre la lista de productos marcados con el corazón.
   const openFavorites = () => router.push("/client/favorites");
+  // Abre ajustes: tema claro/oscuro y la animación del cambio.
   const openSettings = () => router.push("/client/settings" as Href);
 
   //Claves de acceso a la vista de empleado para cada cafetería
@@ -47,7 +52,8 @@ export default function ProfileScreen() {
   const BUSTERS_CODE = "11111";
   const BEESWEET_CODE = "22222";
 
-  //Control de accesos a la vista de empleado para cada cafetería
+  // Compara el código escrito con el de Busters (11111) o Bee Sweet (22222).
+  // Si coincide, guarda esa cafetería y entra a la vista de empleado.
   const accessEmployeeOrders = () => {
     const code = employeeCode.trim();
 
@@ -208,6 +214,7 @@ export default function ProfileScreen() {
   );
 }
 
+// Arma los estilos del perfil. kitchen cambia los colores del bloque de empleado según el tema.
 function createStyles(colors: Palette, kitchen: typeof employee) {
   return StyleSheet.create({
     safeArea: {

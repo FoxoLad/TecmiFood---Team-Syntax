@@ -10,12 +10,13 @@ type ProductCardProps = {
     product: Product;
 };
 
+// Tarjeta de la vista antigua de productos. Muestra el número de orden, el estado y permite borrarlo.
 export function ProductCard({ product }: ProductCardProps) {
     const orderNumber = product.NoOrder ?? 0;
     const status = product.status ?? "Sin estado";
     const deleteProduct = useProductStore((state) => state.deleteProduct);
 
-    // Función para asignar color dinámico según el estado
+    // Verde si está entregado, ámbar si está pendiente y gris en cualquier otro estado.
     const getStatusColor = (currentStatus: string) => {
         const normalized = currentStatus.toLowerCase().trim();
         if (normalized === "entregado") {

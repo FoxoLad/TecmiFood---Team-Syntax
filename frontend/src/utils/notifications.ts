@@ -17,6 +17,9 @@ try {
   console.warn("expo-notifications no está disponible en este entorno (probablemente Expo Go SDK 53+).");
 }
 
+// Pide permiso de notificaciones y obtiene el token de Expo de este teléfono.
+// Ese token se manda al crear el pedido para que el servidor pueda avisar cuando cambie el estado.
+// En un emulador no hay token: hace falta un celular físico.
 export async function registerForPushNotificationsAsync() {
   let token = null;
 

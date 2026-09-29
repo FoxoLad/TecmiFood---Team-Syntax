@@ -11,6 +11,7 @@ type ProductImageProps = {
   contentFit?: ImageContentFit;
 };
 
+// Muestra la foto del producto. Si el nombre no coincide con ninguna imagen, deja el espacio en blanco.
 export function ProductImage({
   image,
   name,

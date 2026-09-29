@@ -19,6 +19,7 @@ type SearchMascotProps = {
   query: string;
 };
 
+// Perrito de la búsqueda de Busters. Cada letra que se escribe lo hace saltar.
 export function SearchMascot({ query }: SearchMascotProps) {
   const [progress] = useState(() => new Animated.Value(0));
   const [reduceMotion, setReduceMotion] = useState(false);

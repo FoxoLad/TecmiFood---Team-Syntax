@@ -125,6 +125,7 @@ export default function CategoryScreen() {
     );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     container: {

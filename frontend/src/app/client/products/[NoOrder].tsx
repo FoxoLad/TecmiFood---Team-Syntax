@@ -17,6 +17,7 @@ export default function ProductDetailsScreen() {
         state.products.find((p) => String(p.NoOrder) === orderKey)
     );
 
+    // Pinta la etiqueta de verde si ya se entregó, ámbar si sigue pendiente y gris en otro caso.
     const getStatusColor = (currentStatus?: string) => {
         const normalized = (currentStatus ?? "").toLowerCase().trim();
         if (normalized === "entregado") return "#15803d"; // Verde
@@ -67,6 +68,7 @@ export default function ProductDetailsScreen() {
     );
 }
 
+// Arma los estilos de esta pantalla con los colores del tema activo (claro u oscuro).
 function createStyles(colors: Palette) {
   return StyleSheet.create({
     container: {

@@ -52,7 +52,9 @@ El proyecto está construido sobre el ecosistema **MERN adaptado a Mobile** (Mon
 En este proyecto optamos por utilizar una organización modular y escalable.
 A continuación se explica el por qué y para qué de las carpetas y archivos más relevantes del proyecto:
 
-### Estructura Frontend (`/src`)
+### Estructura Frontend (`/frontend`)
+
+La app móvil vive en `frontend/`. Dentro, el código está en `src/`.
 
 - **`app/`**: Contiene la navegación. Al usar _Expo Router_, cada archivo aquí es literalmente una pantalla.
   - `_layout.tsx`: Es el archivo maestro de navegación. Configura barras superiores, menús y temas globales de la app.
@@ -105,13 +107,16 @@ Dado que la aplicación ya está conectada al backend productivo en **Render** (
 
 ### Paso 1: Levantar el Frontend (Aplicación Móvil con Expo)
 
-Abre tu terminal y ubícate en la raíz del proyecto.
+Abre tu terminal en la carpeta del proyecto y entra a `frontend`.
 
 ```bash
-#1. Instala todas las dependencias de React Native / Expo
+#1. Entra a la app móvil
+cd frontend
+
+#2. Instala todas las dependencias de React Native / Expo
 npm install
 
-#2. Inicia la aplicación móvil
+#3. Inicia la aplicación móvil
 npx expo start
 ```
 
@@ -137,7 +142,7 @@ npm install
 npm run dev
 ```
 
-**Nota Importante:** Si levantas el servidor localmente, asegúrate de ir al archivo `/src/constants/api.ts` de la aplicación móvil y cambiar temporalmente la URL de Render por `http://localhost:5000` para que la app se comunique con tu computadora.
+**Nota Importante:** Si levantas el servidor localmente, asegúrate de ir al archivo `frontend/src/constants/api.ts` de la aplicación móvil y cambiar temporalmente la URL de Render por `http://localhost:5000` para que la app se comunique con tu computadora.
 
 ### Notas para Windows (Problemas de Scripts)
 

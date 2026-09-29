@@ -18,6 +18,7 @@ type BeeSearchMascotProps = {
   query: string;
 };
 
+// Abeja de la búsqueda de Bee Sweet. Cada letra que se escribe hace que aletee.
 export function BeeSearchMascot({ query }: BeeSearchMascotProps) {
   const [progress] = useState(() => new Animated.Value(0));
   const [reduceMotion, setReduceMotion] = useState(false);

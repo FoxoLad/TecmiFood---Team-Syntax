@@ -13,6 +13,8 @@ type ProductStore = {
   updateProductsStatus: (orderNumber: number, status: string) => void;
 };
 
+// Deja cada producto del API con la forma que esperan las pantallas:
+// un id seguro, un número de orden y inStock en false si está inactivo o agotado.
 function normalizeProduct(product: ApiProduct, index: number): Product {
   return {
     ...product,
@@ -37,6 +39,8 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
       product.status !== "agotado",
   })),
   isLoading: false,
+  // Descarga el menú completo (incluye agotados, porque pide ?admin=true).
+  // Si el servidor manda una foto de prueba, conserva la imagen local de Bee Sweet.
   fetchProducts: async () => {
     const showLoader = get().products.length === 0;
     if (showLoader) {
@@ -85,11 +89,13 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
       set({ isLoading: false });
     }
   },
+  // Quita un producto de la lista en memoria. La pantalla deja de mostrarlo al instante.
   deleteProduct: (productId: string) => {
     set((state) => ({
       products: state.products.filter((product) => product.id !== productId),
     }));
   },
+  // Cambia el estado de los productos que comparten el mismo número de orden (vista antigua de "No Orden").
   updateProductsStatus: (orderNumber: number, status: string) => {
     set((state) => ({
       products: state.products.map((product) =>

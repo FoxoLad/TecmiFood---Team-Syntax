@@ -36,14 +36,17 @@ export const ORDER_STATUS_HINTS: Record<string, string> = {
   "Cancelado": "Este pedido ha sido cancelado.",
 };
 
+// Traduce el estado interno ("Pendiente", "Terminado"...) al texto que ve el cliente ("Nuevo pedido", "Listo para recoger").
 export function getOrderStatusLabel(status: string) {
   return ORDER_STATUS_LABELS[status] ?? status;
 }
 
+// Frase corta que explica qué significa el estado actual del pedido.
 export function getOrderStatusHint(status: string) {
   return ORDER_STATUS_HINTS[status] ?? "Te avisaremos cuando el pedido cambie de estado.";
 }
 
+// Muestra el folio con 3 dígitos: 7 se ve como 007.
 export function formatOrderNumber(orderNumber: number | string) {
   return String(orderNumber).padStart(3, "0");
 }

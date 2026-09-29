@@ -8,6 +8,7 @@ const path = require("path");
 
 const productsPath = path.join(__dirname, "../src/data/products.json");
 
+// Arma el enlace de Unsplash con tamaño y calidad fijos a partir del id de la foto.
 const q = (id) =>
   `https://images.unsplash.com/${id}?w=800&q=80&auto=format&fit=crop`;
 
@@ -148,6 +149,7 @@ const BY_FLAVOR = {
   },
 };
 
+// Lee el nombre y dice de qué tipo es: pastel, frappe, galleta, etc.
 function detectType(name) {
   const n = name
     .normalize("NFD")
@@ -171,6 +173,7 @@ function detectType(name) {
   return null;
 }
 
+// Busca un sabor dentro del nombre (chocolate, fresa, matcha...). Si no hay, regresa null.
 function detectFlavor(name) {
   const n = name
     .normalize("NFD")
@@ -193,6 +196,7 @@ function detectFlavor(name) {
   return flavors.find((f) => n.includes(f)) ?? null;
 }
 
+// Elige la foto: primero por sabor y tipo, luego solo por tipo, y si nada coincide usa la de pastel.
 function imageFor(name) {
   const type = detectType(name);
   const flavor = detectFlavor(name);

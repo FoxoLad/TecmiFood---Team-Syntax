@@ -11,6 +11,7 @@ type EmployeeHeaderProps = {
   right?: ReactNode;
 };
 
+// Barra superior de las pantallas del empleado: título, botón de regreso y accesos de la derecha.
 export function EmployeeHeader({
   title,
   onBack,

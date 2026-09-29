@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 
+// POST /api/users/init — Crea la identidad del cliente la primera vez que abre la app.
+// El id se ve como #000001. Si dos personas entran al mismo tiempo y chocan el mismo número,
+// reintenta hasta 5 veces sumando el número de intento.
 router.post("/init", async (req, res) => {
   try {
     let success = false;

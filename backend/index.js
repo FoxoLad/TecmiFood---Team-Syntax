@@ -21,7 +21,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/cafeteria", cafeteriaRoutes);
 
-//Ruta de prueba
+// GET / — Ruta de prueba para comprobar que el servidor está vivo.
 app.get("/", (req, res) => {
   res.send("API funcionando correctamente");
 });

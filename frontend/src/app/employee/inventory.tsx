@@ -20,6 +20,7 @@ import { useUserStore } from "../../stores/useUserStore";
 import { endpoints } from "../../constants/api";
 import { Product } from "../../types/product";
 
+// Inventario del empleado: lista los productos de su cafetería y permite marcarlos como agotados.
 export default function InventoryScreen() {
   const employeeCafeteria = useUserStore((state) => state.employeeCafeteria);
   const products = useProductStore((state) => state.products);
@@ -38,6 +39,8 @@ export default function InventoryScreen() {
     setLocalProducts(products.filter(p => p.id?.startsWith(prefix)));
   }, [products, employeeCafeteria]);
 
+  // Cambia "en existencia" al instante y lo guarda en el servidor.
+  // Si la petición falla, regresa el interruptor a como estaba.
   const toggleStock = async (product: Product, newValue: boolean) => {
     setIsUpdating(prev => ({ ...prev, [product.id]: true }));
     // Update local state optimistic
